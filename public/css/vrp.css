@@ -1,0 +1,144 @@
+i.fa.fa-folder-open {
+    color: #ffb702;
+	vertical-align: middle;
+}
+i.fa.fa-folder {
+    color: #ffb702;
+	vertical-align: middle;
+}
+.register_form h2{
+    background: #fafafa;
+    padding: 8px 15px; 
+    margin-bottom: 0;
+    text-align: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+}
+.lg-frm{
+    background: #f1f1f1;  
+    padding: 15px 15px 1px; 
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;    
+}
+.pd-15{
+    padding: 15px;
+}
+
+.pointsDiv {
+    padding-left: 0;
+}
+.point {
+    height: 65px;
+    width: 25px;
+    border-radius: 15px;
+    background-color: #8360c3;
+    float: left;
+}
+.pointNumber {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 60px;
+    padding: 3px 6px;
+    color: #fff;
+}
+.pointName {
+    padding-left: 15px;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 25px;
+}
+.pointDescription {
+    width: 80%;
+}
+.pointDescription {
+    color: #333;
+    font-size: 14px;
+    line-height: 18px;
+    display: inline-block;
+    text-align: left;
+    font-weight: normal;
+    padding-left: 15px;
+}
+.brline {
+    margin: 35px 0 30px;
+    border: 1px solid #ccc;
+    opacity: 0.5;
+    width: 100%;
+}
+
+.category-list-container {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+.category-label {
+    font-size: 13px;
+    color: #717171;
+    display: block;
+}
+.categoryGrid input[type="checkbox"]{
+    position: relative;
+    left: 0;
+    opacity: 1
+}
+.categoryGrid .categoryCheckBox {
+    border: 1px solid #DFDFDF;
+    border-radius: 2px;
+    background-color: #FFFFFF;
+    float: left;
+    margin-right: 5px;
+    position: relative;
+    left: 0;
+    opacity: 1;
+}
+.categoryGrid .label-name {
+    padding-left: 15px;
+}
+.categoryGrid span{
+    padding: 3px 0;
+}
+.selectSellingCategories{
+    height: 500px;
+    overflow-y: scroll;
+}
+.categoryGrid{
+    margin-bottom: 20px;
+}
+
+    .headBnr{
+        position: absolute;
+        width: 100%;
+        height: 80px;
+        background-color: #ccc;
+    }
+    ul.simple_list{
+        padding: 0;
+    }
+    ul.simple_list li{
+        list-style: none;
+    }
+    .box-body ul li i{
+        position: relative !important;
+        top: -2px !important;
+        font-size: 18px !important;
+        margin-right: 5px;
+    }
+    .simpleListInfo{
+        position: absolute;
+        right: 5%;
+        top: 12%;
+        width: 65%;
+        overflow-y: scroll;
+    }
+    .simpleListContainer ul li{
+        line-height: 14px !important;
+    }
+    .simpleListContainer{
+        width: 15%;
+        min-width: 600px;
+        padding: 15px;
+    }

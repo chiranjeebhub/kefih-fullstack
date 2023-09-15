@@ -1,0 +1,71 @@
+.box .box-body .flexbox{display: block;}
+.box .box-body .flexbox h5{ text-align: center;}
+.bg-info {background-color: #4fadff !important;}
+.bg-primary {background-color: #0c6cd5 !important;}
+.box-header {border-bottom: 1px solid rgba(97, 106, 120, 0.16);}
+.box-header .box-title{font-size: 20px; margin-bottom: 10px; }
+.allbutntbl {}
+.allbutntbl>a{ /*padding: 3px 10px !important;
+    font-size: 12px;*/
+    /*border-radius: 30px;*/
+    /*font-weight: 500;
+    text-transform: uppercase;
+    background-color: #0c6cd5;
+    border-color: #0c6cd5;*/}
+.dataTable .img-thumbnail{    padding: 0px; border: none;}
+.dataTable a.btn-primary{/*border-radius: 30px;*/
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgb(249, 249, 249);}
+.searchmain .search_string{ /*border-radius: 30px;*/}
+.searchButton {/*border-radius: 30px;*/right: 3px; top: 3px;padding: 5px 15px;}
+.disable-btn-ul li {line-height: inherit !important;}
+.disable-btn-ul li:first-child{padding-left: 0px;}
+.disable-btn-ul li .btnSubmitTrigger, .disable-btn-ul li .commonClassDisableButton{border-radius: 30px;padding: 3px 10px;margin-top: 6px;font-size: 12px;font-weight: 500;text-transform: uppercase;}
+.btnSubmitTrigger, .commonClassDisableButton{border-radius: 30px;padding: 3px 10px;margin-top: 6px;font-size: 12px;font-weight: 500;text-transform: uppercase;}
+.text-right>a{border-radius: 30px;padding: 3px 10px;font-size: 12px;font-weight: 500;text-transform: uppercase;}
+.reset{border-radius: 30px;/*padding: 3px 10px;margin-top: 6px;font-size: 12px;
+    font-weight: 500;text-transform: uppercase;*/}
+.btn-primary:active, .btn-primary.active, .show > .btn-primary.dropdown-toggle {
+    background-color: #e00000 !important;
+    border-color: #e00000 !important;}
+.searchmain-row .searchmain{ margin-bottom: 15px;float: none; position: relative; }
+.searchmain-row .searchmain .form-control{ /*border-radius: 30px;*/
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 400;
+    /*height: 40px;*/}
+.searchmain-row .searchmain .ProductSearch{/*border-radius: 30px;*/
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    padding: 6px 15px;
+    font-size: 13px;
+    text-transform: uppercase;}
+.mt15 .nav-tabs .nav-link.active, .mt15 .nav-tabs .nav-link.active:focus, .mt15 .nav-tabs .nav-link.active:hover, .mt15 .nav-tabs .nav-item.open .nav-link, .mt15 .nav-tabs .nav-item.open .nav-link:focus, .mt15 .nav-tabs .nav-item.open .nav-link:hover {
+     border-color: transparent;
+     border-bottom-color: #e00000;
+	 background-color:#e00000; color: #fff;}
+.mt15 .nav-tabs .nav-link {
+    color: #333;
+    padding: 7px 20px;
+	font-size: 14px;
+	margin-right: 5px;
+	text-transform: capitalize;
+	font-weight: 500;}
+.badge-warning {
+    background-color: #0c6cd5;
+}
+.badge-warning a{ color: #fff;}
+
+.coupon-Main .nav-tabs .nav-link{
+	padding: 5px 4px;
+	font-size: 12px;
+	margin-right: -1px;
+	text-transform: capitalize;
+	font-weight: 500;
+	margin-bottom: 10px;
+}

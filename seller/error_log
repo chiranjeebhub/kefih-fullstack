@@ -1,0 +1,1 @@
+[21-Apr-2022 16:42:34 Asia/Calcutta] PHP Fatal error:  Cannot use isset() on the result of an expression (you can use "null !== expression" instead) in /home/b2cdomain/public_html/bta/seller/storage/framework/views/f69033ed715dc1b3daedf2e8bf1bf4760ef6b669.php on line 367

@@ -1,0 +1,1 @@
+Your order with order ID {{$data['suborder_no']}} has been packed by the seller and will be shipped soon. We will share the tracking details once the item is on its  way to you. Manage your order here jaldikharido.com

@@ -1,0 +1,1 @@
+{{$data['otp']}} is your OTP to log in to your Jaldi Kharido account. Happy Shopping!

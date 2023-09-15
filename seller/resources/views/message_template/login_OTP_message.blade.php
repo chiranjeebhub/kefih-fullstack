@@ -1,0 +1,1 @@
+{{$data['otp']}} is your OTP to log in to your Redliips account. Happy Shopping!

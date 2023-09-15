@@ -1,0 +1,1 @@
+Hi {{ucfirst($data['name'])}}, Thanks for registering with us and officially becoming our part. You can now place orders, edit your account details, track your orders, apply for return/exchange and view your order history by simply logging in.

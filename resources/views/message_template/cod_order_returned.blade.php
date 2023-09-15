@@ -1,0 +1,1 @@
+Dear {{$data['name']}}, your return request for order({{$data['suborder_no']}}) is accpeted. Pickup query is generated.

@@ -1,0 +1,1 @@
+Refund Processed The refund of 11999.0 for your order {{$data['suborder_no']}} is transferred to your card and will be credited within 3 working days Please get in touch with your bank or credit/EMI card provider to close the EMI. Check your email for more details.

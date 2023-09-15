@@ -1,0 +1,118 @@
+@extends('admin.layouts.app_new')
+@section('pageTitle',$page_details['Title'])
+@section('boxTitle',$page_details['Box_Title'])
+@section('content')
+	
+<?php $total=0; ?>
+<div class="row">
+	<div class="allbutntbl">
+		<a href="{{route('orders',base64_encode(0)) }}" class="btn btn-warning"><i class="fa fa-undo"></i> Back</a>
+	</div>
+			<!-- /.col -->
+			<div class="col-lg-12 col-12">
+			  <div class="box bg-transparent no-border no-shadow">
+		
+				<!-- /.box-header -->
+				<div class="box-body b-1">
+				
+				<div class="row">
+				<div class="col-md-6">
+				<div class="mailbox-read-info">
+				<span>Jaldi Kharido</span><br>
+				<span>GST : 1234567890</span><br>
+				<span>info@jaldikharido.com</span><br>
+				  </div>
+				</div>
+				
+				<div class="col-md-6">
+				<h5 class="no-margin">Invoice #<br>
+						 <small>{{ ucfirst(@$Order[0]['invoice_num'])}}</small>
+				</div>
+				</div>
+				
+				
+				<div class="row">
+				<div class="col-md-6">
+				<div class="mailbox-read-info">
+				<span>Order ID</span> : {{@$Order[0]['order_no']}}<br>
+				<span>Order Date</span> : {{ date('d-m-Y',strtotime(@$Order[0]['order_date']))}}<br>
+				<span>Invoice Date</span> : {{ date('d-m-Y',strtotime(@$Order[0]['updated_at']))}}<br>
+				  </div>
+				</div>
+				
+				<div class="col-md-6">
+				<h5 class="no-margin"> Billing Address<br>
+						 <small>{{ ucfirst(@$Order[0]['order_shipping_name'])}}</small>
+						 <small>, {{@$Order[0]['order_shipping_address']}}</small>
+						 <small>. {{ ucfirst(@$Order[0]['order_shipping_zip'])}}</small><br>
+						 <small>Phone  : {{ @$Order[0]['order_shipping_phone']}}</small><br>
+						 <small>Email : {{ @$Order[0]['order_shipping_email']}}</small>
+				</div>
+				</div>
+				
+				 
+				
+				 <div class="mailbox-read-message">
+					 <table id="example1" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Product Name</th>
+							<th>Qty</th>
+							<th>Price</th>
+							<th>Total</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+					
+					  @foreach($Order as $row)
+
+						<tr>
+								<td>{{@$row['product_name']}}
+								<br>{{ isset($row['size'])?'Size: '.$row['size']:''}}
+								<br>{{isset($row['color'])?'Color: '.$row['color']:''}}
+								</td>
+								<td>{{@$row['product_qty']}}</td>
+								<td>{{@$row['product_price']}}</td>
+								<td>{{@$row['product_qty']*@$row['product_price']}}</td>
+							
+						</tr>
+						<?php $total+=@$row['product_qty']*@$row['product_price'];?>
+					    @endforeach
+					</tbody>
+					
+				  </table>
+				   <div class="box-footer" style="float: right;">
+					<h5> Sub Total <span>Rs. ({{@$total}})</span></h5>
+					<br>
+					<?php if(@$Order[0]['deduct_reward_points']!=0){?>
+					<h5> Deduct Wallet <span>Rs. ({{@$Order[0]['deduct_reward_points']}})</span></h5>
+					<br>
+					<?php } ?>
+					<?php if($Order[0]['coupon_code']!=''){?>
+					<h5> Coupon Applied ({{$Order[0]['coupon_code']}}) at {{$Order[0]['coupon_percent']}}% <span>Rs. ({{round($Order[0]['coupon_amount'])}})</span></h5>
+					<br>
+					<?php $coupon_discount=$Order[0]['coupon_amount']; } ?>
+					<h5> Grand Total <span>Rs. ({{round($total-@$Order[0]['deduct_reward_points']-@$coupon_discount)}})</span></h5>
+				</div>
+				  </div>
+				  
+				  <div class="mailbox-read-message">
+					
+		<p><strong>Return Policy :</strong>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. </p>
+		<p><strong>Brand box/price tag,original packing and invoice :</strong>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. </p>
+
+					  </div>
+				  
+				  
+				  <!-- /.mailbox-read-message -->
+				</div>
+				<!-- /.box-body -->
+		
+				
+			  </div>
+			  <!-- /. box -->
+			</div>
+			<!-- /.col -->
+		  </div>
+@endsection

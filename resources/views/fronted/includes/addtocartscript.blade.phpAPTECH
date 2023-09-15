@@ -1,0 +1,834 @@
+   
+
+
+     @if (Auth::guard('customer')->check())
+        <script>
+        $(document).ready(function() {
+        window.user_login=1;
+    update_wishlist();
+        });
+        </script>
+        @else
+        <script>
+        $(document).ready(function() {
+        window.user_login=0;
+        });
+        </script>
+        @endif
+<script>
+	 $("#rateit").bind('rated', function (event, value) { $('#rating_value').val(value); });
+            $("#rateit").bind('reset', function () { $('#rating_value').val(0); console.log(1)});
+   
+$(document).ready(function() {
+    
+     setTimeout(function(){ 
+         $("#rateit-reset-3").trigger("click");
+    $("#rateit-reset-2").trigger("click");
+         
+     }, 2000);
+  
+            window.color_id=0;
+            window.size_id=0;  
+              window.w_size_id=0;  
+	
+		
+		
+			$(".compareProduct").click(function(){
+            var prd_id=$(this).attr('prd_id');
+            	var token="{{ csrf_token() }}";
+            $.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('addProductToCompare') }}",
+               data:{
+					"prd_id":prd_id,
+                     "_token":token
+				   },
+               success:function(data) {
+                    var myObj = JSON.parse(data);
+						
+                        $(".wishlistModalResponse").html(myObj.msg);
+                        $('#wishlistModal').modal('show');
+                        setTimeout(function(){ 	$('#wishlistModal').modal('hide');  $(".wishlistModalResponse").html(""); }, 2000);
+                       
+               }
+            });
+			});
+			
+				$(".RemovecompareProduct").click(function(){
+            var prd_id=$(this).attr('prd_id');
+            	var token="{{ csrf_token() }}";
+            $.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('RemovecompareProduct') }}",
+               data:{
+					"prd_id":prd_id,
+                     "_token":token
+				   },
+               success:function(data) {
+                  
+                        var myObj = JSON.parse(data);
+                        
+                        $(".compareProductResponse").html(myObj.compareProductResponse);
+               }
+            });
+			});
+		
+	$(".addTocart").click(function(){
+                console.log(window.size_id);
+                console.log(window.color_id);
+                console.log(window.w_size_id);
+			var size_require=$(this).attr('size_require');
+			var color_require=$(this).attr('color_require');
+			var size_id=$(this).attr('size_id');
+			var color_id=$(this).attr('color_id');
+			var prd_page=$(this).attr('prd_page');
+				var url=$(this).attr('url');
+	
+                
+			if(prd_page==0){
+                    if(size_require==1  || color_require==1){
+                    window.location.href = url;
+                    
+                    } else{
+                        if(size_require==0 && color_require==0){
+			         addToCart(this,0,0);
+			     }
+                    }
+			
+			} else{
+			    
+			     if(size_require==0 && color_require==0){
+			         addToCart(this,0,0);
+			     } else if(size_require==1 && color_require==0){
+			         if(size_id==0){
+			             if(window.size_id==0){
+			              alert("Select size");
+			         } else{
+			             addToCart(this,0,window.size_id);
+			         }
+			         } else{
+			             addToCart(this,0,size_id);
+			         }
+			         
+			     }else if(size_require==0 && color_require==1){
+			         
+			         if(color_id==0){
+			            if(window.color_id==0){
+			              alert("Select Color");
+			         } else{
+			             addToCart(this,window.color_id,0);
+			         }
+			         } else{
+			             addToCart(this,color_id,0);
+			         }
+			         
+			        
+			         
+			     } else{
+			         
+                        
+			         if(size_id!=0 && color_id!=0){
+			             addToCart(this,color_id,size_id);
+			         }else if(size_id!==0 && color_id!=0){
+			             if(window.size_id==0){
+    			              alert("Select size");
+    			         } else{
+    			             addToCart(this,color_id,window.size_id);
+    			         }
+			         }else if(size_id!=0 && color_id==0){
+			            if(window.color_id==0){
+    			              alert("Select Color");
+    			         } else{
+    			             addToCart(this,window.color_id,size_id);
+    			         }
+			         } else{
+			             
+			             if(window.color_id==0 && window.size_id==0){
+			                  alert("Select Color and Size");
+			             } 
+			             if(window.color_id!=0 && window.size_id==0){
+			                 alert("Select size");
+			             }
+		                 if(window.color_id==0 && window.size_id!=0){
+		                 alert("Select color");
+		                 }
+			                 
+                                if(window.color_id!=0 && window.size_id!=0){
+                                   
+                                    addToCart(this,window.color_id,window.size_id); 
+                                }
+			               
+			             
+			             
+			         }
+			         
+			     }
+                    
+			    
+			
+			}
+	
+			
+        });
+        
+        
+        	$(".showSizechart").click(function(){
+        	    	var prd_id=$(this).attr('prd_id');
+        	    		var token="{{ csrf_token() }}";
+        	    $.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('get_size_chart') }}",
+               data:{
+					"prd_id":prd_id,
+                     "_token":token
+				   },
+               success:function(data) {
+                      	var myObj = JSON.parse(data);
+					$("#showsizechart").modal('show');
+					$(".showsizechartResponse").html(myObj.data);
+               }
+            });
+        });
+        
+        	$(".buyNow").click(function(){
+        	   	var size_require=$(this).attr('size_require');
+			var color_require=$(this).attr('color_require');
+			var size_id=$(this).attr('size_id');
+			var color_id=$(this).attr('color_id');
+			var prd_page=$(this).attr('prd_page');
+				var url=$(this).attr('url');
+		
+			
+			if(prd_page==0){
+                    if(size_require==1  || color_require==1){
+                    window.location.href = url;
+                    
+                    } else{
+                        if(size_require==0 && color_require==0){
+			         buyNowCart(this,0,0);
+			     }
+                    }
+			
+			} else{
+			    
+			     if(size_require==0 && color_require==0){
+			         buyNowCart(this,0,0);
+			     } else if(size_require==1 && color_require==0){
+			         if(size_id==0){
+			             if(window.size_id==0){
+			              alert("Select size");
+			         } else{
+			             buyNowCart(this,0,window.size_id);
+			         }
+			         } else{
+			             buyNowCart(this,0,size_id);
+			         }
+			         
+			     }
+			     else if(size_require==0 && color_require==1){
+			         
+			         if(color_id==0){
+			            if(window.color_id==0){
+			              alert("Select Color");
+			         } else{
+			             buyNowCart(this,window.color_id,0);
+			         }
+			         } else{
+			             buyNowCart(this,color_id,0);
+			         }
+			         
+			        
+			         
+			     } else{
+			         
+			         if(size_id!=0 && color_id!=0){
+			             buyNowCart(this,color_id,size_id);
+			         }else if(size_id==0 && color_id!=0){
+			              if(window.size_id==0){
+			              alert("Select size");
+			         } else{
+			             buyNowCart(this,color_id,window.size_id);
+			         }
+			         }
+			         else if(size_id!=0 && color_id==0){
+			            if(window.color_id==0){
+			              alert("Select Color");
+			         } else{
+			             buyNowCart(this,window.color_id,size_id);
+			         }
+			         } else{
+			             if(window.color_id==0 && window.size_id==0){
+			                  alert("Select Color and Size");
+			             } else if(window.color_id!=0 && window.size_id==0){
+			                 alert("Select size");
+			                 }
+			                 else if(window.color_id==0 && window.size_id!=0){
+			                 alert("Select color");
+			                 }
+			                 else{
+			                buyNowCart(this,window.color_id,window.size_id); 
+			             }
+			             
+			         }
+			         
+			     }
+                    
+			    
+			
+			}
+        	    
+        	});
+        
+        
+        $( ".brandSelection" ).change(function() {
+            var pos=$(this).attr('pos');
+            var brand=$(this).val();
+                    $('#productSelection'+pos).children('option:not(:first)').remove();
+            var token="{{ csrf_token() }}";
+			$.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('brandSelection') }}",
+               data:{
+                "brand":brand,
+                "_token":token
+				   },
+               success:function(data) {
+                    var myObj = JSON.parse(data);
+                    $("#productSelection"+pos).append(myObj.html);
+               }
+            });
+        });
+        
+         $( ".productSelection" ).change(function() {
+                 var prd_id=$(this).val();
+            	var token="{{ csrf_token() }}";
+            $.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('addProductToCompare') }}",
+               data:{
+					"prd_id":prd_id,
+                     "_token":token
+				   },
+               success:function(data) {
+                    var myObj = JSON.parse(data);
+						
+                        $(".wishlistModalResponse").html(myObj.msg);
+                        $('#wishlistModal').modal('show');
+                        setTimeout(function(){ 	$('#wishlistModal').modal('hide');  $(".wishlistModalResponse").html(""); 
+                            
+                             var prd_id=0;
+            	var token="{{ csrf_token() }}";
+            $.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('RemovecompareProduct') }}",
+               data:{
+					"prd_id":prd_id,
+                     "_token":token
+				   },
+               success:function(data) {
+                  
+                        var myObj = JSON.parse(data);
+                        
+                        $(".compareProductResponse").html(myObj.compareProductResponse);
+               }
+            });
+                            
+                            
+                        }, 2000);
+                       
+               }
+            });
+        });
+                        
+                        
+        $(".sizeClass").click(function(){
+				var size_id=$(this).attr('size_id');
+				$('.addTocart').attr('size_id',size_id);
+				$('.buyNow').attr('size_id',size_id);
+					$('.addTocart').attr('color_id',0);
+					$('.buyNow').attr('color_id',0);
+				window.size_id=size_id;
+				var prd_id=$(this).attr('prd_id');
+				var token="{{ csrf_token() }}";
+				 $(".sizeClass").removeClass("active");
+				$(this).addClass('active');
+			$.ajax({
+               type:'POST',
+			   async:true,
+                url:"{{ route('get_attr_dependend') }}",
+               data:{
+						"size_id":size_id,
+						"prd_id":prd_id,
+						"attr_name":'Colors',
+							"_token":token
+				   },
+               success:function(data) {
+                      		var myObj = JSON.parse(data);
+                      	     getAttPrice(prd_id,0,size_id);
+							$("#"+myObj.print_to).html(myObj.html);
+							window.color_id=0;
+               }
+            });
+        });
+        
+        $(".wsizeClass").click(function(){
+				var size_id=$(this).attr('size_id');
+				$('.addTocart').attr('size_id',size_id);
+				$('.buyNow').attr('size_id',size_id);
+					$('.addTocart').attr('color_id',0);
+					$('.buyNow').attr('color_id',0);
+				window.w_size_id=size_id;
+				var prd_id=$(this).attr('prd_id');
+				var token="{{ csrf_token() }}";
+				 $(".wsizeClass").removeClass("active");
+				$(this).addClass('active');
+			$.ajax({
+               type:'POST',
+			   async:true,
+                url:"{{ route('get_attr_dependend') }}",
+               data:{
+						"size_id":size_id,
+						"prd_id":prd_id,
+						"attr_name":'Colors',
+							"_token":token
+				   },
+               success:function(data) {
+                      		var myObj = JSON.parse(data);
+                      	     getAttPrice(prd_id,0,size_id);
+							$("#"+myObj.print_to).html(myObj.html);
+							window.color_id=0;
+               }
+            });
+        });
+        function getAttPrice(prd_id,color_id,size_id){
+            	var token="{{ csrf_token() }}";
+           $.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('getAttPrice') }}",
+               data:{
+                        "size_id":size_id,
+                        "prd_id":prd_id,
+                        "color_id":color_id,
+                        "_token":token
+				   },
+               success:function(data) {
+                   	var myObj = JSON.parse(data);
+                    $("#prd_price_0").html(myObj.new_price);
+                     $("#prd_old_price_0").html(myObj.old_price);
+                    $(".percent").html(myObj.percent);
+               }
+            }); 
+        }
+        $(document).on('click','.colorClass', function () {
+            	 $(".colorClass").removeClass("active");
+                 $(this).addClass('active');
+                var color_id=$(this).attr('color_id');
+                $('.addTocart').attr('color_id',color_id);
+                $('.buyNow').attr('color_id',color_id);
+                var prd_id=$(this).attr('prd_id');
+                var prd_type=$(this).attr('prd_type');
+                	var token="{{ csrf_token() }}";
+                if(prd_type==3 || prd_type==2){
+					
+					$.ajax({
+						type:'POST',
+						async:true,
+						url:"{{ route('setColoredImages') }}",
+						data:{
+								"prd_id":prd_id,
+								"color_id":color_id,
+								"_token":token
+						   },
+						success:function(data) {
+							var myObj = JSON.parse(data);
+							getAttPrice(prd_id,color_id,0);
+							
+							if(myObj.size>0){
+								/*$('#img_zoom').attr('data-zoom-image',myObj.main_image);
+								$('#img_zoom').attr('src',myObj.main_image);
+								$('#img_zoom_extra').attr('href',myObj.main_image);
+								$(".zoomWindow").css("background-image", "url(" + myObj.main_image + ")");							
+								$(".images-small").html(myObj.thumbnails);
+								$(".product-large-image-list").find('.item').remove();
+								$(".product-large-image-list").html(myObj.large_thumbnails);*/
+                    				
+                    			$('.mid img').attr('data-zoom-image',myObj.main_image);
+								$('.mid img').attr('src',myObj.main_image);
+								$(".zoomWindow").css("background-image", "url(" + myObj.main_image + ")");
+								$(".images-small").html(myObj.carousel);
+								
+								$('.thumbnails_carousel').trigger('destroy.owl.carousel');
+								$('.thumbnails_carousel').trigger('refresh.owl.carousel');
+      
+							$('.thumbnails_carousel').owlCarousel({
+								loop:true,
+								margin:10,
+								autoplay:true,
+								slideSpeed:1000,
+								responsiveClass:true,
+								singleItem:true,
+								responsive:{
+									 320:{
+										items:2,
+										nav:true
+									},
+									480:{
+										items:3,
+										nav:true
+									},
+									600:{
+										items:4,
+										nav:false
+									},
+									1000:{
+										items:6,
+										nav:true,
+										loop:false
+									}
+								}
+							});
+							
+							$('.thumbnailSmall').on('click', 'a', function(event) {
+								var idx = $(this).parent().find('a').attr('data-image');
+								$('#img_zoom').attr('data-zoom-image',idx).attr('src',idx);
+								$(".zoomWindow").css("background-image", "url(" + idx + ")");
+							});
+							
+							
+							
+							
+								
+							}
+						
+               }
+            });
+                }
+
+				window.color_id=color_id;
+	});
+	
+	/*$('.thumbnails_carousel').on('click', 'a', function(event) {
+								var idx = $(this).parent().find('a').attr('data-image');
+								console.log(idx);
+								$('#img_zoom').attr('data-zoom-image',idx);
+							$('#img_zoom').attr('src',idx);
+							$(".zoomWindow").css("background-image", "url(" +idx + ")");
+							
+								$('#img_zoom').attr('data-zoom-image',idx).attr('src',idx);
+								$(".zoomWindow").css("background-image", "url(" + idx + ")");
+							});*/
+	
+
+	/*$(document).on('click','.thumbnailSmall', function () {
+	    	var idx = $(this).attr('data-image');
+	    	console.log(idx);
+	});
+	$('.thumbnails_carousel').on('click', 'a', function(event) {
+		var idx = $(this).parent().find('a').attr('data-image');
+		$('#img_zoom').attr('data-zoom-image',idx).attr('src',idx);
+		$(".zoomWindow").css("background-image", "url(" + idx + ")");
+	});
+	$(document).on('click','.customThumnnail', function () {
+		var prd_id=$(this).attr('src');
+		console.log(prd_id);
+	});*/
+	
+		$('.product_preview').on('click', 'a', function(event) {
+		                            console.log("hello");
+								var idx = $(this).attr('data-image');
+								$('#img_zoom').attr('data-zoom-image',idx).attr('src',idx);
+								$(".zoomWindow").css("background-image", "url(" + idx + ")");
+							});
+	   $(document).on('click','.deleteItemFromWishList', function () {
+	 var response=confirm('Do you want to delete this ?');
+	 if(response){
+	    	var prd_id=$(this).attr('prd_id');
+	    	$.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('removeWishlistItem') }}",
+               data:{
+					
+						"prd_id":prd_id
+				   },
+               success:function(data) {
+                   	var myObj = JSON.parse(data);
+						
+							if(myObj.Error==0){
+							    	$('#tableRow_'+prd_id).remove();
+							}
+               }
+            });
+	 } 
+	});
+	
+	$(document).on('click','.deleteItemFromSavelater', function () {
+	 var response=confirm('Do you want to delete this ?');
+	 if(response){
+	    	var prd_id=$(this).attr('prd_id');
+	    	$.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('removeSavelaterItem') }}",
+               data:{
+					
+						"prd_id":prd_id
+				   },
+               success:function(data) {
+                   	var myObj = JSON.parse(data);
+						
+							if(myObj.Error==0){
+							    	$('#tableRow_'+prd_id).remove();
+							}
+               }
+            });
+	 } 
+	});
+	
+				
+});
+$(".wbuyNow").click(function(){
+        	   var size_require=$(this).attr('size_require');
+                    var color_require=$(this).attr('color_require');
+                    var size_id=$(this).attr('size_id');
+                    var w_size_id=$(this).attr('w_size_id');
+                    var color_id=$(this).attr('color_id');
+                    var prd_page=$(this).attr('prd_page');
+                    var url=$(this).attr('url');
+                    
+                    if(window.size_id==0 || window.color_id==0 || window.w_size_id==0){
+                    
+                        $('#wishlistModal').modal('show');
+                        $(".wishlistModalResponse").html("Please select color and size");
+                        setTimeout(function(){ 	$('#wishlistModal').modal('hide'); }, 2000);
+                        return false;
+                    }
+                     wbuyNowCart(this,window.color_id,window.size_id,window.w_size_id);
+        	    
+        	});
+        	
+        	function wbuyNowCart(obj,color_id,size_id,w_size_id){
+ 
+		var prd_index=$(obj).attr('prd_index');
+			var prd_id=$(obj).attr('prd_id');
+			var qty=$('#prd_qty_'+prd_index).val();
+          	 var price=$( "#prd_price_"+prd_index).text();
+			 var token="{{ csrf_token() }}";
+			$.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('add_to_cart') }}",
+               data:{
+                            "prd_index":prd_index,
+                            "prd_id":prd_id,
+                            "qty":qty,
+                            "price":price,
+                            "color_id":color_id,
+                            "size_id":size_id,
+                            "w_size_id":w_size_id,
+                            "_token":token
+				   },
+                success:function(data) {
+                      	var myObj = JSON.parse(data);
+					
+						
+						if(myObj.method==3){
+								$('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("No More Quantity In Stock");
+								setTimeout(function(){ 	$('#wishlistModal').modal('hide'); }, 2000);
+							} else{
+							   if(myObj.method==1){
+							    var buyNow="{{route('cart')}}";
+							    window.location.href = buyNow;
+							} else{
+							     var buyNow="{{route('cart')}}";
+							    window.location.href = buyNow;
+							} 
+							}
+							
+							
+						
+               }
+            });
+}
+$(".waddTocart").click(function(){
+                
+                    var size_require=$(this).attr('size_require');
+                    var color_require=$(this).attr('color_require');
+                    var size_id=$(this).attr('size_id');
+                    var w_size_id=$(this).attr('w_size_id');
+                    var color_id=$(this).attr('color_id');
+                    var prd_page=$(this).attr('prd_page');
+                    var url=$(this).attr('url');
+                    
+                    if(window.size_id==0 || window.color_id==0 || window.w_size_id==0){
+                    
+                        $('#wishlistModal').modal('show');
+                        $(".wishlistModalResponse").html("Please select color and size");
+                        setTimeout(function(){ 	$('#wishlistModal').modal('hide'); }, 2000);
+                        return false;
+                    }
+	                   waddToCart(this,window.color_id,window.size_id,window.w_size_id);
+			
+        });
+function waddToCart(obj,color_id,size_id,w_size_id){
+ 
+		var prd_index=$(obj).attr('prd_index');
+			var prd_id=$(obj).attr('prd_id');
+			var qty=$('#prd_qty_'+prd_index).val();
+          	 var price=$( "#prd_price_"+prd_index).text();
+			 var token="{{ csrf_token() }}";
+			$.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('add_to_cart') }}",
+               data:{
+						"prd_index":prd_index,
+						"prd_id":prd_id,
+						"qty":qty,
+						"price":price,
+						"color_id":color_id,
+						"size_id":size_id,
+						"w_size_id":w_size_id,
+						"_token":token
+				   },
+               success:function(data) {
+                      	var myObj = JSON.parse(data);
+				                	if(myObj.method==1){
+							   
+							    $('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("Product added To Your Cart");
+								/*$("#back_response_msg_"+prd_index).append("Product Inserted to your cart");*/
+								  update_cart();
+							}
+						    if(myObj.method==3){
+						          console.log("three");
+								$('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("No More Quantity In Stock");
+								
+							}
+							if(myObj.method==2){
+							      console.log("two");
+							    $('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("Product Updated To Your Cart");
+								/*$("#back_response_msg_"+prd_index).append("Product Updated to your cart");*/
+								  update_cart();
+							}
+						setTimeout(function(){ 	$('#wishlistModal').modal('hide'); }, 2000);
+					 /*setTimeout(function(){  $("#back_response_msg_"+prd_index).html(""); }, 2000);	*/
+               }
+            });
+}
+function addToCart(obj,color_id,size_id){
+ 
+		var prd_index=$(obj).attr('prd_index');
+			var prd_id=$(obj).attr('prd_id');
+			var qty=$('#prd_qty_'+prd_index).val();
+          	 var price=$( "#prd_price_"+prd_index).text();
+			 var token="{{ csrf_token() }}";
+			$.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('add_to_cart') }}",
+               data:{
+						"prd_index":prd_index,
+						"prd_id":prd_id,
+						"qty":qty,
+						"price":price,
+						"color_id":color_id,
+						"size_id":size_id,
+						"_token":token
+				   },
+               success:function(data) {
+                      	var myObj = JSON.parse(data);
+						
+				/* 		if(myObj.method==1){
+				// 			    $('#wishlistModal').modal('show');
+				// 		$(".wishlistModalResponse").html("Porduct Inserted To Your Cart");
+				// 				//$("#back_response_msg_"+prd_index).append("Product Inserted to your cart");
+				// 				  update_cart();
+				// 			} else{
+				// 			    	$('#wishlistModal').modal('show');
+				// 				$(".wishlistModalResponse").html("Porduct Updated To Your Cart");
+				// 				//$("#back_response_msg_"+prd_index).append("Product Updated to your cart");
+				// 				  update_cart();
+				// 			}*/
+							
+							if(myObj.method==1){
+							    console.log("one");
+							    $('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("Product added To Your Cart");
+								/*$("#back_response_msg_"+prd_index).append("Product Inserted to your cart");*/
+								  update_cart();
+							}
+						    if(myObj.method==3){
+						          console.log("three");
+								$('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("No More Quantity In Stock");
+								
+							}
+							if(myObj.method==2){
+							      console.log("two");
+							    $('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("Product Updated To Your Cart");
+								/*$("#back_response_msg_"+prd_index).append("Product Updated to your cart");*/
+								  update_cart();
+							}
+						setTimeout(function(){ 	$('#wishlistModal').modal('hide'); }, 2000);
+					 /*setTimeout(function(){  $("#back_response_msg_"+prd_index).html(""); }, 2000);	*/
+               }
+            });
+}
+
+
+function buyNowCart(obj,color_id,size_id){
+ 
+		var prd_index=$(obj).attr('prd_index');
+			var prd_id=$(obj).attr('prd_id');
+			var qty=$('#prd_qty_'+prd_index).val();
+          	 var price=$( "#prd_price_"+prd_index).text();
+			 var token="{{ csrf_token() }}";
+			$.ajax({
+               type:'POST',
+			   async:false,
+                url:"{{ route('add_to_cart') }}",
+               data:{
+						"prd_index":prd_index,
+						"prd_id":prd_id,
+						"qty":qty,
+						"price":price,
+						"color_id":color_id,
+						"size_id":size_id,
+						"_token":token
+				   },
+                success:function(data) {
+                      	var myObj = JSON.parse(data);
+					
+						
+						if(myObj.method==3){
+								$('#wishlistModal').modal('show');
+								$(".wishlistModalResponse").html("No More Quantity In Stock");
+								setTimeout(function(){ 	$('#wishlistModal').modal('hide'); }, 2000);
+							} else{
+							   if(myObj.method==1){
+							    var buyNow="{{route('cart')}}";
+							    window.location.href = buyNow;
+							} else{
+							     var buyNow="{{route('cart')}}";
+							    window.location.href = buyNow;
+							} 
+							}
+							
+							
+						
+               }
+            });
+}
+	</script>

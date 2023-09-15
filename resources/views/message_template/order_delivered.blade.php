@@ -1,0 +1,1 @@
+Yay! Your order (ID: {{$data['suborder_no']}}) has been delivered. We hope you love using your new product as much as we loved creating it for you! Thank you.

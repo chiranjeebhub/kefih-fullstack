@@ -1,0 +1,1 @@
+Hello, Welcome to KEFIH! Your OTP code is {{$data['otp']}}. - Kefih E-Commerce Private Limited

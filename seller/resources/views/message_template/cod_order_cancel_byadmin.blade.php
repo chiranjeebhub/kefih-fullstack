@@ -1,0 +1,1 @@
+Hi {{$data['name']}}, We have cancelled your order {{$data['suborder_no']}}. For more info contact to our support connect@redliips.com

@@ -1,0 +1,1 @@
+{"fld_coupon_assign_id":61,"fld_coupon_id":145,"fld_coupon_assign_type":1,"fld_assign_type_id":547}

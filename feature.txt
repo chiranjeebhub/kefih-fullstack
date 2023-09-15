@@ -1,0 +1,1 @@
+{"fld_action_type":0,"fld_cat_id":216,"city_id":"2715","city_name":"Nagpur","grid_list_view":0,"fld_max_price":0,"fld_min_price":0,"next_page":0,"qty":0,"rootcat_id":0,"statusCode":0,"fld_total_page":0}

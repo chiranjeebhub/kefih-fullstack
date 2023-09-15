@@ -1,0 +1,1 @@
+Hi {{$data['name']}}, Your order {{$data['suborder_no']}} is on its way to you with {{$data['courier_data']}} It will reach you by (27) Jun. Your Tracking ID-(SF47770516BE). Stay Stylish!

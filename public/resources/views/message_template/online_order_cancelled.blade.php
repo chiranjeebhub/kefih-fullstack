@@ -1,0 +1,1 @@
+Hi {{$data['name']}}, as per you request, we have cancelled your (order no : {{$data['suborder_no']}}) successfully, for further details contact Jaldi Kharido support.

@@ -1,0 +1,153 @@
+
+@media screen and (min-device-width:320px) and (max-device-width:480px) {
+    
+    .logo {
+
+    display: block;
+    margin: 0px auto 8px;
+    padding: 5px;
+    text-align: center;
+    float: none;
+    }
+    .banner-text {
+    right: -25%;
+    padding: 0;
+        top: 19px;
+    }
+    .banner-text h6 {
+    font-size: 17px;
+    line-height: 19px;
+    }
+    .banner-text h2 {
+    font-size: 21px;
+        line-height: 30px;
+    margin: 10px 0 0 0;
+}
+    .banner-text .btnbanner {
+
+    padding: 1px 18px;
+    line-height: 26px;
+    margin: 10px 0 0 0;
+    font-size: 11px;
+}
+    .add-section .add-imgsec img{
+        width: 100%;
+    }
+    .slider .carousel-control.left, .carousel-control.right {
+    background: none;
+    display: none;
+}
+    .whitebox .owl-theme .owl-prev {
+    left: -28px;
+    top: 47%;
+    }
+     .whitebox .owl-theme .owl-next {
+    right: -28px;
+    top: 47%;
+    }
+    .product-grid8 .price {
+    font-size: 12px;
+    text-align: left;
+    }
+    .what-more-section .whatmorebox {
+    margin: 0 0 30px 0;
+}
+    .mt{
+    margin-top: -150px;
+}
+    .what-more-section .whatmorebox {
+    margin: 0 0 30px 0;
+    }
+    .provide-section .provide-txt .provideimg {
+
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+}
+    .provide-section .provide-txt {
+    width: 100%;
+}
+    .provide-section .provide-txt .provide-content {
+
+    width: 100%;
+    text-align: center;
+}
+    .provide-section .provide-txt .provide-content p{
+        display: block;
+        text-align: center;
+}
+    .what-more-section {
+    padding: 50px 0 20px 0;
+}
+    .provide-section {
+    padding: 20px 0 50px 0;
+    background: #f9f7f7;
+}
+    footer {
+    padding: 50px 0 50px 0;
+}
+    footer .widget {
+    margin-bottom: 30px;
+}
+    .subscribe {
+    padding: 15px 21px;
+    right: 16.9%;
+    top: 56%;
+}
+    .mt60 {
+    margin-top: 20px;
+}
+    footer .copyright {
+    margin: 24px 0 0 0;
+    text-align: center;
+}
+    footer .copyright p span {
+    float: none;
+        padding-left: 10px;
+}
+    footer .onlineicon {
+    margin: 20px 0 0 0;
+}
+    .h6{
+        display: none;
+}
+    footer .footer-links ul{
+        width: 100%;
+    }
+    header {
+    padding: 15px 0 0;
+}
+   header .navbar-toggle {
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px; 
+}
+    .login{
+        margin: 15px 0 5px 0px;
+    }
+    .hdr-rt {
+    float: none;
+    display: inline-block;
+}
+    ul.header-btns-list{
+        text-align: center;
+    }
+    ul.header-btns-list li {
+
+    float: none;
+    display:inline-flex;
+}
+    footer .copyright p{
+        line-height: 24px;
+    }
+    
+    .prolisting-section .pro-listing ul li{
+        width: 100%
+    }
+    .prolisting-section .pro-listing {
+    padding: 40px 20px 40px 20px;
+}
+    
+}

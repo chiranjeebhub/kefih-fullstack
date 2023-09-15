@@ -1,0 +1,857 @@
+@extends('fronted.layouts.app_new')
+@section('pageTitle',$prd_detail->name)
+@section('metaTitle',$prd_detail->meta_title)
+@section('metaDescription',$prd_detail->meta_description)
+@section('metaKeywords',$prd_detail->meta_keyword)
+@section('content')   
+<?php  $cuurent_url = Request::segment(1);?>
+@section('breadcrum') 
+<a href="{{ route('index')}}">Home</a><i class="fa fa-long-arrow-right"></i>
+  <?php 
+  //$subject = url()->current();
+  $subject=Request::path();
+  $trimmed = str_replace('p/', '', $subject) ;
+  $arr=explode("/",$trimmed);
+    array_pop($arr); 
+    $pr_name=end($arr);
+    array_pop($arr); 
+    $last=sizeof($arr)-1;
+$br_i=0;
+
+$pr_name=str_replace('-',' ',$pr_name);
+
+foreach($arr as $ar){
+    $cat_trimmed = str_replace('-', ' ', $ar) ;
+    
+$cat_data=DB::table('categories')->where('name',$ar)->first();
+$url=route('cat_wise', [$ar,base64_encode(@$cat_data->id)]);
+?>
+<a href="{{$url}}">{{strtoupper($cat_trimmed)}}</a>
+<i class="fa fa-long-arrow-right"></i>
+
+<?php $br_i++;}?>
+<a href="javascript:void(0)">{{strtoupper(@$pr_name)}}</a>
+
+
+@endsection     
+
+<style>
+.outOfStcok{
+  display:none;  
+}
+.outOFdelivery{
+  display:none;  
+}
+.moreless-button{ color: #1058bc; font-size: 16px; margin-top: 10px; display: inline-block; }
+.moreless-button:hover, .moreless-button:active{ color: #333; font-size: 16px; text-decoration: none; }
+	.quantity.buttons_added {text-align: left;position: relative;white-space: nowrap;vertical-align: top;} .quantity.buttons_added .minus { border-left: 0 !important; }.quantity.buttons_added .minus, .quantity.buttons_added .plus {padding: 11px 15px;height: 35px;background-color: #eaeaea;border: 1px solid #d5d5d5;cursor: pointer;display: inline-block;}.quantity.buttons_added .minus i, .quantity.buttons_added .plus i{vertical-align: bottom; color: #333;
+font-weight: 300;font-size: 12px;}.quantity .input-text.qty {width: 40px;height: 35px;padding: 0 5px;text-align: center;vertical-align: inherit;background-color:transparent;border: 1px solid #d5d5d5;-webkit-appearance: none;-moz-appearance: textfield;-ms-appearance: none;-o-appearance: none;appearance: none;}.quantity.buttons_added input {display: inline-block;margin: 0;vertical-align: top;box-shadow: none;}	.quantity.buttons_added .plus { border-right: 0;	}.quantity.buttons_added .minus:hover, .quantity.buttons_added .plus:hover {background: #c6c4c4;	}
+</style>
+
+<?php 
+
+
+
+$extrs_price=0;
+ $decodeInput=explode("~~~",base64_decode(Request()->id));
+        $product_id=$decodeInput[0];
+        
+        $rewards_point=DB::table('product_reward_points')
+->where('product_id',$product_id)->first();
+
+        $color_id=$decodeInput[2];
+        if($color_id!='' && $color_id!=0)
+			{
+$color_price=DB::table('product_attributes')
+->where('product_id',$product_id)
+->where('color_id',$color_id)->first();
+
+
+$extrs_price=$color_price->price;
+$color_image=App\ProductImages::getConfiguredImages($product_id,$color_id,0);
+
+
+        $prd_img=$color_image[0]['image'];
+        $prd_img='';
+        $prd_slider=$color_image;
+        //$flag=1;
+        $flag=2;
+			}else{
+$prd_img=URL::to('/uploads/products').'/'.$prd_detail->default_image;
+$prd_slider=App\Products::prdImages($product_id);
+$flag=2;
+			}
+
+
+//echo'<pre>'; print_r($prd_slider);die;
+?>
+
+
+<section class="productdetails-section">
+	<div class="container">
+		<div class="card">
+			<div class="container-fliud">
+				<div class="wrapper row">
+					
+					<div class="col-xs-12 col-sm-6 col-md-6">
+
+						
+						<!--<div class="product-details-tab">
+							<div class="product-dec-right pro-dec-big-img-slider">
+								<div class="easyzoom-style">
+									<div class="easyzoom easyzoom--overlay">
+										<a href="https://www.phaukat.com/uploads/products/1581599267-945.jpeg">
+											<img class="img-responsive" src="https://www.phaukat.com/uploads/products/1581599267-945.jpeg" alt="">
+										</a>
+									</div>
+									<a class="easyzoom-pop-up img-popup" href="https://www.phaukat.com/uploads/products/1581599267-945.jpeg"><i class="fa fa-arrows-alt"></i></a>
+								</div>
+								<div class="easyzoom-style">
+									<div class="easyzoom easyzoom--overlay">
+										<a href="https://www.phaukat.com/uploads/products/1580198281-868.jpg">
+											<img class="img-responsive" src="https://www.phaukat.com/uploads/products/1580198281-868.jpg" alt="">
+										</a>
+									</div>
+									<a class="easyzoom-pop-up img-popup" href="https://www.phaukat.com/uploads/products/1580198281-868.jpg"><i class="fa fa-arrows-alt"></i></a>
+								</div>
+								<div class="easyzoom-style">
+									<div class="easyzoom easyzoom--overlay">
+										<a href="https://www.phaukat.com/uploads/products/1581575739-756.jpg">
+											<img class="img-responsive" src="https://www.phaukat.com/uploads/products/1581575739-756.jpg" alt="">
+										</a>
+									</div>
+									<a class="easyzoom-pop-up img-popup" href="https://www.phaukat.com/uploads/products/1581575739-756.jpg"><i class="fa fa-arrows-alt"></i></a>
+								</div>
+								<div class="easyzoom-style">
+									<div class="easyzoom easyzoom--overlay">
+										<a href="https://www.phaukat.com/uploads/products/1581575739-761.jpg">
+											<img class="img-responsive" src="https://www.phaukat.com/uploads/products/1581575739-761.jpg" alt="">
+										</a>
+									</div>
+									<a class="easyzoom-pop-up img-popup" href="https://www.phaukat.com/uploads/products/1581575739-761.jpg"><i class="fa fa-arrows-alt"></i></a>
+								</div>
+								<div class="easyzoom-style">
+									<div class="easyzoom easyzoom--overlay">
+										<a href="https://www.phaukat.com/uploads/products/1580198552-364.gif">
+											<img class="img-responsive" src="https://www.phaukat.com/uploads/products/1580198552-364.gif" alt="">
+										</a>
+									</div>
+									<a class="easyzoom-pop-up img-popup" href="https://www.phaukat.com/uploads/products/1580198552-364.gif"><i class="fa fa-arrows-alt"></i></a>
+								</div>
+							</div>
+							<div class="product-dec-slider product-dec-left">
+								<div class="product-dec-small active">
+									<img src="https://www.phaukat.com/uploads/products/1581599267-945.jpeg" alt="">
+								</div>
+								<div class="product-dec-small">
+									<img src="https://www.phaukat.com/uploads/products/1580198281-868.jpg" alt="">
+								</div>
+								<div class="product-dec-small">
+									<img src="https://www.phaukat.com/uploads/products/1581575739-756.jpg" alt="">
+								</div>
+								<div class="product-dec-small">
+									<img src="https://www.phaukat.com/uploads/products/1581575739-761.jpg" alt="">
+								</div>
+								<div class="product-dec-small">
+									<img src="https://www.phaukat.com/uploads/products/1580198552-364.gif" alt="">
+								</div>
+							</div>
+						</div>-->
+						
+						<div  class="product-details-tab">
+							<div id="rightthumbslidercontainer" class="product-dec-right pro-dec-big-img-slider img_zoom">
+								
+								@foreach($prd_slider as $row)									
+								<?php $prd_img = URL::to('/uploads/products').'/'.$row['image']; ?>							
+
+								<div class="easyzoom-style">						
+									<div class="easyzoom easyzoom--overlay">
+										<a href="{{$prd_img}}">
+											<img class="img-responsive" src="{{$prd_img}}" alt="">
+										</a>
+									</div>
+									<a class="easyzoom-pop-up img-popup" href="{{$prd_img}}"><i class="fa fa-arrows-alt"></i></a>
+									
+									
+								</div>
+								@endforeach
+							</div>
+							<div id="leftthumbslidercontainer" class="product-dec-slider product-dec-left verticalCarouselGroup ">
+								<?php $ij=0; $pr=3; $_isactive=0; ?>
+								@foreach($prd_slider as $row1)
+								<?php $prd_img = URL::to('/uploads/products').'/'.$row1['image']; ?>	
+								<?php if($flag==2){?>								
+								<div class="product-dec-small <?php echo ($_isactive == 0)?'active':''; $_isactive = 1; ?>">
+									<img src="{{URL::to('/uploads/products')}}/{{$row1['image']}}" alt="">
+								</div>
+								<?php } if($flag==1){?>
+                 
+                 				@if($ij>0)								
+								<div class="product-dec-small">
+									<img src="{{$prd_img}}" alt="">
+								</div>
+								@endif()
+                    
+								<?php } ?>
+							
+								<?php $ij++; $pr++;?>
+								@endforeach
+								
+							</div>
+						</div>
+
+		 
+						
+					</div>
+
+
+
+
+
+
+
+
+
+					<div class="details col-xs-12 col-sm-5 col-md-6">
+
+						<h3 class="product-title">{{ ucwords($prd_detail->name) }}</h3>
+						<h4 class="price fs20">
+                                @if ($prd_detail->spcl_price!='' && $prd_detail->spcl_price!=0)
+                                <i class="fa fa-rupee"></i> <span id="prd_price_0">{{$prd_detail->spcl_price+$extrs_price}}</span>
+                                <del><i class="fa fa-rupee"></i><span id="prd_old_price_0">{{$prd_detail->price+$extrs_price}}</span></del>
+                                <span class="offer_txt"><span class="percent">{{$prd_detail::offerPercentage($prd_detail->price+$extrs_price,$prd_detail->spcl_price+$extrs_price)}}</span> <span> % off</span></span>
+                                @else
+                                <i class="fa fa-rupee"></i> <span id="prd_price_0">{{$prd_detail->price+$extrs_price}}</span>
+                                @endif
+						</h4>
+						<ul class="availtext">
+                                @if($rewards_point->reward_points!='0' && $rewards_point->reward_points!='')
+                                <!--<li><p> <strong>Rewards Points</strong> : <i class="fa fa-rupee"></i><span class="out-stock">{{$rewards_point->reward_points}}</span></p></li>-->
+                                @endif
+               
+                @if ($prd_detail->qty!=0)
+                <li id="qtyDiv"><p> <strong>Availability</strong> : <span class="out-stock clrred"> In stock</span></p></li>
+                
+                @else
+                
+                <li id="qtyDiv"><p> <strong>Availability</strong> : <span class="in-stock"> Out of stock</span></p></li>
+                @endif
+                
+						</ul>            
+						<div class="rating">
+							{!!App\Products::productRatingCounter($prd_detail->id)!!} <span class="review-no"><a href="#">	{!!App\Products::productRating($prd_detail->id)!!}   Ratings &amp; {!!App\Products::productReviews($prd_detail->id)!!} Reviews </a> </span>
+						</div>
+ 
+                    <!--<section class="about-spfc-section short-spfc-section">
+                    <div class=" ">
+                    <div  class=" ">
+                    <div class="tabs-details">
+                    <?php //echo substr(strip_tags($prd_detail->short_description,0,100)); ?>
+                    <div id="section">
+                    <div class="article">
+                    <div class="smallText">
+                    {!!$prd_detail->short_description!!} 
+                    </div>
+                    <div class="moreText">
+                    {!!$prd_detail->short_description!!}
+                    </div> 
+                    </div>
+                    <a class="moreless-button" href="javascript:void(0)" tab="1">Read more</a>
+                    </div>
+                    
+                    </div>	</div>	</div>	
+                    </section>	-->
+
+						@include('fronted.mod_product.sub_views.products_attributes')
+						
+						<div class="row availtext pt10 pb10" style="display:none;">
+							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 availtext">Quantity :</div>
+							<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+								<div class="quantity buttons_added">
+									<a href="javascript:void(0)" class="sign plus changeQty" method="1" row="0"><i class="fa fa-plus"></i></a><input type="number" id="prd_qty_0" name="qty" min="1" max="5" value="1" title="Qty" class="input-text qty text" size="1" disabled ><a href="javascript:void(0)" class="sign minus changeQty" method="2" row="0"><i class="fa fa-minus"></i></a>
+								</div>
+							</div>
+						</div>  
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-3 col-md-2">
+								<span class="delivery">Delivery </span>     
+							</div>  
+							<div class="col-xs-12 col-sm-8 col-sm-pull-0  col-md-8 col-md-pull-0">
+								
+					<div class="pincodebtn">
+					<input 
+                    type="text" 
+                    id="pincode"
+                    class="form-control"
+                    placeholder="Enter pincode"
+                    onkeypress="javascript:return onlyPincodeDigit(event,this.value,5)"
+                        product_id="{{$prd_detail->id}}",
+                        product_name="{{$prd_detail->name}}"
+                        menSizeID="0"
+                        womenSizeID="0"
+                        colorID="0"
+                        weight="{{$prd_detail->weight}}"
+                        height="{{$prd_detail->height}}"
+                        length="{{$prd_detail->length}}"
+                        width="{{$prd_detail->width}}"
+					>
+   
+					<div class="searchpin">
+						<a 
+                        href="javascript:void(0)"
+                        class="checkPinCode onlyDigit" element="pincode" 
+                       
+						>Check</a>
+					  </div>
+                    <div id="Pincodedisplay">
+                    
+                    </div>
+					</div>
+					
+					 <span id="pincode_msg"></span>
+					
+								
+							</div>
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<div class="seller-msg">
+								<p> Please enter your area's Pin Code to get the estimated date of delivery</p>
+							</div>
+						</div>
+						
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<div class="seller-msg">
+								<p> 
+								@if($prd_detail->delivery_days!=0)
+								Deliver in {{$prd_detail->delivery_days}} days
+								@endif
+
+								@if($prd_detail->shipping_charges!=0)
+								<br>Shipping Charges : <i class="fa fa-rupee"></i> {{$prd_detail->shipping_charges}}
+								@endif
+								</p>
+							</div>
+						</div>
+						
+
+						</div>
+
+						<?php  $size_color_require=0; ?>
+						<div class="row">
+							<div class="addcartbox">
+								<div class="col-md-12 col-xs-12">
+									<span id="back_response_msg_0"></span>
+									
+                                    @if($prd_detail->product_type==2)
+                                    <button type="submit"
+									class="add-to-cart ml30 waddTocart noProblem"
+									prd_page='1'
+									prd_index='0' 
+									prd_id='{{$prd_detail->id}}'
+                                    size_require="{!!$prd_detail::Issize_requires($prd_detail->id)!!}"
+									color_require="{!!$prd_detail::Iscolorrequires($prd_detail->id)!!}"
+									size_id="0"
+									w_size_id="0"
+									color_id="0"
+                                    prd_type="{{$prd_detail->product_type}}"
+									><i class="fa fa-shopping-cart"></i> Add to cart </button> 
+                                    @else
+                                    
+                                    <button type="submit"
+									class="add-to-cart ml30 addTocart noProblem"
+                                    prd_page='1'
+                                    prd_index='0' 
+                                    prd_id='{{$prd_detail->id}}'
+                                    size_require="{!!$prd_detail::Issize_requires($prd_detail->id)!!}"
+                                    color_require="{!!$prd_detail::Iscolorrequires($prd_detail->id)!!}"
+                                    size_id="0"
+                                    color_id="0"
+                                    prd_type="{{$prd_detail->product_type}}"
+									><i class="fa fa-shopping-cart"></i> Add to cart </button> 
+                                    @endif()
+									
+									
+									 @if($prd_detail->product_type==2)
+									 <button type="submit" 
+									 class="bynow wbuyNow noProblem"
+									prd_page='1'
+									url="{{App\Products::getProductDetailUrl($prd_detail->name,$prd_detail->id)}}"
+									prd_index='0' 
+									prd_id='{{$prd_detail->id}}'
+									size_require="{!!App\Products::Issize_requires($prd_detail->id)!!}"
+									color_require="{!!App\Products::Iscolorrequires($prd_detail->id)!!}"
+									size_id="0"
+									 prd_type="{{$prd_detail->product_type}}"
+									w_size_id="0"
+									color_id="0">
+										<i class="fa fa-cart-plus" aria-hidden="true"></i>
+									 Buy Now</button>
+									  @else
+									  <button type="submit"
+									  class="bynow buyNow noProblem"
+									prd_page='1'
+									url="{{App\Products::getProductDetailUrl($prd_detail->name,$prd_detail->id)}}"
+									prd_index='0' 
+									prd_id='{{$prd_detail->id}}'
+									size_require="{!!App\Products::Issize_requires($prd_detail->id)!!}"
+									color_require="{!!App\Products::Iscolorrequires($prd_detail->id)!!}"
+									size_id="0"
+									color_id="0"
+									 prd_type="{{$prd_detail->product_type}}"
+									>
+										<i class="fa fa-cart-plus" aria-hidden="true"></i>
+									 Buy Now</button>
+									  @endif()
+									
+        <button type="submit"
+        class="add-to-cart ml30 outOfStcok">
+        <i class="fa fa-shopping-cart"></i>Out of stock
+        </button>
+									
+        <button type="submit" class="bynow outOfStcok">
+        <i class="fa fa-cart-plus" aria-hidden="true"></i>Out of stock
+        </button>
+        
+        
+        <button type="submit"
+        class="add-to-cart ml30 outOFdelivery">
+        <i class="fa fa-shopping-cart"></i>NO delivery
+        </button>
+									
+        <button type="submit" class="bynow outOFdelivery">
+        <i class="fa fa-cart-plus" aria-hidden="true"></i>NO delivery
+        </button>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+   
+<section class="about-spfc-section">
+<div class="container">
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+
+<!--tabs start--->
+<div class="tabs-details">
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="nav-item ">
+								<a class="nav-link" data-toggle="tab" href="#description" aria-expanded="true">Description</a>
+							</li>
+							<!--<li class="nav-item">-->
+							<!--	<a class="nav-link" data-toggle="tab" href="#video" aria-expanded="false">Videos</a>-->
+							<!--</li>-->
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#home" aria-expanded="false">Specifications</a>
+							</li>
+							<li class="nav-item active">
+								<a class="nav-link" data-toggle="tab" href="#menu1" aria-expanded="false"> Ratings &amp; Reviews </a>
+							</li>
+<!--
+							<?php 
+								$prd_questions=App\ProductQuestions::productQuestions($prd_detail->id);
+								if(@$prd_questions[0]->product_question!=''){
+							?>
+							<li class="nav-item ">
+								<a class="nav-link" data-toggle="tab" href="#menu2" aria-expanded="false">  QA's </a>
+							</li>
+							<?php } ?>
+-->
+							@if($prd_detail->return_days!='')
+								<li class="nav-item ">
+								<a class="nav-link" data-toggle="tab" href="#replacetab" aria-expanded="false">  Replace Available  </a>
+							</li>
+							@endif()
+						
+						</ul>
+
+						<!-- Tab panes -->
+						<div class="tab-content">
+							<div id="description" class="tab-pane  ">
+								<?php 
+									$prd_extra_description=App\ProductExtraDescription::getProductExtraDescription($prd_detail->id);
+									foreach($prd_extra_description as $row_extra_descrip){
+								?>
+								<div class="detailDesrptn">
+									<div class="row">
+										<div class="col-md-12 col-xs-12">
+                                                @if($row_extra_descrip->product_descrip_image!='')
+                                                <img src="{{URL::to('/uploads/products')}}/{{$row_extra_descrip->product_descrip_image}}" style="vertical-align:middle" widht="100" height="100">
+                                                @endif
+											<h2><?php echo ucwords($row_extra_descrip->product_descrip_title);?></h2>
+											<p><?php echo $row_extra_descrip->product_descrip_content;?></p>
+										</div>
+									</div>
+								</div>
+								<?php } ?>
+								
+								
+								<div class="detailDesrptn">
+									<div class="row">
+										<div class="col-md-12 col-xs-12">
+											<table>
+												<?php 
+													$prd_extra_general_description=App\ProductExtraGeneralDescription::getProductExtraGeneralDescription($prd_detail->id);
+													foreach($prd_extra_general_description as $row_extra_general_descrip){
+												?>
+												<tr>
+													<td><?php echo ucwords($row_extra_general_descrip->product_general_descrip_title);?></td>
+													<td><?php echo $row_extra_general_descrip->product_general_descrip_content;?></td>
+												</tr>
+												<?php } ?>
+											</table>
+                                            
+										</div>
+									</div>
+								</div>
+								 <p>{!!$prd_detail->long_description!!}</p>
+							</div>
+
+							<!--<div id="video" class="tab-pane">
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/3w4t1dYCayM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+
+							</div>-->
+
+							<div id="home" class="tab-pane">
+								 <p>{!!$prd_detail->short_description!!}</p>
+								<h6 class="fs18 fw600 mt20 mb20">{{ucwords($prd_detail->name)}} - Specifications</h6>
+								 @include('fronted.mod_product.sub_views.product-specification')
+							</div>
+
+							<div id="menu1" class="tab-pane fade active in">
+								<div class="review">
+									<div class="row">
+										
+										<div class="col-md-12 col-xs-12 col-xs-12">
+											
+											<div class="review">
+												<div class="review-form-hdr">
+													<h6 class="fw600 fs20">
+														<a href="{{route('product_review',base64_encode($prd_detail->id))}}">
+															@if($prd_detail::productRating($prd_detail->id)>0)
+															{{$prd_detail::productRating($prd_detail->id)}}
+															@endif
+															Ratings &amp; 
+															
+															@if($prd_detail::productReviews($prd_detail->id)>0)
+															{{$prd_detail::productReviews($prd_detail->id)}}
+															@endif
+															Reviews
+														</a>
+														{!!App\Products::productRatingCounter($prd_detail->id)!!}
+																				
+													</h6>
+												</div>
+												
+												<?php 
+												foreach($prd_detail::getAllReview($prd_detail->id,3)  as $rating_row){
+												?>
+												<div class="row">
+													<div class="col-md-12 col-xs-12">
+													<div class="hp-sub-tit reviewlist">
+														<div class="row">
+															<div class="col-md-4 col-xs-12">
+																<h4 class="mb10">
+																
+																
+																	
+																{{$rating_row->user_name}}</h4>
+																<div class="dateBox"><i class="fa fa-calendar"></i>
+                                                                    <?php 
+                                                                    $old_date_timestamp = strtotime($rating_row->review_date);
+                                                                    echo date('d M ,Y g:i A', $old_date_timestamp); 
+                                                                    ?>
+																</div>
+																
+																
+																
+															</div>
+															<div class="col-md-4 col-xs-7">
+																<div>
+																{!!App\Products::userRatingOnproduct($rating_row->rating)!!}
+																<p>{{$rating_row->review}}</p>
+																</div>
+																
+															</div>
+															
+															
+																    
+															
+															<?php if($rating_row->uploads!=''){ ?>
+																	<div class="col-md-4 col-xs-5">
+																		<a title="Click Here" href="{{URL::to('/uploads/review')}}/{{$rating_row->uploads}}" class="fancybox" >
+																		<img src="{{URL::to('/uploads/review')}}/{{$rating_row->uploads}}"></a>
+																</div>
+																<?php } ?>
+														</div>
+													</div>
+													
+												</div>
+												</div>
+												<?php  } ?>
+											</div>
+										</div>
+										<!-- form-->
+											@if (Auth::guard('customer')->check())
+										
+											<?php 
+											
+											$purchased=DB::table('order_details')
+											->join('orders','order_details.order_id','orders.id')
+                                            ->where('order_details.product_id',$prd_detail->id)
+                                            ->where('order_details.order_status',3)
+                                            ->where('orders.customer_id',auth()->guard('customer')->user()->id)
+											->first();
+											
+											?>
+											
+                                            @if ($purchased)
+				<!--product rating-->
+										<div class="col-sm-4 col-md-4 col-lg-4">
+											<div class="post-review">
+												<h6 class="fw600 fs20">Post Your product Review & Rating</h6>
+                                                        @if ($errors->any())
+                                                        @foreach ($errors->all() as $error)
+                                                        <span class="help-block">
+                                                        <p style="color:red">{{$error}}</p>
+                                                        </span>
+                                                        @endforeach
+                                                        @endif
+                                                    <form role="form" action="{{ route('addReview')}}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+													<div class="row">
+														
+													<div class="col-md-12">
+														<div class="form-group"> <!--<span class="input-group-text" id="inputGroupFileAddon01">Add Review</span>-->
+															<div class="custom-file">
+																
+																<div class="box">
+																	<input type="file" name="file" id="file-2" class="inputfile inputfile-2" data-multiple-caption="{count} files selected">
+																	<label for="file-2"><i class="fa fa-file"></i> <span>Choose a file…</span></label>
+																</div>
+																
+															</div>
+														</div>
+													</div>
+													<div class="col-md-12">
+														<div class="form-group">
+															<textarea name="review" rows="10" placeholder="Your Review"> </textarea>
+															<input type="hidden" name="prd_id" value="{{$prd_detail->id}}">
+															<input type="hidden" name="rating" class="rateit-reset-2" id="rateit-range-2" value="">
+														</div>
+													</div>
+													<div class="col-md-12">
+                                                            
+														<div class="rating">
+														   
+															<div class="stars">
+															     <span class="review-no">Select Ratings
+															     </span> 
+                                                                    <div class="rateit" data-rateit-mode="font" id="rateit" mode="1">
+                                                                    </div>
+															     </div>
+														</div>
+													</div>
+													<div class="col-md-12 mt10">
+														<button type="submit" class="check" value="submit">Submit</button>
+													</div>
+												</div>
+														</form>
+
+										</div>
+										
+									</div>
+									<!--product rating-->
+									
+									<!--seller rating-->
+									<!--	<div class="col-sm-2 col-md-2 col-lg-2">-->
+									<!--		<div class="post-review">-->
+									<!--			<h6 class="fw600 fs20">seller  Rating</h6>-->
+         <!--                                               @if ($errors->any())-->
+         <!--                                               @foreach ($errors->all() as $error)-->
+         <!--                                               <span class="help-block">-->
+         <!--                                               <p style="color:red">{{$error}}</p>-->
+         <!--                                               </span>-->
+         <!--                                               @endforeach-->
+         <!--                                               @endif-->
+         <!--                                           <form role="form" action="{{ route('sellerRating')}}" method="post" enctype="multipart/form-data">-->
+         <!--                                           @csrf-->
+									<!--				<div class="row">-->
+														
+									<!--				<div class="col-md-12">-->
+									<!--					<div class="form-group">-->
+									<!--						<input type="hidden" name="prd_id" value="{{$prd_detail->id}}">-->
+									<!--						<input type="hidden" name="rating" class="rateit-reset-3" id="rateit-range-3" value="">-->
+									<!--					</div>-->
+									<!--				</div>-->
+									<!--				<div class="col-md-12">-->
+                                                            
+									<!--					<div class="rating">-->
+														   
+         <!--                                                   <div class="stars">-->
+         <!--                                                       <span class="review-no">Select Ratings-->
+         <!--                                                       </span> -->
+         <!--                                                       <div class="rateit" data-rateit-mode="font" id="rateit">-->
+         <!--                                                       </div>-->
+         <!--                                                   </div>-->
+									<!--					</div>-->
+									<!--				</div>-->
+									<!--				<div class="col-md-12 mt10">-->
+									<!--					<button type="submit" class="check" value="submit">Submit</button>-->
+									<!--				</div>-->
+									<!--			</div>-->
+									<!--					</form>-->
+
+									<!--	</div>-->
+										
+									<!--</div>-->
+									<!--seller rating-->
+									 @endif
+									  @endif
+								</div>
+							</div>
+
+						
+							
+						</div>
+						
+<!--
+							<div id="menu2" class="tab-pane">
+								<div class="shippingbox">
+									<div class="form-group">
+										<h6 class="fw600 fs18 mb20">Product Replace</h6>
+										<p class="fs16 mb10">10 Days Replacement Policy?</p>
+										
+			
+									</div>
+								</div>
+								<div class="helpfaq-section">
+								<div class="section-title mb20 fs20 fw600">
+								<h1>Questions and Answers</h1>
+								</div>
+								<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+									
+									<?php 
+										$i=0;
+										foreach($prd_questions as $row_questions){
+									?>
+									
+									<div class="panel panel-default">
+										<div class="panel-heading" role="tab" id="heading<?php echo $i;?>">
+											<h4 class="panel-title">
+												<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $i;?>" aria-expanded="true" aria-controls="collapse<?php echo $i;?>">
+													<?php echo $row_questions->product_question;?>
+												</a>
+											</h4>
+										</div>
+										<div id="collapse<?php echo $i;?>" class="panel-collapse collapse <?php echo ($i==0)?'in':'';?>" role="tabpanel" aria-labelledby="heading<?php echo $i;?>">
+											<div class="panel-body">
+												<p><?php echo $row_questions->product_answer;?> </p>
+											</div>
+										</div>
+									</div>
+									<?php $i++;} ?>
+									
+								</div>
+		
+							</div>
+							</div>-->
+							
+							<div id="replacetab" class="tab-pane">
+								<div class="shippingbox">
+									<div class="form-group">
+										<h6 class="fw600 fs18 mb20">Product Replace</h6>
+										<p class="fs16 mb10">{{$prd_detail->return_days}} Days Replacement Policy?</p>
+										
+									</div>
+								</div>
+								
+							</div>
+
+					
+					</div>
+<!-- tabs end ---->
+
+</div>    
+
+</div>
+</div>
+    
+		</div>   
+    </section>
+     
+<section class="productdetails-section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-xs-12 col-sm-12 about-txt whitebox categText">
+			
+				{!!$prd_detail::brandDescription($prd_detail->product_brand,0)!!}
+				<br> <br>				
+				<p>{!!$prd_detail::productcategoryDescription($prd_detail->id)!!}</p> 
+				
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="product-details-section">
+	<div class="container">
+		
+		{!! App\Helpers\HomeProductSliderHelper::getSimilarProduct($prd_detail->id); !!}
+		{!! App\Helpers\HomeProductSliderHelper::getSliderCustomized(1); !!}
+		{!! App\Helpers\HomeProductSliderHelper::getSliderCustomized(2); !!}
+		{!! App\Helpers\HomeProductSliderHelper::recentlyViewProduct(); !!}
+	
+	</div>
+</section>
+   
+@endsection
+
+@section('sizechart')
+
+<style>
+	#img_zoom { pointer-events: none; }
+	.zoomLens {
+		width: 100px !important;
+		height: 100px !important;
+	}
+   .helpfaq-section{padding:0px;}
+   .helpfaq-section  .section-title h1{}	
+</style>
+
+<div class="sizechart-model">
+	<!-- line modal -->
+	<div class="modal fade fadeInUp animated" id="sizechart" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<?php 
+								$cats=App\ProductCategories::select('categories.size_chart')
+							->join('categories','categories.id','product_categories.cat_id')
+							->where('product_categories.product_id',$prd_detail->id)
+							->where('categories.size_chart','!=','')
+							->first();
+							if($cats){?>
+							<img src="{{URL::to('/uploads/category/size_chart')}}/{{$cats->size_chart}}" class="img-responsive" alt="">
+							<?php } ?>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@endsection     
+

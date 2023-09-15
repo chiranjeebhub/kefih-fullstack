@@ -1,0 +1,1 @@
+<div class="smart-search search-form4"><form class="smart-search-form" method="post" action=" "><input type="text" name="searchterm" id="searchterm" placeholder="Search  Products..." autocomplete="off"><button class="submit" type="submit">Search</button></form><div id="display"></div></div>
