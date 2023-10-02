@@ -1,0 +1,105 @@
+[2023-09-27 06:54:54] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:168)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(102): Illuminate\\Log\\LogManager->resolve(NULL)
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(90): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(500): Illuminate\\Log\\LogManager->driver()
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(118): Illuminate\\Log\\LogManager->error('syntax error', Array)
+#4 /Applications/MAMP/htdocs/kefih-fullstack/app/Exceptions/Handler.php(38): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#5 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(378): App\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#6 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(143): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#7 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2023-09-27 06:54:54] laravel.ERROR: syntax error {"exception":"[object] (Symfony\\Component\\Debug\\Exception\\FatalThrowableError(code: 0): syntax error at /Applications/MAMP/htdocs/kefih-fullstack/config/database.php:50)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(210): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(322): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(131): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#4 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 
+[2023-09-27 06:54:55] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:168)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(102): Illuminate\\Log\\LogManager->resolve(NULL)
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(90): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(500): Illuminate\\Log\\LogManager->driver()
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(118): Illuminate\\Log\\LogManager->error('syntax error', Array)
+#4 /Applications/MAMP/htdocs/kefih-fullstack/app/Exceptions/Handler.php(38): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#5 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(378): App\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#6 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(143): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#7 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2023-09-27 06:54:55] laravel.ERROR: syntax error {"exception":"[object] (Symfony\\Component\\Debug\\Exception\\FatalThrowableError(code: 0): syntax error at /Applications/MAMP/htdocs/kefih-fullstack/config/database.php:50)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(210): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(322): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(131): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#4 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 
+[2023-09-27 06:54:59] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:168)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(102): Illuminate\\Log\\LogManager->resolve(NULL)
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(90): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(500): Illuminate\\Log\\LogManager->driver()
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(118): Illuminate\\Log\\LogManager->error('syntax error', Array)
+#4 /Applications/MAMP/htdocs/kefih-fullstack/app/Exceptions/Handler.php(38): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#5 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(378): App\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#6 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(143): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#7 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2023-09-27 06:54:59] laravel.ERROR: syntax error {"exception":"[object] (Symfony\\Component\\Debug\\Exception\\FatalThrowableError(code: 0): syntax error at /Applications/MAMP/htdocs/kefih-fullstack/config/database.php:50)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(210): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(322): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(131): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#4 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 
+[2023-09-27 07:09:25] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:168)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(102): Illuminate\\Log\\LogManager->resolve(NULL)
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(90): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(500): Illuminate\\Log\\LogManager->driver()
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(118): Illuminate\\Log\\LogManager->error('syntax error', Array)
+#4 /Applications/MAMP/htdocs/kefih-fullstack/app/Exceptions/Handler.php(38): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#5 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(378): App\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#6 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(143): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#7 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2023-09-27 07:09:25] laravel.ERROR: syntax error {"exception":"[object] (Symfony\\Component\\Debug\\Exception\\FatalThrowableError(code: 0): syntax error at /Applications/MAMP/htdocs/kefih-fullstack/config/database.php:48)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(210): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(322): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(131): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#4 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 
+[2023-09-27 07:09:25] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:168)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(102): Illuminate\\Log\\LogManager->resolve(NULL)
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(90): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(500): Illuminate\\Log\\LogManager->driver()
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(118): Illuminate\\Log\\LogManager->error('syntax error', Array)
+#4 /Applications/MAMP/htdocs/kefih-fullstack/app/Exceptions/Handler.php(38): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#5 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(378): App\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#6 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(143): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#7 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2023-09-27 07:09:25] laravel.ERROR: syntax error {"exception":"[object] (Symfony\\Component\\Debug\\Exception\\FatalThrowableError(code: 0): syntax error at /Applications/MAMP/htdocs/kefih-fullstack/config/database.php:48)
+[stacktrace]
+#0 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#1 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(210): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#2 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(322): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#3 /Applications/MAMP/htdocs/kefih-fullstack/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(131): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#4 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 

@@ -1,6 +1,6 @@
 @extends('fronted.layouts.app_new')
 
-<?php   
+<?php
 $dt=DB::table('meta_tags')->where('page_id',0)->first();
 if($dt){
 ?>
@@ -11,10 +11,9 @@ if($dt){
 <?php } ?>
 
 @section('slider')
-@include('fronted.mod_slider.home_banner_slider')
+    @include('fronted.mod_slider.home_banner_slider')
 @endsection
 @section('content')
-@include('fronted.includes.advertisement')
-  {!! App\Helpers\HomeProductSliderHelper::getSlider(0); !!}
-@include('fronted.includes.addtocartscript')
+    {!! App\Helpers\HomeProductSliderHelper::getSlider(0) !!}
+    @include('fronted.includes.addtocartscript')
 @endsection

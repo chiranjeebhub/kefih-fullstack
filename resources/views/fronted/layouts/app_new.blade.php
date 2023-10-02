@@ -13,9 +13,15 @@
 
     <link rel="stylesheet" href="{{ asset('public/fronted/css/bootstrap.min.css') }}" /><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" type="text/css" href="{{ asset('public/fronted/css/owl.carousel.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/css/custom.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/megamenu/styles.css') }}" type="text/css" media="all" /><link rel="stylesheet" href="{{ asset('public/fronted/css/animate.css') }}"><link rel="stylesheet" href="{{ asset('public/fronted/css/responsive.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/css/rateit.css') }}"><link rel="stylesheet" href="{{ asset('public/fronted/css/jquery.fancybox.min.css') }}"><link rel="stylesheet" href="{{ asset('public/fronted/css/bootstrap-select.min.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/css/selectize.bootstrap3.min.css') }}" />
 
-	
-	<script type="text/javascript">if (window.location.hash && window.location.hash == '#_=_') {window.location.hash = '';}</script>
-	
+    <link rel="stylesheet" href="{{ asset('public/fronted/css/cart.css') }}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+
+    <script type="text/javascript">if (window.location.hash && window.location.hash == '#_=_') {window.location.hash = '';}</script>
+
 <!-- Google Tag Manager -->
 <script>
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -23,8 +29,8 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-WM3N2LW');
- 
- 
+
+
 </script>
 <script type="application/ld+json">
 {
@@ -66,7 +72,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WM3N2LW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-<?php 
+<?php
 $crt=url()->current();
 $proper_url_array=explode('/',$crt);
 $str=end($proper_url_array);
@@ -76,46 +82,64 @@ $str=end($proper_url_array);
 
 @if($crt == route('review_order'))
 <div id="loader"><img src="{{ asset('public/fronted/images/loader.gif') }}" width="150px"></div>
-@endif 
+@endif
 
 <div>@include('fronted.includes.header') @include('fronted.mod_cart.cart')
 @yield('slider')
-</div>   
+</div>
 <div class="add-section1"></div>
 
 @if($str!='index' && $str!='kefih' )
 <!--<section class="inner-section"><div class="container"><div class="row"><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><div class="inner-banner"><div class="breadcrumb">@yield('breadcrum')</div></div></div></div></div></section>-->
 @endif()
-  
-  @include('admin.includes.session_message') 
 
-	@yield('content')  
-	@include('fronted.includes.footer')	
+
+    <!-- Cart side drawer -->
+    <div class="cart-drawer">
+        <!-- <button id="closeCart" class="close-btn">Close</button>
+        <h2>Your Cart</h2> -->
+        <!-- Your cart items will go here -->
+        <div class="logoContainer">
+            <img src="{{asset('public/fronted/images/logo.svg')}}" alt="logo">
+            <button id="closeCart" class="closeBtn">X</button>
+        </div>
+        <h2 class="cartHeader">Your Cart</h2>
+        <div class="cart_table_list">
+
+
+        </div>
+
+    </div>
+
+  @include('admin.includes.session_message')
+
+	@yield('content')
+	@include('fronted.includes.footer')
 	@include('fronted.includes.foot')
-	@include('fronted.includes.addtocartscript')	
-	@include('fronted.includes.script')	
+	@include('fronted.includes.addtocartscript')
+	@include('fronted.includes.script')
 
-  @include('fronted.includes.pushnotificationscript')	
+  @include('fronted.includes.pushnotificationscript')
 
-
+    <script src="{{asset('public/fronted/js/cart.js')}}"></script>
 
 	@yield('scripts')
 	<script>
-	
+
 	$("#BookingBtn").click(function(e){
-	    
+
 	     /*var radioValue = $("input[name='delivery_time']:checked").val();
 	    // alert(radioValue);
             if(radioValue==undefined){
                	//alert("choose delivery preferences");
-               	
+
            $(".wishlistModalResponse").html("choose delivery slot");
                 $('#wishlistModal').modal('show');
                 setTimeout(function() {
                     $('#wishlistModal').modal('hide');
                     $(".wishlistModalResponse").html("");
-                }, 2000);     	
-      	localStorage.setItem('slotprice', 0); 
+                }, 2000);
+      	localStorage.setItem('slotprice', 0);
         return false;
             }
              else{
@@ -124,25 +148,25 @@ $str=end($proper_url_array);
       }*/
 	  quotation.submit();
 	  return true;
-            
-    /*        
+
+    /*
 var deliveryday  = $(".deliveryday").val();
 var delivery_time  = $(".delivery_time").val();
 
 var delivery_time= $('input[name="delivery_time"]:checked').val();
 if(delivery_time==''){
 	 	alert("choose delivery preferences");
-      	localStorage.setItem('slotprice', 0); 
+      	localStorage.setItem('slotprice', 0);
         return false;
       }*/
-     
 
-	}); 
+
+	});
 	$(document).ready(function(){
  /*$("form").submit(function(e){
         e.preventDefault();
     });*/
-      
+
 
       localStorage.removeItem('shipping_address_id');
 
@@ -181,27 +205,27 @@ if(delivery_time==''){
 
         $('#select_Date').hide();
 
-        
 
-    localStorage.setItem('slotprice', price); 
 
-    update_cart();      
+    localStorage.setItem('slotprice', price);
 
-        
+    update_cart();
+
+
 
   }
-  $(document).ready(function() { 	
+  $(document).ready(function() {
 
-localStorage.setItem('slotprice', 0);  
+localStorage.setItem('slotprice', 0);
 
-//createCookie('checkouttype',0,3000); 
+//createCookie('checkouttype',0,3000);
 
-}); 
+});
 	 function changeDelivery(id){
 
-		
 
-		
+
+
 
 		$.ajax({
 
@@ -209,9 +233,9 @@ localStorage.setItem('slotprice', 0);
 
           type: "POST",
 
-       
 
-       
+
+
 
          url:"{{route('timeslotdata')}}",
 
@@ -223,7 +247,7 @@ localStorage.setItem('slotprice', 0);
 
 			   var response = JSON.parse(data);
 
-                     $('.timeslotoptn').empty(); 
+                     $('.timeslotoptn').empty();
 
                       if(response.status==1){
 								$(".deliveryday").val();
@@ -233,9 +257,9 @@ localStorage.setItem('slotprice', 0);
 
 
                           if((response.size)>0){
-                          	
-                           
-                            $('.timeslotoptn').append(response.timeslot); 
+
+
+                            $('.timeslotoptn').append(response.timeslot);
 
                           }
 
@@ -247,16 +271,16 @@ localStorage.setItem('slotprice', 0);
 
       });
 
-		
 
-		
+
+
 
 		}
 	</script>
 <div class="quickview-model"><div class="modal fade fadeInUp animated" id="quickVieweModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="modal-body quickViewResponse"></div></div></div></div></div>
 <div class="quickview-model">
     <div class="modal fade fadeInUp animated" id="coinsModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog">
-        
+
         <div class="modal-content">
                 <div class="modal-header">
             <h4 class="modal-title">Coins</h4>
@@ -264,7 +288,7 @@ localStorage.setItem('slotprice', 0);
         </div>
             <div class="modal-body phuakatCoinsResponse coinsdata"></div></div></div></div></div>
 <div class="cartpopup">
-    
+
 <div class="modal fade fadeInUp animated" id="otherSellerModal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -280,16 +304,16 @@ localStorage.setItem('slotprice', 0);
         Modal body..
       </div>
 
-     
+
 
     </div>
   </div>
 </div>
-    
+
     <div class="modal fade fadeInUp animated" id="wishlistModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog modal-sm"><div class="modal-content">
-        
+
         <div class="modal-body wishlistModalResponse"></div>
-        
+
         </div></div></div></div>
     <div class="order_cancel main_section">
 <div class="sizechart-model"><div class="modal fade fadeInUp animated" id="showsizechart" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
@@ -324,7 +348,7 @@ $(document).ready(function(){
     $("#sellers-table3").show();
     $("#sellers-table1").hide();
   });
-  
+
 });
     //new
     $(document).ready(function(){
@@ -335,8 +359,8 @@ $(document).ready(function(){
     $("#sellers-table4").show();
   });
 });
-    
-    
+
+
 const copyToClipboard = str => {
 
   const el = document.createElement('textarea');
@@ -353,7 +377,7 @@ const copyToClipboard = str => {
 
 };
 
-document.getElementById('myItem').addEventListener('click', function(e){ 
+document.getElementById('myItem').addEventListener('click', function(e){
 
   let myUrl =  e.target.dataset.page_id;
 

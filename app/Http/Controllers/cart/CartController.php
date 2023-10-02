@@ -143,8 +143,8 @@ class CartController extends Controller
          if(Auth::guard('customer')->check()){
                 $cust_id=auth()->guard('customer')->user()->id;
          }
-         
-        
+
+
         $isActivate = DB::table('cart_coupon')->where('user_id', $cust_id)->first();
         return $isActivate;
     }
@@ -172,22 +172,22 @@ class CartController extends Controller
             ->first();
         if ($coupondata)
         {
-            
+
             if(Auth::guard('customer')->check()){
                 $cust_id=auth()->guard('customer')->user()->id;
-                
+
                 $perPersonUsed=Coupon::perPersonUsedCoupon($cust_id,$coupondata);
                 if($perPersonUsed['Error']==1){
                   return  $perPersonUsed;
                         die();
                 }
-                
+
            $maxCustomerUsed=Coupon::maxCustomerUsed($coupondata);
                 if($maxCustomerUsed['Error']==1){
                     return  $maxCustomerUsed;
                         die();
                 }
-                
+
                 if($coupondata->coupon_for==2){
                     $forNewCustomer=Coupon::forNewCustomer($cust_id);
                 if($forNewCustomer['Error']==1){
@@ -195,9 +195,9 @@ class CartController extends Controller
                         die();
                 }
                 }
-            
+
             }
-            
+
 
             $obj = DB::table('tbl_coupon_assign')->where('fld_coupon_id', $coupondata->id)
                 ->first();
@@ -255,7 +255,7 @@ class CartController extends Controller
                     break;
 
                     case 2: // brand wise assign
-                        
+
 
                         $brandProductIncarts = DB::table('cart')->select('cart.*')
                             ->join('products', 'products.id', 'cart.prd_id')
@@ -303,7 +303,7 @@ class CartController extends Controller
                     break;
 
                     case 3: // product wise assign
-                        
+
 
                         if (Auth::guard('customer')->check())
                         {
@@ -360,7 +360,7 @@ class CartController extends Controller
                             ->where('cart.user_id', $cust_id)
                             ->where('products.vendor_id', $obj->fld_assign_type_id)
                             ->get();
-        
+
                         if (sizeof($SellerProductIncarts) > 0)
                         {
                             $cart_total = 0;
@@ -372,32 +372,32 @@ class CartController extends Controller
                                     ->where('color_id', $productData->color_id)
                                     ->where('product_id', $productData->prd_id)
                                     ->first();
-        
+
                                 $total = ($product_data->price + $prd_attr->price) * $productData->qty;
-        
+
                                 if ($product_data->spcl_price != 0 && $product_data->spcl_price != '')
                                 {
                                     $total = ($product_data->spcl_price + $prd_attr->price) * $productData->qty;
-        
+
                                 }
                                 $cart_total += $total;
-        
+
                             }
                             $input['cart_total'] = $cart_total;
                             file_put_contents('sellerProductTotalAmount.txt',$cart_total.json_encode($SellerProductIncarts));
                             $response = $this->validation_coupon_whencart_changes($coupondata, $input, $request);
-                        
+
                         } else
                         {
                             $response = array(
                                 "Error" => 1,
                                 "Msg" => "Coupon code invalid"
                             );
-                         
+
                         }
-        
-                    break; 
-                    
+
+                    break;
+
 
                 }
             }
@@ -496,8 +496,8 @@ class CartController extends Controller
     }
     public static function getDiscountvalue($type, $id, $ip, $discount)
     {
-        
-       
+
+
         $cust_id=0;
         if (Auth::guard('customer')->check()) { $cust_id = auth()->guard('customer') ->user()->id;
         }
@@ -511,7 +511,7 @@ class CartController extends Controller
                     ->join('product_categories', 'product_categories.product_id', 'products.id')
                     ->join('categories', 'product_categories.cat_id', 'categories.id')
                     ->where('cart.user_id', $cust_id)->where('categories.id', $id)->get();
-                  
+
                 if (sizeof($categoryProductIncarts) > 0)
                 {
                     $cart_total = 0;
@@ -544,7 +544,7 @@ class CartController extends Controller
             break;
 
             case 2: // brand wise assign
-                
+
 
                 $brandProductIncarts = DB::table('cart')->select('cart.*')
                     ->join('products', 'products.id', 'cart.prd_id')
@@ -583,7 +583,7 @@ class CartController extends Controller
                 }
             break;
 
-            case 3: // product wise assign   
+            case 3: // product wise assign
 
                 if (Auth::guard('customer')->check())
                 {
@@ -595,8 +595,8 @@ class CartController extends Controller
                             ->where('cart.user_id', $cust_id)
                              ->where('prd_id',(int)$id)
                 ->first();
-                
-                     
+
+
                 if ($prdIncart)
                 {
                     $product_data = Products::select('price', 'spcl_price')->where('id', $id)
@@ -616,7 +616,7 @@ class CartController extends Controller
                     $appliedDis = ($total * $discount) / 100;
                    file_put_contents('getDiscount.txt',json_encode($appliedDis));
                     return $appliedDis;
-                    
+
 
                 }
                 else
@@ -626,7 +626,7 @@ class CartController extends Controller
                 }
 
             break;
-            
+
             case 4: // seller wise assign
 
                 $SellerProductIncarts = DB::table('cart')->select('cart.*')
@@ -657,12 +657,12 @@ class CartController extends Controller
                         $cart_total += $total;
 
                     }
-              
+
                     $discount = ($cart_total * $discount) / 100;
                     file_put_contents('sellerProductDiscountAmount.txt','Total Amount : '.$cart_total.'  | Discount Amount :'.$discount);
-                    
+
                     return $discount;
-                  
+
                 } else
                 {
                     return 0;
@@ -696,15 +696,15 @@ class CartController extends Controller
         $ip = $request->ip();
         $isActivate = DB::table('cart_coupon')->where('user_id', $cust_id)->first();
         if ($isActivate)
-        
+
         {
-            
-               
+
+
             DB::table('cart_coupon')->where('user_id', $cust_id)->update(['coupon_code' => $obj->coupon_code, 'discount_value' => $obj->discount_value, 'coupon_assign_type' => $type, 'coupon_assign_type_id' => $type_id]);
 
         }
         else
-        { 
+        {
             DB::table('cart_coupon')->insert(['coupon_code' => $obj->coupon_code, 'discount_value' => $obj->discount_value, 'coupon_assign_type' => $type, 'coupon_assign_type_id' => $type_id, 'user_id' => $cust_id]);
         }
 
@@ -765,7 +765,7 @@ class CartController extends Controller
 
             case 2:
             case 6: // check date
-                
+
 
                 $paymentDate = date('Y-m-d H:i:s');
                 $paymentDate = date('Y-m-d H:i:s', strtotime($paymentDate));
@@ -819,7 +819,7 @@ class CartController extends Controller
 
     public function couponAssigned($request, $obj, $coupondata)
     {
-        
+
                 $cust_id=0;
                 if (Auth::guard('customer')->check())
                     {
@@ -827,7 +827,7 @@ class CartController extends Controller
                             ->user()->id;
                     }
         $ip = $request->ip();
-     
+
         switch ($obj->fld_coupon_assign_type)
         {
 
@@ -838,8 +838,8 @@ class CartController extends Controller
                     ->join('categories', 'product_categories.cat_id', 'categories.id')
                     ->where('cart.user_id', $cust_id)->where('categories.id', $obj->fld_assign_type_id)
                     ->get();
-                    
-                    
+
+
                 if (sizeof($categoryProductIncarts) > 0)
                 {
                     $cart_total = 0;
@@ -863,7 +863,7 @@ class CartController extends Controller
 
                     }
                     $input['cart_total'] = $cart_total;
-                   
+
                     $this->validation_coupon($coupondata, $input, $request);
                     die();
                 }
@@ -879,7 +879,7 @@ class CartController extends Controller
             break;
 
             case 2: // brand wise assign
-                
+
 
                 $brandProductIncarts = DB::table('cart')->select('cart.*')
                     ->join('products', 'products.id', 'cart.prd_id')
@@ -925,7 +925,7 @@ class CartController extends Controller
             break;
 
             case 3: // product wise assign
-                 
+
 
                 if (Auth::guard('customer')->check())
                 {
@@ -966,7 +966,7 @@ class CartController extends Controller
                 }
 
             break;
-            
+
             case 4: // seller wise assign
                 $SellerProductIncarts = DB::table('cart')->select('cart.*')
                     ->join('products', 'products.id', 'cart.prd_id')
@@ -1010,27 +1010,27 @@ class CartController extends Controller
                     die();
                 }
 
-            break; 
+            break;
         }
     }
 
 
-   
+
     public function apply_coupon(Request $request)
     {
         $input = $request->all();
-        $cust_id=auth()->guard('customer')->user()->id;      
-       
+        $cust_id=auth()->guard('customer')->user()->id;
+
         $coupondata = CouponDetails::select(
                     'coupons.coupon_type',
                     'coupons.number_of_user',
                     'coupons.uses_per_user',
                     'coupons.id',
-                    'coupons.coupon_type', 
+                    'coupons.coupon_type',
                     'coupons.max_discount',
                     'coupons.below_cart_amt',
                     'coupons.above_cart_amt',
-                    'coupons.coupon_for', 
+                    'coupons.coupon_for',
                     'coupons.started_date',
                     'coupons.end_date',
                     'coupons.discount_value',
@@ -1040,29 +1040,29 @@ class CartController extends Controller
             ->where('coupon_details.coupon_code', $input['code'])
             ->where('coupon_details.coupon_used', 0)
             ->first();
-          
+
         if ($coupondata)
         {
-            
-          
+
+
             $perPersonUsed=Coupon::perPersonUsedCoupon($cust_id,$coupondata);
-        
-           
-          
+
+
+
                 if($perPersonUsed['Error']==1){
                    echo json_encode($perPersonUsed);
                         die();
                 }
-                
+
            $maxCustomerUsed=Coupon::maxCustomerUsed($coupondata);
-           
-                
-           
+
+
+
                 if($maxCustomerUsed['Error']==1){
                    echo json_encode($maxCustomerUsed);
                         die();
                 }
-                  
+
                 if($coupondata->coupon_for==2){
                     $forNewCustomer=Coupon::forNewCustomer($cust_id);
                 if($forNewCustomer['Error']==1){
@@ -1070,8 +1070,8 @@ class CartController extends Controller
                         die();
                 }
                 }
-             
-          
+
+
 
             $isAssign = DB::table('tbl_coupon_assign')->where('fld_coupon_id', $coupondata->id)
                 ->first();
@@ -1233,7 +1233,7 @@ class CartController extends Controller
                 $products_in_cart->qty = (!empty($cookie->qty))?$cookie->qty:1;
                 array_push($cart_data, $products_in_cart);
             }
-           
+
         }
         return $cart_data;
     }
@@ -1249,7 +1249,6 @@ class CartController extends Controller
     }
     public function index(Request $request)
     {
-
         if (Auth::guard('customer')->check())
         {
             $cust_id = auth()->guard('customer')
@@ -1261,6 +1260,7 @@ class CartController extends Controller
             $cart_data = self::getCart_item($request->ip());
 
         }
+
         return view('fronted.mod_cart.list', ["cart" => $cart_data]);
 
     }
@@ -1269,7 +1269,7 @@ class CartController extends Controller
         $input = $request->all();
 
         $master_prd = Products::select('moq')->where('id', '=', $input['prd_id'])->first();
-		
+
 		$stock = ProductAttributes::select('qty')->where('size_id', '=', $input['size'])->where('color_id', '=', $input['color'])->where('product_id', '=', $input['prd_id'])->first();
 
         $quantity = $stock ? $stock->qty : 0;
@@ -1291,17 +1291,17 @@ class CartController extends Controller
 		// if(@$master_prd->moq>$input['qty'])
 		// {
 		// 	$response = array(
-		// 			"error1" => true 
+		// 			"error1" => true
 		// 		);
-				
+
 		// 	echo json_encode($response);
 		// 	exit;
 		// }
-		
+
         if ($quantity >= $input['qty'])
-        {         
+        {
 				$return = app(\App\Http\Controllers\CookieController::class)->increaseQtyOfProduct($prd_in_cart);
-				
+
 				$response = array(
 					"error" => false
 				);
@@ -1358,9 +1358,9 @@ class CartController extends Controller
         /**
        *  Getting Pincode Price
        */
-      
+
        $pincodeDetails = (object)array('price'=>0);
-      
+
        if(isset($_COOKIE['pincode'])){
           $pincodeDetails = DB::table('logistic_vendor_pincode')
        ->join('logistic_partner','logistic_vendor_pincode.logistic_partner_id', 'logistic_partner.id')
@@ -1404,9 +1404,9 @@ class CartController extends Controller
             }
                $old_prc=0;
             if($row->master_price!= '' && $row->master_price != 0){
-               $old_prc = $row->master_price;  
+               $old_prc = $row->master_price;
             } else{
-                $old_prc = $row->master_spcl_price; 
+                $old_prc = $row->master_spcl_price;
             }
             if ($row->master_spcl_price != '' && $row->master_spcl_price != 0)
             {
@@ -1496,9 +1496,9 @@ class CartController extends Controller
 			<img src="' . $url . '" alt="item1">
 			<span class="item-name">' . $row->name . '</span>
 			<span class="item-price">' . $price_html . ' </span>
-			
+
 			<span class="item-quantity">Quantity :  ' . $row->qty . '</span>
-			
+
 			<span class="item-remove"><a href="javascript:void(0)" class="deleteCartItem" prd_id="' . $prd_new_id . '"><i class="fa fa-trash " ></i></a></span>
 		  </li>';
         }
@@ -1512,20 +1512,20 @@ class CartController extends Controller
         {
             $shipping_charge = $shipping_charges_details->shipping_charge;
         }
-        
+
         if (sizeof($cart_data) == 0)
         {
-            
+
             if (Auth::guard('customer')->check())
             {
             $cust_id = auth()->guard('customer')
             ->user()->id;
-            
+
              DB::table('cart_coupon')
             ->where('user_id', $cust_id)->delete();
             }
             $ip = $request->ip();
-           
+
         }
 
 
@@ -1537,13 +1537,13 @@ class CartController extends Controller
                 $cust_id = auth()->guard('customer')
                     ->user()->id;
             $coupon = DB::table('cart_coupon')->where('user_id', $cust_id)->first();
-    
+
             if ($coupon)
            {
-           
+
             $coupon_apply = true;
             $res_data = $this->verifyAppliedCoupon($coupon->coupon_code, $request);
-               
+
 
             if ($res_data['Error'] == 0)
             {
@@ -1552,24 +1552,24 @@ class CartController extends Controller
                     ->where('coupon_details.coupon_code', $coupon->coupon_code)
                     ->where('coupon_details.coupon_used', 0)
                     ->first();
-                    
-                        
+
+
                 if ($coupon->coupon_assign_type != '')
                 {
-                   
+
                     $coupon_array['coupon_code'] = $coupon->coupon_code;
                     $coupon_array['discount_value'] = $coupon->discount_value;
-                     
+
                     $discount = self::getDiscountvalue($coupon->coupon_assign_type, $coupon->coupon_assign_type_id, $ip, $coupon->discount_value);;
-                      
-                    
+
+
                         if($coupondata->max_discount){
                         if ($coupondata->max_discount < $discount)
                         {
                         $discount = $coupondata->max_discount;
-                        }  
                         }
-                   
+                        }
+
                       file_put_contents('cpn2.txt',json_encode($discount));
                 }
                 else
@@ -1581,10 +1581,10 @@ class CartController extends Controller
                     if ($coupondata->max_discount < $discount)
                     {
                     $discount = $coupondata->max_discount;
-                    }  
+                    }
                         }
                 }
-                 
+
             }
             else
             {
@@ -1596,9 +1596,9 @@ class CartController extends Controller
         }
         }
 
-              
-        $pay_with_wallet = false; 
-        $insufficient_wallet_amount = true; 
+
+        $pay_with_wallet = false;
+        $insufficient_wallet_amount = true;
         $cod_charges = 0;
         if ($request->paymentMethod == 0)
         {
@@ -1606,7 +1606,7 @@ class CartController extends Controller
         }
 
         /*
-        //OLD Wallet Use Code based on product amount not on total payable amount 
+        //OLD Wallet Use Code based on product amount not on total payable amount
         // if ($offerProduct == 0)
         // {
             if ($use_wallet == 1)
@@ -1623,33 +1623,33 @@ class CartController extends Controller
 
                     if ($available_points > 0)
                     {
-                        
-                    
+
+
                         // if ($available_points >= $percent)
                         // {
                         //     $reward_points = $percent;
-                        //     $insufficient_wallet_amount = false; 
+                        //     $insufficient_wallet_amount = false;
                         // }
                         // else
                         // {
                         //     // $reward_points = $available_points;
                         // }
-                       
-                        
 
-                        $insufficient_wallet_amount = false; 
-                     
+
+
+                        $insufficient_wallet_amount = false;
+
                         //for full wallet use
                         if ($available_points >= $total)
                         {
                             $reward_points = $total;
-                            $pay_with_wallet = true; 
+                            $pay_with_wallet = true;
                         }
                         else
                         {
                             $reward_points = $available_points;
                         }
-                        
+
 
                     }
                     else
@@ -1674,13 +1674,13 @@ class CartController extends Controller
             $pincode_error = $_COOKIE["pincode_error"];
         }
 
-  
+
          //$gra = round($grand_total = ($total + $tax + 0 - $discount + $cod_charges - $reward_points));
         //  $gra = round($grand_total = ($total + $tax + 0 - $discount - $reward_points));
 
          $gra = round($grand_total = ($total + $tax - $discount));
 
-            
+
 
          $slotprice =0;
 
@@ -1693,36 +1693,36 @@ class CartController extends Controller
         }
 
 
-        //Setting up service Charge 
+        //Setting up service Charge
         $serviceCharge = $serviceChargeData->service_charge;
         $GRAND_TOTAL = ($gra < $shipping_charges_details->cart_total)?$gra+$shipping_charges_details->shipping_charge+$cod_charges+$serviceCharge:$gra+$cod_charges+$slotprice+$serviceCharge;
 
 
         /**
-         * Wallet use amount setup 
+         * Wallet use amount setup
          */
 
          if ($use_wallet == 1)
             {
                 if ($GRAND_TOTAL > 0)
                 {
-                  
+
                     if ($available_points > 0)
                     {
-                      
-                        $insufficient_wallet_amount = false; 
-                     
+
+                        $insufficient_wallet_amount = false;
+
                         //for full wallet use
                         if ($available_points >= $GRAND_TOTAL)
                         {
                             $reward_points = $GRAND_TOTAL;
-                            $pay_with_wallet = true; 
+                            $pay_with_wallet = true;
                         }
                         else
                         {
                             $reward_points = $available_points;
                         }
-                        
+
 
                     }
                     else
@@ -1781,12 +1781,12 @@ class CartController extends Controller
         {
             $shipping_charge = 0;
         }
-        
+
         if($total > 900) {
             $cod_charges = 0;
         }
         $pincodeprice = round((!empty($pincodeDetails->price))?$pincodeDetails->price:0);
-       
+
 
         $response = array(
             "html" => $html,
@@ -1801,7 +1801,7 @@ class CartController extends Controller
             "exhibition_discount" => $exhibition_discount,
             "exhibition_discount_error" => ($finalAmount>=$GRAND_TOTAL)?"Final amount should be less than grand total amount":'',
             // "pincode_error" => (@$_COOKIE["pincode_error"]) ? 1 : @$_COOKIE["pincode_error"],
-            // "grand_total_with_tax" => $gra+$cod_charges+$slotprice+$shipping_charge+$serviceCharge,           
+            // "grand_total_with_tax" => $gra+$cod_charges+$slotprice+$shipping_charge+$serviceCharge,
             // "grand_total_with_tax" => $gra+$cod_charges+$slotprice+$pincodeprice,
             "tax" => $tax,
              'slotprice'=>$slotprice,

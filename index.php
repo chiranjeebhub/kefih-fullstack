@@ -1,10 +1,12 @@
 <?php
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-ini_set('max_file_uploads', 500); 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ini_set('max_file_uploads', 500);
 
 error_reporting(E_ALL);
 
+var_dump('23');
+die();
 /**
  * Laravel - A PHP Framework For Web Artisans
  *

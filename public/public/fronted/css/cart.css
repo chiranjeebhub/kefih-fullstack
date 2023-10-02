@@ -1,0 +1,287 @@
+body,
+html {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  /* min-height: 100vh; */
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: -454px; /* Starts off the screen */
+  width: 454px;
+    z-index: 5000;
+  height: 100%;
+  background-color: #ffffff;
+  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.3);
+  transition: right 0.3s ease-in-out;
+  /* padding: 20px; */
+  box-sizing: border-box;
+}
+
+.cart-drawer.open {
+  right: 0; /* Brings it onto the screen */
+}
+
+.close-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e7e7e7;
+  height: 5rem;
+}
+.cartHeader {
+  margin: 0px 30px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  color: #000;
+  font-family: "League Spartan";
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.productCardWrapper {
+  /* background-color: red; */
+  padding-top: 20px;
+  height: 50%;
+  overflow-y: scroll;
+}
+.productCardWrapper::-webkit-scrollbar {
+  display: none;
+}
+.productCard {
+  position: relative;
+  display: flex;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+  /* padding-bottom: 20px; */
+  margin: 0px 30px;
+  border-radius: 10px;
+  border: 1px solid #e7e7e7;
+  background: #fff;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+  height: 120px;
+  margin-bottom: 30px;
+}
+.productCardImage {
+  width: 73px;
+  height: 118px;
+  object-fit: contain;
+}
+/* .productCard .productInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100px;
+  margin-left: 20px;
+} */
+.productCardDetails {
+  padding: 8px 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.productCardTitle {
+  color: #000;
+  font-family: League Spartan;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 100% */
+}
+.productCardSubTitle {
+  color: #000;
+  font-family: League Spartan;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 18px; /* 150% */
+}
+.bottomRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.countWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100px;
+}
+.plusBtn {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.minusBtn {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.quantity {
+  color: #000;
+  text-align: center;
+    font-family: League Spartan;
+    width: 33px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding: 0px 10px;
+}
+.productCardPrice {
+  color: #000;
+  font-family: League Spartan;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px; /* 90% */
+  display: flex;
+}
+.mrp {
+  padding-left: 10px;
+  opacity: 0.25;
+  text-decoration: line-through;
+}
+.productCardRemove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: -15px;
+  margin-right: -15px;
+  cursor: pointer;
+}
+.subTotalSection {
+  margin: 0px 30px;
+}
+.subTotalTitle {
+  color: #000;
+  font-family: League Spartan;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  padding: 20px 0px;
+}
+.subTotalCard {
+  border-radius: 10px;
+  border: 1px solid #e7e7e7;
+  background: #fff;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+  /* height: 146px; */
+  padding: 8px 20px;
+}
+.subItemWrapper {
+  overflow-y: scroll;
+  height: 80px;
+}
+.subItemWrapper::-webkit-scrollbar {
+  display: none;
+}
+.subItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0px;
+  color: #000;
+  font-family: League Spartan;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 120% */
+}
+.subTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0px;
+  color: #000;
+  font-family: League Spartan;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px; /* 90% */
+}
+.divider {
+  height: 1px;
+  background: #e7e7e7;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.paymentBtn {
+  height: 59.736px;
+  width: 100%;
+  background: #000;
+  border-radius: 10px;
+  color: #fff;
+  font-family: League Spartan;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+.paymentBtn:hover {
+  /* background: #000;
+  opacity: 0.6; */
+  cursor: pointer;
+  border: 1px solid #000;
+  background-color: white;
+  color: #000;
+}
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  margin-top: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  border: 1px solid #000;
+  background-color: white;
+  color: #000;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+}
+.closeBtn:hover {
+  background-color: #000;
+  color: #fff;
+}

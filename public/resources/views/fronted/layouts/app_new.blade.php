@@ -11,9 +11,9 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="shortcut icon" href="{{ asset('public/fronted/images/favicon.png') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/css/bootstrap.min.css') }}" /><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" type="text/css" href="{{ asset('public/fronted/css/owl.carousel.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/css/custom.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/megamenu/styles.css') }}" type="text/css" media="all" /><link rel="stylesheet" href="{{ asset('public/fronted/css/animate.css') }}"><link rel="stylesheet" href="{{ asset('public/fronted/css/responsive.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/css/rateit.css') }}"><link rel="stylesheet" href="{{ asset('public/fronted/css/jquery.fancybox.min.css') }}"><link rel="stylesheet" href="{{ asset('public/fronted/css/bootstrap-select.min.css') }}" /><link rel="stylesheet" href="{{ asset('public/fronted/css/selectize.bootstrap3.min.css') }}" />
 
-	
+
 	<script type="text/javascript">if (window.location.hash && window.location.hash == '#_=_') {window.location.hash = '';}</script>
-	
+
 <!-- Google Tag Manager -->
 <script>
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -21,8 +21,8 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-WM3N2LW');
- 
- 
+
+
 </script>
 <script type="application/ld+json">
 {
@@ -66,9 +66,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!--<div id="loader"><img src="{{ asset('public/fronted/images/loader.gif') }}" width="150px"></div>-->
 <div class="bd-example slider-main"><header class="" data-spy="affix" data-offset-top="50"> @include('fronted.includes.header') @include('fronted.mod_cart.cart')</header>
 @yield('slider')
-</div>   
+</div>
 <div class="add-section1"></div>
-<?php 
+<?php
 $crt=url()->current();
 $proper_url_array=explode('/',$crt);
 $str=end($proper_url_array);
@@ -76,31 +76,33 @@ $str=end($proper_url_array);
 @if($str!='index' && $str!='awaam' )
 <section class="inner-section"><div class="container"><div class="row"><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><div class="inner-banner"><div class="breadcrumb">@yield('breadcrum')</div></div></div></div></div></section>
 @endif()
-  
-  @include('admin.includes.session_message') 
 
-	@yield('content')  
-	@include('fronted.includes.footer')	
+
+
+  @include('admin.includes.session_message')
+
+	@yield('content')
+	@include('fronted.includes.footer')
 	@include('fronted.includes.foot')
-	@include('fronted.includes.addtocartscript')	
-	@include('fronted.includes.script')	
+	@include('fronted.includes.addtocartscript')
+	@include('fronted.includes.script')
 	@yield('scripts')
 	<script>
-	
+
 	$("#BookingBtn").click(function(e){
-	    
+
 	     /*var radioValue = $("input[name='delivery_time']:checked").val();
 	    // alert(radioValue);
             if(radioValue==undefined){
                	//alert("choose delivery preferences");
-               	
+
            $(".wishlistModalResponse").html("choose delivery slot");
                 $('#wishlistModal').modal('show');
                 setTimeout(function() {
                     $('#wishlistModal').modal('hide');
                     $(".wishlistModalResponse").html("");
-                }, 2000);     	
-      	localStorage.setItem('slotprice', 0); 
+                }, 2000);
+      	localStorage.setItem('slotprice', 0);
         return false;
             }
              else{
@@ -109,25 +111,25 @@ $str=end($proper_url_array);
       }*/
 	  quotation.submit();
 	  return true;
-            
-    /*        
+
+    /*
 var deliveryday  = $(".deliveryday").val();
 var delivery_time  = $(".delivery_time").val();
 
 var delivery_time= $('input[name="delivery_time"]:checked').val();
 if(delivery_time==''){
 	 	alert("choose delivery preferences");
-      	localStorage.setItem('slotprice', 0); 
+      	localStorage.setItem('slotprice', 0);
         return false;
       }*/
-     
 
-	}); 
+
+	});
 	$(document).ready(function(){
  /*$("form").submit(function(e){
         e.preventDefault();
     });*/
-      
+
 
       localStorage.removeItem('shipping_address_id');
 
@@ -166,27 +168,27 @@ if(delivery_time==''){
 
         $('#select_Date').hide();
 
-        
 
-    localStorage.setItem('slotprice', price); 
 
-    update_cart();      
+    localStorage.setItem('slotprice', price);
 
-        
+    update_cart();
+
+
 
   }
-  $(document).ready(function() { 	
+  $(document).ready(function() {
 
-localStorage.setItem('slotprice', 0);  
+localStorage.setItem('slotprice', 0);
 
-//createCookie('checkouttype',0,3000); 
+//createCookie('checkouttype',0,3000);
 
-}); 
+});
 	 function changeDelivery(id){
 
-		
 
-		
+
+
 
 		$.ajax({
 
@@ -194,9 +196,9 @@ localStorage.setItem('slotprice', 0);
 
           type: "POST",
 
-       
 
-       
+
+
 
          url:"{{route('timeslotdata')}}",
 
@@ -208,7 +210,7 @@ localStorage.setItem('slotprice', 0);
 
 			   var response = JSON.parse(data);
 
-                     $('.timeslotoptn').empty(); 
+                     $('.timeslotoptn').empty();
 
                       if(response.status==1){
 								$(".deliveryday").val();
@@ -218,9 +220,9 @@ localStorage.setItem('slotprice', 0);
 
 
                           if((response.size)>0){
-                          	
-                           
-                            $('.timeslotoptn').append(response.timeslot); 
+
+
+                            $('.timeslotoptn').append(response.timeslot);
 
                           }
 
@@ -232,16 +234,16 @@ localStorage.setItem('slotprice', 0);
 
       });
 
-		
 
-		
+
+
 
 		}
 	</script>
 <div class="quickview-model"><div class="modal fade fadeInUp animated" id="quickVieweModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="modal-body quickViewResponse"></div></div></div></div></div>
 <div class="quickview-model"><div class="modal fade fadeInUp animated" id="phuakatCoinsModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="modal-body phuakatCoinsResponse"></div></div></div></div></div>
 <div class="cartpopup">
-    
+
 <div class="modal fade fadeInUp animated" id="otherSellerModal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -257,12 +259,12 @@ localStorage.setItem('slotprice', 0);
         Modal body..
       </div>
 
-     
+
 
     </div>
   </div>
 </div>
-    
+
     <div class="modal fade fadeInUp animated" id="wishlistModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body wishlistModalResponse"></div></div></div></div></div>
 <div class="sizechart-model"><div class="modal fade fadeInUp animated" id="showsizechart" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="modal-body"><div class="row"><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 showsizechartResponse"></div></div></div></div></div></div></div>
 
@@ -291,7 +293,7 @@ $(document).ready(function(){
     $("#sellers-table3").show();
     $("#sellers-table1").hide();
   });
-  
+
 });
     //new
     $(document).ready(function(){
@@ -302,8 +304,8 @@ $(document).ready(function(){
     $("#sellers-table4").show();
   });
 });
-    
-    
+
+
 const copyToClipboard = str => {
 
   const el = document.createElement('textarea');
@@ -320,7 +322,7 @@ const copyToClipboard = str => {
 
 };
 
-document.getElementById('myItem').addEventListener('click', function(e){ 
+document.getElementById('myItem').addEventListener('click', function(e){
 
   let myUrl =  e.target.dataset.page_id;
 
@@ -335,6 +337,6 @@ document.getElementById('myItem').addEventListener('click', function(e){
   //alert('copied!')
 
 });
-    
+
 </script>
 </body></html>

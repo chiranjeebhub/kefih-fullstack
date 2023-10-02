@@ -1,4 +1,4 @@
-@if(Auth::guard('customer')->check()) 
+@if(Auth::guard('customer')->check())
 <script> $(document).ready(function() {
         window.user_login = 1;
         update_wishlist();
@@ -9,7 +9,7 @@
     }); </script>
 @endif
     <script src = "{{ asset('public/fronted/js/jquery.jcarousellite.min.js') }}" >
-    </script> 
+    </script>
      <script >
     localStorage.setItem("pincodechecked", 0);
 $("#rateit").bind('rated', function(event, value) {
@@ -68,9 +68,9 @@ $(document).ready(function() {
 
     });
           $(".otherSeller").click(function() {
-             
+
                     var prd_id = $(this).attr('prd_id');
-              
+
                     var token = "{{ csrf_token() }}";
                     $.ajax({
                         type: 'POST',
@@ -84,7 +84,7 @@ $(document).ready(function() {
                             var myObj = JSON.parse(data);
                                 $('#otherSellerModal').modal('show');
                                 $(".otherSellerBodyResponse").html(myObj.products);
-                           
+
                         }
                     });
           });
@@ -128,6 +128,7 @@ $(document).ready(function() {
         });
     });
     $(".addTocart").click(function() {
+        alert('sdf');
 
         var size_require = $(this).attr('size_require');
         var color_require = $(this).attr('color_require');
@@ -386,7 +387,7 @@ $(document).ready(function() {
         });
     });
     $(document).on('click', '.sizeClass', function() {
-        
+
           $('#size_name').html($(this).attr('size_name'));
         var size_id = $(this).attr('size_id');
         $('.addTocart').attr('size_id', size_id);
@@ -489,7 +490,7 @@ $(document).ready(function() {
         window.w_size_id = 0;
         $(".colorClass").html('');
         this.innerHTML = "<img src='{{asset('public/fronted/images/checkicon.png')}}'>";
-        
+
         $(this).attr('prd_type')
         $('#color_box').css('background-color',$(this).attr('color_code'));
         $('#color_name').html($(this).attr('color_name'));
@@ -614,7 +615,7 @@ $(document).ready(function() {
                             $('#wishlistModal').modal('hide');
                             location.reload();
                         }, 3000);
-                        
+
                     }
                 }
             });
