@@ -64,7 +64,7 @@
                         ?>
 
                         <a href="{{$prd_url}}" target="_blank">
-                            <img src="{{$url }}" alt="cart" class="img-thumbnail">
+                            <img src="{{asset($url) }}" alt="cart" class="img-thumbnail">
                         </a>
 
                     </div>
@@ -330,7 +330,7 @@
 -->
 
 
-    <div class="subTotalSection">
+    <div id="subTotalSection" class="subTotalSection">
         <div class="subTotalTitle">Subtotal</div>
         <div class="subTotalCard">
             <div class="subItemWrapper">
@@ -357,10 +357,24 @@
             @endif()
 
         </div>
-        <div class="paymentBtn">Proceed To Pay</div>
+        <a href="{{url('checkout')}}" class="paymentBtn">Proceed To Pay</a>
     </div>
 
 
+
+    <div id="subTotalSection1" class="subTotalSection1">
+        <div class="subTotalTitle">Order Summary</div>
+        <div class="couponInputWrapper1">
+            <input class="inputStyle" type="text" id="name" placeholder="Enter Amount">
+        </div>
+
+        <div class="buttonGrp">
+            <div class="paymentMode" onclick="selectPaymentMode(this, 'cash')">Cash</div>
+            <div class="paymentMode" onclick="selectPaymentMode(this, 'upi')">UPI</div>
+            <div class="paymentMode" onclick="selectPaymentMode(this, 'other')">Other</div>
+        </div>
+        <div class="paymentBtnOffline">Confirm Order</div>
+    </div>
 
 @else
     <div class="col-md-12">
@@ -388,4 +402,17 @@
 
         }
     });
+
+
+
+    function selectPaymentMode(element, value) {
+        $('.paymentMode').each(function (){
+            $(this).removeClass('selected');
+        });
+       $(element).addClass('selected');
+       $('#payment_type').val(null);
+    }
+
+
+
 </script>

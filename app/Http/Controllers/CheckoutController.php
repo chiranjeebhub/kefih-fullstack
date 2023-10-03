@@ -39,42 +39,42 @@ class CheckoutController extends Controller
      */
     public function __construct()
     {
-        	$this->middleware('auth:customer')->except('review_order');
+        	//$this->middleware('auth:customer')->except('review_order');
     }
 
 
     public function verifysecurityCode(Request $request){
-        $code = $request->code; 
-        $response = array(); 
+        $code = $request->code;
+        $response = array();
 
         $ExibutionData = DB::table('Exibition')->where(['status' => 1, "exibition_code"=> $code])->first();
         if(!empty($ExibutionData)){
              $startDateTime = $ExibutionData->startdate.' '.$ExibutionData->starttime;
-             $endDateTime = $ExibutionData->enddate.' '.$ExibutionData->endtime; 
+             $endDateTime = $ExibutionData->enddate.' '.$ExibutionData->endtime;
              $currentDateTime = date("Y-m-d H:i");
 
              if($currentDateTime >= $startDateTime && $currentDateTime <= $endDateTime){
 
                 Session::put('ExibutionData',['status'=>'1', "id"=>$ExibutionData->id,"name"=>$ExibutionData->exibition_name,"code"=>$code]);
 
-                $response = array(                
+                $response = array(
                     'message' => "Security code is valid",
                     'status' =>true
-                 ); 
+                 );
              }else{
-                $response = array(                  
+                $response = array(
                     'message' => "Security code expired",
                     'status' =>false
-                 ); 
+                 );
              }
-            
+
 
         }else{
 
             $response = array(
                 'message' => "Invalid Security Code",
                 'status' =>false
-            );         
+            );
         }
 
         return response()->json($response, 200);
@@ -123,41 +123,41 @@ class CheckoutController extends Controller
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
                       <tr>
-                       
+
                         <th>Item Name</th>
 						<th>Quantity</th>
                         <th>Price</th>
 						<th>Amt</th>
                       </tr>';
-                      
-                    
-                        
+
+
+
                             $email_msg.='<tr>
-                           
+
                             <td style="border-bottom:dashed 1px #ccc;">'.$order_details->product_name.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$order_details->product_qty.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$order_details->product_price.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$order_details->product_qty*$order_details->product_price.'</td></tr>';
-                            
-                      
-					
-						
-						
- 
+
+
+
+
+
+
                    if($master_order->coupon_code!=''){
                        $email_msg.='
 					    <tr>
@@ -172,8 +172,8 @@ class CheckoutController extends Controller
 						<td><strong>'.$master_order->total_shipping_charges.'</strong></td>
 					 </tr>';
                    }
-                     
-					 
+
+
                        $email_msg.='<tr bgcolor="#d1d4d1">
                         <td style="padding:5px 10px;">&nbsp;</td>
                         <td>&nbsp;</td>
@@ -181,15 +181,15 @@ class CheckoutController extends Controller
 						<td>&nbsp;</td>
                         <td><strong>Total Amount Rs.:'.($order_details->product_price*$order_details->product_qty+$order_details->order_cod_charges-$order_details->order_deduct_reward_points).' </strong></td>
                       </tr>
-					  
-					
-					  
+
+
+
                     </table>
 
                 </td>
             </tr>';
-            
-            
+
+
          $msg='Hi '.$vdr_details->username." You have a new order . Your order id is ".$order_details->id." .";
 	           $email_data = [
                             'to'=>$vdr_details->email,
@@ -209,11 +209,11 @@ class CheckoutController extends Controller
                             'phone'=>$vdr_details->phone,
                             'phone_msg'=>$msg
                          ];
-                         
-                  
-               CommonHelper::SendMsg($email_data);  
+
+
+               CommonHelper::SendMsg($email_data);
              CommonHelper::SendmailCustom($email_data);
-         
+
      }
      public function toAdminMailOnOrderPlace($order_id,$cust_id){
             $master_order=Orders::where('id',$order_id)->first();
@@ -230,31 +230,31 @@ class CheckoutController extends Controller
 				elseif($master_order->payment_mode==3){
                     $mode="Wallet";
                 }
-              
-				 
 
 
-                
+
+
+
                 $customer_data=Customer::where('id',$cust_id)->first();
                 $shipping_data=OrdersShipping::where('order_id',$order_id)->first();
                 $city_data=DB::table('cities')->where('id',$shipping_data->order_shipping_city)->first();
                 $state_data=DB::table('states')->where('id',$shipping_data->order_shipping_state)->first();
-			
+
 
             foreach($master_orders as $order_details){
-                
-                
+
+
                 $vdr_details=DB::table('products')
                                    ->select('vendors.username','vendors.email','vendors.phone')
                                  ->join('vendors','vendors.id','products.vendor_id')
                                  ->where('products.id',$order_details->product_id)
                                  ->first();
-        //    $this->toVendormailOnOrderplace($order_id,$customer_data,$order_details,$vdr_details,$mode,$shipping_data,$city_data,$state_data);             
-        
-                
+        //    $this->toVendormailOnOrderplace($order_id,$customer_data,$order_details,$vdr_details,$mode,$shipping_data,$city_data,$state_data);
+
+
             }
           	if($master_order->payment_mode==0) {
-					
+
 					$msg=view("message_template.cod_order_placedMessage",
 										array(
 									'data'=>array(
@@ -262,8 +262,8 @@ class CheckoutController extends Controller
 										'order_no'=>$master_order->order_no,
 										'order_date'=>$master_order->order_date
 										)
-										) )->render();					
-								
+										) )->render();
+
 					}
 				else {
 					$msg=view("message_template.online_order_placedMessage",
@@ -274,11 +274,11 @@ class CheckoutController extends Controller
                                         'order_date'=>$master_order->order_date
 										)
 										) )->render();
-				
+
 				}
-			 
-          
-										    
+
+
+
             	$email_msg='<tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Hi '.$customer_data->name.' '.$customer_data->last_name.'</p>
@@ -316,16 +316,16 @@ class CheckoutController extends Controller
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -336,23 +336,23 @@ class CheckoutController extends Controller
                         <th>Price</th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
                       foreach($master_orders as $products){
-                          
+
                             $email_msg.='<tr>
                             <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_name.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_qty.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_price.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_qty*$products->product_price.'</td></tr>';
-                            
+
                             $i++;
                       }
-					
-						
-						
- 
+
+
+
+
                    if($master_order->coupon_code!=''){
                        $email_msg.='
 					    <tr>
@@ -367,8 +367,8 @@ class CheckoutController extends Controller
 						<td><strong>'.$master_order->total_shipping_charges.'</strong></td>
 					 </tr>';
                    }
-                     
-					 
+
+
                        $email_msg.='<tr bgcolor="#d1d4d1">
                         <td style="padding:5px 10px;">&nbsp;</td>
                         <td>&nbsp;</td>
@@ -376,14 +376,14 @@ class CheckoutController extends Controller
 						<td>&nbsp;</td>
                         <td><strong>Total Amount Rs.:'.$master_order->grand_total.' </strong></td>
                       </tr>
-					  
-					
-					  
+
+
+
                     </table>
 
                 </td>
             </tr>';
-            
+
             // echo view("emails_template.to_admin_order_confirmation",
             // array(
             // 'message'=>$email_msg,
@@ -394,9 +394,9 @@ class CheckoutController extends Controller
             // 'city_info'=>$city_data,
             // 'state_info'=>$state_data,
             // 'payment'=>$mode
-            // ) )->render(); 
-            // die; 
-            
+            // ) )->render();
+            // die;
+
 	           $email_data = [
                             'to'=>Config::get('constants.email.admin_to'),
                             'subject'=>'New Order',
@@ -413,21 +413,21 @@ class CheckoutController extends Controller
                             ) )->render(),
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
-                         ];                        
-                    
-            //CommonHelper::SendMsg($email_data);  
+                         ];
+
+            //CommonHelper::SendMsg($email_data);
             CommonHelper::SendmailCustom($email_data);
-         
+
      }
       public function index2(Request $request)
     {
-           
-        
+
+
     }
     public function index(Request $request)
     {
         $id=auth()->guard('customer')->user()->id ;
-        
+
         $cart_data=app(\App\Http\Controllers\cart\CartController::class)->getCart_item($request->ip(), $id);
         if(sizeof($cart_data)==0){
               return Redirect::route('index');
@@ -439,24 +439,26 @@ class CheckoutController extends Controller
 		    'states'=>$states
 		    ]);
     }
-	
+
 		public function selectShippingAddress(Request $request)
     {
+
         $minutes=(8640 * 30);
-        
+
             $shipping_id=base64_decode($request->shipping_id);
-        
-           
-setcookie('shipping_address_id', $shipping_id, time() + (86400 * 30), "/"); 
-      
-        
+
+
+setcookie('shipping_address_id', $shipping_id, time() + (86400 * 30), "/");
+
+
           $res= CheckoutShipping::
              where('id',$shipping_id)
            ->first();
+
             if($res){
 
 
-                
+
                 $inputs=array(
                     "pincode"=>$res->shipping_pincode,
                     "price"=>200,
@@ -467,43 +469,44 @@ setcookie('shipping_address_id', $shipping_id, time() + (86400 * 30), "/");
                     "length"=>2,
                     "width"=>2
                     );
-                    
+
                     $back_response=CommonHelper::checkDelivery($inputs);
-            
+
                      $output = (array)json_decode($back_response);
-                   
+
                      if (array_key_exists("couriers",$output))
                     {
-  
+
 setcookie('pincode', $res->shipping_pincode, time() + (86400 * 30), "/");
 setcookie('pincode_error', 0, time() + (86400 * 30), "/");
                      } else{
-                        
+
 setcookie('pincode', $res->shipping_pincode, time() + (86400 * 30), "/");
 // setcookie('pincode_error', 1, time() + (86400 * 30), "/");
-setcookie('pincode_error', 0, time() + (86400 * 30), "/");                      
+setcookie('pincode_error', 0, time() + (86400 * 30), "/");
                     }
-   
-                
+
+
             }
+
             return Redirect::route('review_order');
-        
+
     }
 		public function editShippingAddress(Request $request)
     {
 		$id=base64_decode($request->shipping_id);
-		
-		
+
+
 			if ($request->isMethod('post')) {
 			    $input=$request->all();
-			   
+
 			    $request->validate([
             'shipping_name' => 'required|max:50',
             'shipping_mobile' => 'required|max:10',
            'shipping_address' => 'required|max:255',
             'shipping_address1' => 'max:255',
             'shipping_address2' => 'max:255',
-            'shipping_city' => 'required|max:50', 
+            'shipping_city' => 'required|max:50',
             'shipping_state' => 'required|max:50',
             'shipping_pincode' => 'required|max:6',
             'shipping_address_type' => 'required'
@@ -526,10 +529,10 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 'shipping_address_type.required' =>'Shipping type is required',
              ]
 			);
-			
-		
+
+
 			 $states=DB::table('states')->where('id',$input['shipping_state'])->first();
-			 
+
 			$input_array=
 			    	array('shipping_name' => $input['shipping_name'],
 			'shipping_mobile' => $input['shipping_mobile'],
@@ -541,24 +544,24 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 			'shipping_pincode' => $input['shipping_pincode'],
 			'shipping_address_type' => $input['shipping_address_type'],
 			'shipping_address_default' => isset($input['shipping_address_default']) ? 1 : 0
-			
-			
+
+
 			);
-			
-	
+
+
 			if($input_array['shipping_address_default']==1)
 			{
     			$cust_id=auth()->guard('customer')->user()->id ;
-    			
+
     			$input_default_set=array( 'shipping_address_default' => 0);
     			CheckoutShipping::where('customer_id',$cust_id)->where('id','!=',$id)->update($input_default_set);
 			}
-			
+
 		  $rs=CheckoutShipping::where('id',$id)->update($input_array);
-		  
+
 		  /* save the following details */
 		  if($rs){
-		      
+
 		      if($id==@$_COOKIE["shipping_address_id"]){
 		          $inputs=array(
                     "pincode"=>$input['shipping_pincode'],
@@ -579,34 +582,34 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
                      } else{
        setcookie('pincode', $res->shipping_pincode, time() + (86400 * 30), "/");
        setcookie('pincode_error', 1, time() + (86400 * 30), "/");
-             
+
                     }
-		          
+
 		      }
 		      MsgHelper::save_session_message('success',Config::get('messages.common_msg.shippingAddressUpdated'),$request);
 			   return Redirect::route('checkout');
-		      
-		   
-			 
+
+
+
 		  } else{
-		     
-		     
+
+
 			   MsgHelper::save_session_message('danger',Config::get('messages.common_msg.data_save_error'),$request);
 			   return Redirect::back();
 		  }
-		  
+
 			}
 		$data=CheckoutShipping::select('customer_shipping_address.*')->where('id',$id)->first();
         $states=CommonHelper::getState($data->shipping_state);
         $cities=CommonHelper::getCityFromState($data->shipping_state);
-        
-        
+
+
         $states1=DB::table('states')->where('name',$data->shipping_state)->first();
 		//print_r($states1->id);die;
         $cities=CommonHelper::getCityFromState($states1->id);
-	 
+
 	 	$ship_address_list = CheckoutShipping::getshippingAddress($id);
-	 	
+
 			return view('fronted.mod_checkout.checkoutEdit',[
 			    'shipping_data'=>$data,
 			    'id'=>$id,
@@ -614,32 +617,34 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 			    "states"=>$states,
 			     "cities"=>$cities
 			    ]);
-		
+
 
     }
 	public function delete_shipping_address(Request $request)
     {
-		
+
 		CheckoutShipping::where('id', base64_decode($request->shipping_id))
 						->update([
 							'isdeleted' =>1
 						]);
-	
+
 		MsgHelper::save_session_message('success',Config::get('messages.common_msg.shippingAddressDeleted'),$request);
-		 return Redirect::back();	
+		 return Redirect::back();
     }
-	
+
 	public function add(Request $request){
 
+
+
 		if ($request->isMethod('post')) {
-		    
+
 		    $request->validate([
             'shipping_name' => 'required|max:50',
             'shipping_mobile' => 'required|max:10',
              'shipping_address' => 'required|max:255',
             'shipping_address1' => 'max:255',
             'shipping_address2' => 'max:255',
-            'shipping_city' => 'required|max:50', 
+            'shipping_city' => 'required|max:50',
             'shipping_state' => 'required|max:50',
             'shipping_pincode' => 'required|max:6',
             'shipping_address_type' => 'required'
@@ -662,9 +667,9 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 'shipping_address_type.required' =>'Shipping Address Type is required',
              ]
 			);
-			
+
 			$input=$request->all();
-           
+
               $cust_id=auth()->guard('customer')->user()->id ;
 	$states=DB::table('states')->where('id',$input['shipping_state'])->first();
 
@@ -680,7 +685,7 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 			$CheckoutShipping->shipping_pincode = $input['shipping_pincode'];
 			$CheckoutShipping->shipping_address_type = $input['shipping_address_type'];
 			$CheckoutShipping->shipping_address_default = isset($input['shipping_address_default']) ? 1 : 0;
-		  
+
 		  /* save the following details */
 		  if($CheckoutShipping->save()){
 		      $address_id=$CheckoutShipping->id;
@@ -688,78 +693,87 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 		         	$input_default_set=array('shipping_address_default' => 0);
     			$CheckoutShipping::where('customer_id',$cust_id)->where('id','!=',$address_id)->update($input_default_set);
 		      }
-                setcookie('shipping_address_id', $address_id, time() + (86400 * 30), "/"); 
-                return Redirect::route('review_order');
+                setcookie('shipping_address_id', $address_id, time() + (86400 * 30), "/");
+
+
+              if($input['payment_mode']){
+                  session()->forget('ExibutionData');
+              }else{
+                  Session::put('ExibutionData', '00032');
+              }
+
+                return Redirect::route('thankyou');
+               // return Redirect::route('review_order');
 			 // MsgHelper::save_session_message('success',Config::get('messages.common_msg.shippingAddressAdded'),$request);
 			 //  return Redirect::back();
 		  } else{
 			   MsgHelper::save_session_message('danger',Config::get('messages.common_msg.data_save_error'),$request);
 			    return Redirect::back();
 		  }
-		 
+
 		}
-    
+
     return view('admin.mod_checkout.checkout');
    }
-    
-    
+
+
     public function review_order(Request $request)
     {
-      
 
-            if(Auth::guard('customer')->check()){
+
+          /*  if(Auth::guard('customer')->check()){
                     $cust_id=auth()->guard('customer')->user()->id;
              }else{
             //      $value = Session::get('checout');
             //   echo $value;
                         Session::put('checout', true);
                         return Redirect::route('customer_login');
-             }
-         
+             }*/
+
           Session::forget('ExibutionData'); //removing ExibutionData
         $minutes=(86400000 * 30);
-         
+
         $cust_id=auth()->guard('customer')->user()->id ;
 		$cart_data=app(\App\Http\Controllers\cart\CartController::class)->getCart_item($request->ip(),$cust_id);
         if(sizeof($cart_data)==0){
             return Redirect::route('index');
         }
-              
+
         $shipping_adddress=$billing_adddress='';
 
          if(isset($_COOKIE['shipping_address_id'])){
-           
+
 	      $shipping_adddress=CheckoutShipping::getshippingAddressOfCustomer($_COOKIE['shipping_address_id'],$cust_id);
 	      if(!$shipping_adddress){
-	          
-	        return Redirect::route('checkout');   
+
+	        return Redirect::route('checkout');
 	      }
 
-          
+
         if (isset($_COOKIE['billing_address_id'])) {
             $billing_adddress = CheckoutBillingAddress::getshippingAddressOfCustomer($_COOKIE['billing_address_id'], $cust_id);
         } else {
             $billing_adddress = CheckoutBillingAddress::getDeafultAddress($cust_id);
         }
 
-      
+
 
 
                 $inputs=array(
-                    "pincode"=>$shipping_adddress->shipping_pincode,                  
+                    "pincode"=>$shipping_adddress->shipping_pincode,
                     );
           $back_response=CommonHelper::checkDelivery_new($inputs);
-                  
+
 				  /*
           if ($back_response)
-          {                     
+          {
               setcookie('pincode', $shipping_adddress->shipping_pincode, time() + (86400 * 30), "/");
               setcookie('pincode_error', 0, time() + (86400 * 30), "/");
           } else{
               setcookie('pincode', $shipping_adddress->shipping_pincode, time() + (86400 * 30), "/");
               setcookie('pincode_error', 1, time() + (86400 * 30), "/");
-              return Redirect::route('checkout')->withErrors(['Delivery not available in your port code']);         
-          
+              return Redirect::route('checkout')->withErrors(['Delivery not available in your port code']);
+
          }
          */
 
@@ -767,29 +781,29 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 	    } else{
 	         return Redirect::route('checkout');
 	    }
-	 
-        
+
+
 //         if($request->session()->get('shipping_address_id')==0  $_COOKIE["shipping_address_id"]){
 // 			return Redirect::route('checkout');
 //         }
 
                 // if(@$_COOKIE["shipping_address_id"]){
-                
+
                 //     } else{
                 //       return Redirect::route('checkout');
                 //     }
-        
-        
+
+
         // $address_id=$request->session()->get('shipping_address_id');
 //         $address_id= $_COOKIE["shipping_address_id"];
-       
-    
+
+
 //       $shipping_adddress=CheckoutShipping::getshippingAddressOfCustomer($address_id,$cust_id);
-    
+
 //     $cust_info=Customer::where('id',$cust_id)->first();
-  
-//             unset($_COOKIE['ship_details']); 
-         
+
+//             unset($_COOKIE['ship_details']);
+
 //                 $inputs=array(
 //                     "pincode"=>$shipping_adddress->shipping_pincode,
 //                     "price"=>200,
@@ -800,13 +814,13 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 //                     "length"=>2,
 //                     "width"=>2
 //                     );
-                    
+
 //                     $back_response=CommonHelper::checkDelivery($inputs);
 //                      $output = (array)json_decode($back_response);
-                   
+
 //                      if (array_key_exists("delivery_details",$output))
 //                     {
-                      
+
 // setcookie('pincode', $shipping_adddress->shipping_pincode, time() + (86400 * 30), "/");
 // setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 
@@ -816,12 +830,12 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 //                          return Redirect::route('checkout')->withErrors(['Delivery not available in your area']);
 
 
-            
-                        
+
+
 //                     }
-            
+
 $is_review = ($request->ba == 'true' || $request->ba == 1)?$request->ba:false;
-        return view('fronted.mod_checkout.checkoutReview',array(
+        return view('fronted.mod_checkout.checkoutReview2',array(
         	    "shipping_address"=>$shipping_adddress,
                 'billing_adddress' => $billing_adddress,
 				"cust_info"=>$cust_info,
@@ -830,8 +844,8 @@ $is_review = ($request->ba == 'true' || $request->ba == 1)?$request->ba:false;
                 "is_review" => $is_review
         	    ));
     }
-	
-	
+
+
 public function isIt_myFirst_order(){
 	/*
 // 	  if my first order
@@ -839,14 +853,14 @@ public function isIt_myFirst_order(){
 	    ->where('c_id',auth()->guard('customer')->user()->id)
 	    ->where('p_id',auth()->guard('customer')->user()->r_by)
 	    ->where('first_order_placed',0)
-	    ->first(); 
-	    
+	    ->first();
+
 	    if($myfistr_order){
 	       // 	  get define price
 	    $refer_price=DB::table('store_info')
 	        ->select('parent_amount','child_amount')
 	    ->first();
-	   
+
 	    // 	 transfer to parent
 	    DB::table('tbl_refer_earn')
 	    ->insert(array(
@@ -855,27 +869,27 @@ public function isIt_myFirst_order(){
                 'amount'=>$refer_price->parent_amount,
                 'mode'=>1
 	        ));
-	        
-	        
-	        // 	 update my order 
+
+
+	        // 	 update my order
 	        DB::table('user_referrals')
                 ->where('c_id',auth()->guard('customer')->user()->id)
                 ->where('p_id',auth()->guard('customer')->user()->r_by)
 	    ->update(array(
             'first_order_placed'=>1
 	        ));
-	        
+
 	         // update parents refer amount
                 Customer::
                 where('id',auth()->guard('customer')->user()->r_by)
                 ->increment('r_amount',$refer_price->parent_amount);
-                
+
                 //update wallet amount of customer
                  Customer::
                 where('id',auth()->guard('customer')->user()->r_by)
                 ->increment('total_reward_points',$refer_price->parent_amount);
-                
-                
+
+
       // create wallet history
 	    DB::table('tbl_wallet_history')
 	    ->insert(array(
@@ -886,9 +900,9 @@ public function isIt_myFirst_order(){
                 'fld_reward_narration'=>'Earned',
                 'mode'=>2
 	        ));
-	        
+
 	        // 	transfer to child
-               
+
 	    DB::table('tbl_refer_earn')
 	    ->insert(array(
                 'user_id'=>$cust->id,
@@ -896,17 +910,17 @@ public function isIt_myFirst_order(){
                 'amount'=>$refer_price->child_amount,
                 'mode'=>0
 	        ));
-                
+
                 // update parents refer amount
                 Customer::
                 where('id',$cust->id)
                 ->increment('r_amount',$refer_price->child_amount);
-                
+
                 //update wallet amount of customer
                  Customer::
                 where('id',$cust->id)
                 ->increment('total_reward_points',$refer_price->child_amount);
-                
+
                  // create wallet history
 	    DB::table('tbl_wallet_history')
 	    ->insert(array(
@@ -917,11 +931,11 @@ public function isIt_myFirst_order(){
                 'fld_reward_narration'=>'Earned',
                 'mode'=>2
 	        ));
-                 
+
 	    }
 	    */
-	    
-                
+
+
 	}
 	public function submit_order(Request $request)
     {
@@ -932,19 +946,20 @@ public function isIt_myFirst_order(){
          $ExibutionData = Session::get('ExibutionData');
         $ExibutionCode = '';
         $ExibutionName ='';
-        $ExibutionId ='';       
-       
+        $ExibutionId ='';
+
+
        if(!empty($ExibutionData)){
             if($ExibutionData['status'] == 1){
-                $ExibutionCode = $ExibutionData['code']; 
-                $ExibutionName = $ExibutionData['name']; 
-                $ExibutionId = $ExibutionData['id']; 
+                $ExibutionCode = $ExibutionData['code'];
+                $ExibutionName = $ExibutionData['name'];
+                $ExibutionId = $ExibutionData['id'];
             }
        }
-       
-     
+
+
        $paymentDetails=$request->session()->get('paymentDetails');
-    
+
 
 
        //if(isset($_COOKIE['sitecity']) && isset($_COOKIE['shipping_address_id'])){
@@ -954,54 +969,63 @@ public function isIt_myFirst_order(){
             if($shipping_adddress){
                 /*if($shipping_adddress->shipping_city===$sitecityname){
                 } else{
-                  
+
                     MsgHelper::save_session_message('danger','Products not available in your city',$request);
-                    return redirect()->route('review_order');  
+                    return redirect()->route('review_order');
                 }*/
             } else{
-                 
+
             //      	MsgHelper::save_session_message('danger','Products not available in your city1',$request);
-            //   return redirect()->route('review_order');  
+            //   return redirect()->route('review_order');
             }
-           
+
 	    } else{
-	       
+
 	        	MsgHelper::save_session_message('danger','Please select an address',$request);
 	         return redirect()->route('review_order');
 	    }
-      
+
          $shipping_charges_details=CommonHelper::getShippingDetails();
-         
+
         $input=$request->all();
+
+        if(!$ExibutionData){
+            $input['payment_mode'] = 1;
+        }else{
+            $input['payment_mode'] = null;
+        }
+
 		$cust_id=auth()->guard('customer')->user()->id ;
-	
-		
+
+
 		$cart_data=app(\App\Http\Controllers\cart\CartController::class)->getCart_item($request->ip(),$cust_id);
 
-       
+
 
 		 if(count($cart_data)==0){
 		    	MsgHelper::save_session_message('danger','Something went wrong',$request);
-              return redirect()->route('review_order'); 
+              return redirect()->route('review_order');
 		}
-		
+
 $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])->first();
 
         /**
-         * Billing Address setup 
+         * Billing Address setup
          */
 
-        $billing_address = array(); 
+        $billing_address = array();
         if($request->is_ba == 'true' && !empty($_COOKIE["billing_address_id"])){
             $billing_address = CheckoutBillingAddress::where('id', $_COOKIE["billing_address_id"])->first();
         }
-       
+
+
+
         $order_no='KFH'.date('YmdHis');
-        
+
             $finalAddressCity=$shipping_adddress->shipping_city;
             $invalidProducts=0;
             $validProducts=0;
-            
+
             for($i=0;$i<count($cart_data);$i++)
 		 {
 		     $productInSelectedLocation = DB::table('products')
@@ -1018,15 +1042,15 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 }else{
                  $invalidProducts++;
                 }
-		    
+
 		 }
-		 
+
 		   if($invalidProducts>0){
                 MsgHelper::save_session_message('danger','Products not available in your city',$request);
                 return redirect()->route('review_order');
                 die();
          }
-            
+
          if(@count($cart_data)!='0'){
         $order_shipping=array(
             'order_id'=>'',
@@ -1044,9 +1068,9 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 				$shipping_id=DB::getPdo()->lastInsertId();
 
 
-        
+
         /**
-         * Billing address manage 
+         * Billing address manage
          */
         $billing_id = 0;
         if(!empty($billing_address)){
@@ -1062,21 +1086,23 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 'order_shipping_zip' => $billing_address->shipping_pincode,
                 'order_shipping_phone' => $billing_address->shipping_mobile,
                 'order_shipping_email' => $billing_address->shipping_email,
-            );  
+            );
             DB::table('orders_billing_addresses')->insert($order_billing_addresses);
             $billing_id = DB::getPdo()->lastInsertId();
         }
-				
+
+
+
 		$tcs_info=DB::table('tbl_settings')->select('tcs_tax_percentage','tds_tax_percentage')->where('id',1)->first();
-							
+
 		$tcs_amt=number_format(((($paymentDetails['grandTotal'])*$tcs_info->tcs_tax_percentage)/100),2);
-				
+
         $tds_amt=number_format(((($paymentDetails['grandTotal'])*$tcs_info->tds_tax_percentage)/100),2);
 
         $orderPaymentMode = $input['payment_mode'];
-        $exhibition_payment_mode = ''; 
+        $exhibition_payment_mode = '';
         if(in_array($input['payment_mode'], [2,3,4,6])){
-            $orderPaymentMode = 2; 
+            $orderPaymentMode = 2;
         }
 
         if($input['payment_mode'] == 2){
@@ -1090,7 +1116,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
         }
 
         if($input['payment_mode'] == 5){
-            $orderPaymentMode = 3; 
+            $orderPaymentMode = 3;
         }
 
 
@@ -1125,16 +1151,16 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 'order_status'=>($input['payment_mode'] == 1)?9:0,
                  'order_from'=>'WEB'
 			);
-			
+
 				$coupon_code=$paymentDetails['coupon_code'];
 	            $discountAmount = $paymentDetails['discount'];
 
          	DB::table('orders')->insert($order);
          	$order_id=DB::getPdo()->lastInsertId();
-         	
+
 
              Session::forget('ExibutionData'); //removing ExibutionData
-				
+
 				DB::table('orders')->where('id',$order_id)->update(
 		 	    array(
 		 	        'order_no'=>'KFH'.$order_id,
@@ -1142,7 +1168,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                      'service_invoice_date'=>date('Y-m-d')
 		 	        )
 		 	    );
-         	
+
          		DB::table('orders_shipping')->where('id',$shipping_id)
          		->update(
          		    array(
@@ -1152,7 +1178,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 if($orderPaymentMode == 3){
                     DB::table('orders')->where('id',$order_id)->update(
                         array(
-                                'txn_id'=> Str::uuid(),                   
+                                'txn_id'=> Str::uuid(),
                             )
                         );
                 }
@@ -1168,38 +1194,40 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 ));
 
 
-         	
+
+
+
 		 $grand_total=$total_reward_points=0;
-		 
+
 		 $product_commission_master=0;
 		 for($i=0;$i<count($cart_data);$i++)
 		 {
 
             $vendor_delivery_charge=0;
             $Gst_Product_Tax=0;
-            $productCategoryData = ProductCategories::getProductLatestCategory($cart_data[$i]->prd_id);     
+            $productCategoryData = ProductCategories::getProductLatestCategory($cart_data[$i]->prd_id);
             if(!empty($productCategoryData)){
                 $categoryData = Category::select('delivery_charge','tax_rate')->where('id',$productCategoryData->cat_id)->first();
                 if(!empty($categoryData)){
                     $vendor_delivery_charge = $categoryData->delivery_charge;
                     $Gst_Product_Tax = $categoryData->tax_rate;
-                }                
-            } 
-            
+                }
+            }
+
 
 			 $prd_points=DB::table('product_reward_points')->where('product_id',$cart_data[$i]->prd_id)->first();
                         $prc=$cart_data[$i]->master_spcl_price;
                         $old_price=0;
-			  
+
 			 $reward_points=$prd_points->reward_points;
                     if ($cart_data[$i]->master_price!='')
                     {
                     $old_price=$cart_data[$i]->master_price;
-                    
+
                     }
-			  
+
         if($cart_data[$i]->color_id==0 && $cart_data[$i]->size_id!=0){
-        
+
             $attr_data=DB::table('product_attributes')
             ->where('product_id',$cart_data[$i]->prd_id)
             ->where('size_id',$cart_data[$i]->size_id)
@@ -1207,9 +1235,9 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             if($old_price!=0){
                  $old_price+=$attr_data->price;
             }
-           
+
             $prc+=$attr_data->price;
-            
+
         }
         if($cart_data[$i]->color_id!=0 && $cart_data[$i]->size_id==0){
             $attr_data=DB::table('product_attributes')
@@ -1235,40 +1263,40 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
         $product_shipping_charges=0;
          $product_commission_rate=0;
         $ship_data=Products::productDetails($cart_data[$i]->prd_id);
-        
+
         $commission_data=Products::productsFirstCatData($cart_data[$i]->prd_id);
-       
-        
+
+
         $product_commission_rate=$commission_data->commission_rate;
-        
+
          $product_commission_master+=$product_commission_rate;
     if($paymentDetails['shippingCharges']>0){
          $product_shipping_charges=$ship_data->shipping_charges;
     } else{
-        $product_shipping_charges=0;  
+        $product_shipping_charges=0;
     }
-    
+
     	$order_deduct_reward_points=0;
 			if($paymentDetails['grandTotal']!=0)
 			{
                 //$order_deduct_reward_points=round((($prc/$paymentDetails['grandTotal'])*$paymentDetails['usePoints']),2);
-         
+
                 if($paymentDetails['usePoints'] >= $paymentDetails['subTotal']){
                     $order_deduct_reward_points=round((($prc/$paymentDetails['subTotal'])*$paymentDetails['subTotal']),2);
                 }else{
                     $order_deduct_reward_points=round((($prc/$paymentDetails['subTotal'])*$paymentDetails['usePoints']),2);
-                }  
+                }
 			}
 			  $product_coupon_amt=0;
               /*
-              //this code is not working because $cart_data[$i]->fld_cart_id id not found. 
+              //this code is not working because $cart_data[$i]->fld_cart_id id not found.
 			  if($coupon_code!='')
 			{
 				$product_removed=array();
 				array_push($product_removed,$cart_data[$i]->fld_cart_id);
-				
+
 				$ss=Coupon::verifyAppliedCouponProductDiscountAmt($coupon_code,$cust_id,$product_removed);
-				
+
 				if(@$ss['ProductCouponCartAmount']!='')
 				{
 					$product_coupon_amt=round(@$ss['ProductCouponCartAmount']);
@@ -1277,9 +1305,9 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             */
 
             /***
-             * exhibiton discount amount split 
+             * exhibiton discount amount split
              */
-			
+
             if(!empty($ExibutionData) && $paymentDetails['exhibition_discount'] > 0){
                 $product_coupon_amt = (($prc * $cart_data[$i]->qty)/$paymentDetails['subTotal'])*$paymentDetails['exhibition_discount'];
             }
@@ -1291,24 +1319,24 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
         $total_products=sizeof($cart_data);
         $cod_charges=($shipping_charges_details->cod_charges)/$total_products;
         }
-        
-        
+
+
         $product_shipping_charges=0;
         if($paymentDetails['shippingCharges']>0){
             $total_products=sizeof($cart_data);
             $product_shipping_charges=($paymentDetails['shippingCharges'])/$total_products;
         }
-        
+
         $dis=0;
         if($paymentDetails['discount']>0){
             $total_products=sizeof($cart_data);
             $dis=($paymentDetails['discount'])/$total_products;
         }
-        
+
          $slot_prices=0;
         if($paymentDetails['slotprice']>0){
             $total_products=sizeof($cart_data);
-            $slot_prices=($paymentDetails['slotprice'])/$total_products;        
+            $slot_prices=($paymentDetails['slotprice'])/$total_products;
             $slot_prices = number_format($slot_prices,2);
         }
 
@@ -1317,12 +1345,15 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
         $tds_info_amt=number_format(((($cart_data[$i]->qty*$ProductBasePrice)*$tcs_info->tds_tax_percentage)/100),2);
 
 
+
+
+
         /**
          * Seller invoice Data setup start
          */
            $storeInfoData = DB::table('store_info')
                             ->select('Tcs','paymentgateway','logistics_tax')
-                            ->first();         
+                            ->first();
 
            $CourierCharges = $sellerInvoiceTCS = $paymentgatewayTax = $logistics_tax =  0;
            $ProductTotalWeight = $cart_data[$i]->qty * $ship_data->weight;
@@ -1344,7 +1375,9 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 $CourierCharges = $CourierChargesData->prices;
             }
 
-            
+
+
+
 
          /**
          * Seller invoice Data setup end
@@ -1386,30 +1419,30 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 "payment_gateway_tax" => $paymentgatewayTax,
                 "logistics_tax" => $logistics_tax
 				);
-				
-				
+
+
 				DB::table('order_details')->insert($order_detail);
 				$order_detail_id=DB::getPdo()->lastInsertId();
-				
+
 				DB::table('order_details')->where('id',$order_detail_id)->update(
 		 	    array(
 		 	        'suborder_no'=>'KFHS'.$order_detail_id
 		 	        )
 		 	    );
-		 	    
-				
+
+
 				/*$wallet=array(
 						'fld_customer_id'=>$cust_id,
 						'fld_order_id'=>$order_id,
 						'fld_order_detail_id'=>$order_detail_id,
 						'fld_reward_points'=>$reward_points
 					);
-			
+
 				DB::table('tbl_wallet_history')->insert($wallet);*/
-		
+
 				$grand_total+=$cart_data[$i]->qty*$prc;
 				$total_reward_points+=$reward_points;
-				
+
 		 }
 
 
@@ -1437,12 +1470,14 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 		 	        'total_commission_rate'=>$product_commission_master
 		 	        )
 		 	    );
-         
+
+
+
         /**
          * In case of COD , Exhibution , WALLET payment Instant wallet amount minus on order place
          */
         if(in_array($input['payment_mode'], [0,2,3,4,5,6])){
-		 
+
 		 if($order['deduct_reward_points']!=0 && $order['deduct_reward_points']!=''){
 			 $wallet=array(
 						'fld_customer_id'=>$cust_id,
@@ -1451,10 +1486,10 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 						'fld_reward_narration'=>'Deducted',
 						'fld_reward_deduct_points'=>$order['deduct_reward_points']
 					);
-			
+
 			 DB::table('tbl_wallet_history')->insert($wallet);
 		 }
-		 
+
 		  if($total_reward_points!=0 && $total_reward_points!='')
 		 {
 			 $wallet=array(
@@ -1464,14 +1499,14 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 						'fld_reward_narration'=>'Earned',
 						'fld_reward_points'=>$total_reward_points
 					);
-			
+
 			 DB::table('tbl_wallet_history')->insert($wallet);
 		 }
-		 
-		
+
+
 		$cust_points=DB::table('customers')->where('id',$cust_id)->first();
 		$deduct_amt=$cust_points->total_reward_points-$order['deduct_reward_points'];
-		
+
 		DB::table('customers')->where('id',$cust_id)
          		->update(
          		    array(
@@ -1496,7 +1531,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 			$amount=round($paymentDetails['grandTotal']+$product_shipping_charges)*100;
 			$card_holder_name=$order_shipping['order_shipping_name'];
 
-            $key_id=Config::get('constants.Razorpay.key'); 
+            $key_id=Config::get('constants.Razorpay.key');
             $key_secret = Config::get('constants.Razorpay.secret');
 
 
@@ -1543,7 +1578,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                         var store_logo = "http://b2cdomain.in/kefih/public/fronted/images/logo.jpg";
                         var email = "'.$order_shipping['order_shipping_email'].'";
                         var phone = "'.$order_shipping['order_shipping_phone'].'";
-    
+
 					  var razorpay_options = {
 						key: "'.$key_id.'",
 						amount: "'.$total.'",
@@ -1565,17 +1600,17 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 						    jQuery.ajax({
                                 url:"'.route("callback").'",
                                 type: "post",
-                                data: {_token:token,razorpay_payment_id: transaction.razorpay_payment_id, merchant_order_id: merchant_order_id, merchant_surl_id: merchant_surl_id, merchant_furl_id: merchant_furl_id, card_holder_name_id: card_holder_name_id, merchant_total: merchant_total, merchant_amount: merchant_amount, currency_code_id: currency_code_id}, 
+                                data: {_token:token,razorpay_payment_id: transaction.razorpay_payment_id, merchant_order_id: merchant_order_id, merchant_surl_id: merchant_surl_id, merchant_furl_id: merchant_furl_id, card_holder_name_id: card_holder_name_id, merchant_total: merchant_total, merchant_amount: merchant_amount, currency_code_id: currency_code_id},
                                 dataType: "json",
                                 success: function (res) {
                                     if(res.msg){
                                         alert(res.msg);
                                         return false;
-                                    } 
+                                    }
                                     window.location = res.redirectURL;
                                 }
                             });
-                             
+
                     	},
 						"modal": {
 							"ondismiss": function(){
@@ -1583,27 +1618,27 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 							}
 						}
 					  };
-					  
+
 					    var objrzpv1 = new Razorpay(razorpay_options);
                         objrzpv1.open();
-                        
+
                     </script>';
-					
-			echo $html;  
+
+			echo $html;
          }else{
                 MsgHelper::save_session_message('danger','Something Went Wrong! Try Later.',$request);
                 return Redirect::back();
             }
-			
+
 		}elseif(in_array($input['payment_mode'], [0,2,3,4,5,6])){  //cod
 			self::removeProductFromwishlist($request->ip(),$cust_id);
 			    //   $this->generateMailforOrder($order_id,$cust_id);
-			 
+
                 if(auth()->guard('customer')->user()->r_by>0){
                 // $this->isIt_myFirst_order();
                 }
-		     
-		      
+
+
 				$oder_data=DB::table('orders')->where('id',$order_id)->first();
 				 $this->CouponUsed($oder_data->coupon_code);
 // 			$request->session()->forget('cart_coupon');
@@ -1611,22 +1646,22 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             FbConversionHelper::fbCoversion($order_id, $request);
 			return view('fronted.mod_checkout.thank-you',array('order_id'=>$oder_data->order_no,'real_order_id'=>$order_id));
 		}
-    }else{   
+    }else{
         return redirect()->intended('/');
-        
+
     }
-		
+
     }
-    
+
     public function callback(Request $request)
     {
-        
+
         if (($request->razorpay_payment_id!='') && ($request->merchant_order_id!='')) {
             $json = array();
             $razorpay_payment_id = $request->razorpay_payment_id;
             $merchant_order_id = $request->merchant_order_id;
             $currency_code = "INR";
-            
+
             $dataFlesh = array(
                 'card_holder_name' => $request->card_holder_name_id,
                 'merchant_amount' => $request->merchant_amount,
@@ -1637,7 +1672,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 'order_id' => $request->merchant_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
             );
-        
+
         $paymentInfo = $dataFlesh;
         $order_info = array('order_status_id' => $request->merchant_order_id);
         $amount = $request->merchant_total;
@@ -1664,7 +1699,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             $result = curl_exec($ch);
             $data = json_decode($result);
             $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
+
             if ($result === false) {
                 $success = false;
                 $error = 'Curl error: ' . curl_error($ch);
@@ -1687,7 +1722,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             $error = 'Request to Razorpay Failed';
         }*/
             if ($success === true) {
-                app(\App\Http\Controllers\CookieController::class)->remove_cokkie_cart(); 
+                app(\App\Http\Controllers\CookieController::class)->remove_cokkie_cart();
 
                   DB::table('orders')->where('id',$merchant_order_id)->update(
 		 	    array(
@@ -1706,7 +1741,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 /**
                  * Deduct wallet amount on payment success
                  */
-                $MasterOrderData = DB::table('orders')->select('customer_id','deduct_reward_points')->where('id',$merchant_order_id)->first(); 
+                $MasterOrderData = DB::table('orders')->select('customer_id','deduct_reward_points')->where('id',$merchant_order_id)->first();
 
                 if($MasterOrderData->deduct_reward_points>0){
 
@@ -1718,15 +1753,15 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                                    'fld_reward_narration'=>'Deducted',
                                    'fld_reward_deduct_points'=>$MasterOrderData->deduct_reward_points
                                );
-                       
+
 
                        $isCreated = DB::table('tbl_wallet_history')->insert($wallet);
 
-                    }                    
-                                       
+                    }
+
                    $cust_points=DB::table('customers')->where('id',$MasterOrderData->customer_id)->first();
                    $deduct_amt=$cust_points->total_reward_points-$MasterOrderData->deduct_reward_points;
-                   
+
                    DB::table('customers')->where('id',$MasterOrderData->customer_id)
                             ->update(
                                 array(
@@ -1737,7 +1772,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 
 
 
-		 	    
+
                 if (!$order_info['order_status_id']) {
                     $json['redirectURL'] = $request->merchant_surl_id;
                 } else {
@@ -1746,16 +1781,16 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             } else {
                     $json['redirectURL'] = $request->merchant_furl_id;
             }
-            
+
             $json['msg'] = '';
         } else {
             $json['msg'] = 'An error occured. Contact site administrator, please!';
         }
         header('Content-Type: application/json');
         echo json_encode($json);
-    
+
     }
-    
+
      public  static function CouponUsed($coupon_code){
 	      if($coupon_code!=''){
 		         $coupon_details=DB::table('coupon_details')
@@ -1768,27 +1803,27 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 $coupon_details->coupon_type==4  ||
                 $coupon_details->coupon_type==5  ||
                 $coupon_details->coupon_type==6  ||
-                $coupon_details->coupon_type==7  
+                $coupon_details->coupon_type==7
             ){
                	DB::table('coupon_details')->where('coupon_code',$coupon_code)->update(
                         array(
-                          "coupon_used"=>1  
+                          "coupon_used"=>1
                         )
                	    );
-            } 
+            }
                        }
-           
+
 		    }
-   
+
 
 
 	}
-    
+
     public function generateMailforOrder($order_id,$cust_id){
                  $this->toAdminMailOnOrderPlace($order_id,$cust_id);
-                   app(\App\Http\Controllers\CookieController::class)->remove_cokkie_cart(); 
-                 
-                 
+                   app(\App\Http\Controllers\CookieController::class)->remove_cokkie_cart();
+
+
                   DB::table('orders')->where('id',$order_id)->update(
 		 	    array(
 		 	        'order_status'=>0
@@ -1813,14 +1848,14 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             elseif($master_order->payment_mode==3){
                 $mode="Wallet";
             }
-            
+
             $customer_data=Customer::where('id',$cust_id)->first();
             $shipping_data=OrdersShipping::where('order_id',$order_id)->first();
 			$city_data=DB::table('cities')->where('id',$shipping_data->order_shipping_city)->first();
 			$state_data=DB::table('states')->where('id',$shipping_data->order_shipping_state)->first();
-				
+
 				if($master_order->payment_mode==0) {
-					
+
 					$msg=view("message_template.cod_order_placedMessage",
 										array(
 									'data'=>array(
@@ -1828,8 +1863,8 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 										'order_no'=>$master_order->order_no,
 										'order_date'=>$master_order->order_date
 										)
-										) )->render();					
-								
+										) )->render();
+
 					}
 				else {
 					$msg=view("message_template.online_order_placedMessage",
@@ -1840,11 +1875,11 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                                         'order_date'=>$master_order->order_date
 										)
 										) )->render();
-				
+
 				}
-			 
-          
-										    
+
+
+
             	$email_msg='<tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Hi '.$customer_data->name.' '.$customer_data->last_name.'</p>
@@ -1882,16 +1917,16 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -1902,22 +1937,22 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                         <th>Price</th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
                       foreach($master_orders as $products){
-                          
+
                             $email_msg.='<tr>
                             <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_name.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_qty.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_price.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$products->product_qty*$products->product_price.'</td></tr>';
-                            
+
                             $i++;
                       }
-					
-						
-						
+
+
+
     //                  $email_msg.='<tr>
     //                     <td style="padding:5px 10px;">&nbsp;</td>
     //                     <td>&nbsp;</td>
@@ -1926,7 +1961,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
     //                     <td>Total Amount</td>
     //                     <td>hyh</td>
     //                   </tr>
-                   
+
                    if($master_order->coupon_code!=''){
                        $email_msg.='
 					    <tr>
@@ -1941,8 +1976,8 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 						<td><strong>'.$master_order->total_shipping_charges.'</strong></td>
 					 </tr>';
                    }
-                     
-					 
+
+
                        $email_msg.='<tr bgcolor="#d1d4d1">
                         <td style="padding:5px 10px;">&nbsp;</td>
                         <td>&nbsp;</td>
@@ -1950,15 +1985,15 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 						<td>&nbsp;</td>
                         <td><strong>Total Amount Rs.:'.$master_order->grand_total.' </strong></td>
                       </tr>
-					  
-					
-					  
+
+
+
                     </table>
 
                 </td>
             </tr>';
-            
-            
+
+
 	           $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'Order',
@@ -1988,39 +2023,39 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                         //  'state_info'=>$state_data,
                         //  'payment'=>$mode
                         //  ) )->render();
-                        //  die; 
+                        //  die;
             CommonHelper::SendMsg($email_data);
             if(!empty($customer_data->email))  {
                 CommonHelper::SendmailCustom($email_data);
-            }                
-        
+            }
+
     }
-    
+
 public static function removeProductFromwishlist($cust_id){
   $cart_data=app(\App\Http\Controllers\cart\CartController::class)->getCart_item('111',$cust_id);
-	
+
 		for($i=0;$i<count($cart_data);$i++)
 		 {
 			 $prd_id=$cart_data[$i]->prd_id;
 			 $size_id=$cart_data[$i]->size_id;
 			 $color_id= $cart_data[$i]->color_id;
-			 $qty=$cart_data[$i]->qty; 
+			 $qty=$cart_data[$i]->qty;
 			Products::decreaseProductQty($prd_id,$size_id,$color_id,$qty);
 			CommonHelper::removeProductFromCustomerWishlistAndSaveForlater($cust_id,$prd_id);
-		 }  
+		 }
 }
     public static function decreaseAllProductQtyByOrder($ip,$cust_id){
-        // transfer amont to parent 
+        // transfer amont to parent
         //DB::table('cart')->where('user_ip',$ip)->delete();
         //DB::table('cart')->where('user_id',$cust_id)->delete();
         //DB::table('cart_coupon')->where('user_id',$cust_id)->delete();
     }
-    
-	
+
+
 	public function success(Request $request)
     { 	$cust_id=auth()->guard('customer')->user()->id ;
         self::removeProductFromwishlist($request->ip(),$cust_id);
-        $order_id=$request->merchant_order_id;       
+        $order_id=$request->merchant_order_id;
         DB::table('cart')->where('user_id',$cust_id)->delete();
           /*
         	DB::table('orders')
@@ -2043,12 +2078,12 @@ public static function removeProductFromwishlist($cust_id){
              FbConversionHelper::fbCoversion($order_id, $request);
 		return view('fronted.mod_checkout.thank-you',array('order_id'=>$oder_data->order_no,'total'=>$oder_data->grand_total));
     }
-	
+
 	public function failed(Request $request)
     {	$cust_id=auth()->guard('customer')->user()->id ;
-         
+
         $order_id=$request->merchant_order_id;
-		
+
 			DB::table('orders')
         	->where('id',$request->merchant_order_id)
         	->update(
@@ -2058,7 +2093,7 @@ public static function removeProductFromwishlist($cust_id){
         	         'order_status'=>7
         	        )
         	    );
-        	    
+
         	    DB::table('order_details')
         	->where('order_id',$input['merchant_order_id'])
         	->update(
@@ -2066,17 +2101,17 @@ public static function removeProductFromwishlist($cust_id){
         	         'order_status'=>7
         	        )
         	    );
-        	    		
+
 				$oder_data=DB::table('orders')->where('id',$order_id)->first();
 		return view('fronted.mod_checkout.failure',array('order_id'=>$oder_data->order_no));
     }
-   
-	
+
+
 
 
     public function addBillingAddress(Request $request)
     {
-      
+
 
         if ($request->isMethod('post')) {
             $request->validate([
@@ -2120,7 +2155,7 @@ public static function removeProductFromwishlist($cust_id){
             $CheckoutBillAddress = new CheckoutBillingAddress;
             $CheckoutBillAddress->customer_id = $cust_id;
             $CheckoutBillAddress->shipping_name = $input['shipping_name'];
-            $CheckoutBillAddress->shipping_email = $input['shipping_email'];   
+            $CheckoutBillAddress->shipping_email = $input['shipping_email'];
             $CheckoutBillAddress->shipping_last_name = $input['shipping_last_name'];
             $CheckoutBillAddress->shipping_mobile = $input['shipping_mobile'];
             $CheckoutBillAddress->shipping_address = $input['shipping_address'];
@@ -2131,7 +2166,7 @@ public static function removeProductFromwishlist($cust_id){
             $CheckoutBillAddress->shipping_pincode = $input['shipping_pincode'];
             $CheckoutBillAddress->shipping_address_type = $input['shipping_address_type'];
             $CheckoutBillAddress->shipping_address_default = isset($input['shipping_address_default']) ? 1 : 0;
-         
+
 
             /* save the following details */
             if ($CheckoutBillAddress->save()) {
@@ -2142,7 +2177,7 @@ public static function removeProductFromwishlist($cust_id){
                 }
                 setcookie('billing_address_id', $address_id, time() + (86400 * 30), "/");
                 MsgHelper::save_session_message('success','Billing Address Added',$request);
-            
+
                 //  return Redirect::back();
                 // return Redirect::route('review_order');
 
@@ -2156,7 +2191,7 @@ public static function removeProductFromwishlist($cust_id){
                     return Redirect::route('billingAddresses');
                 }
 
-               
+
 
 
             } else {
@@ -2175,7 +2210,7 @@ public static function removeProductFromwishlist($cust_id){
         $minutes = (8640 * 30);
         $shipping_id = base64_decode($request->shipping_id);
         setcookie('billing_address_id', $shipping_id, time() + (86400 * 30), "/");
-    
+
         $to = route('review_order').'?ba=true';
 
         return Redirect::to($to);
@@ -2202,7 +2237,7 @@ public static function removeProductFromwishlist($cust_id){
 
         if ($request->isMethod('post')) {
             $input = $request->all();
-            
+
             $request->validate([
                 'shipping_email'=> 'required|email|max:255',
                 'shipping_name' => 'required|max:50',
@@ -2240,9 +2275,9 @@ public static function removeProductFromwishlist($cust_id){
 
             $input_array =
                 array(
-                    'shipping_name' => $input['shipping_name'],                
-                    'shipping_last_name' => $input['shipping_last_name'],  
-                    'shipping_email' => $input['shipping_email'],  
+                    'shipping_name' => $input['shipping_name'],
+                    'shipping_last_name' => $input['shipping_last_name'],
+                    'shipping_email' => $input['shipping_email'],
                     'shipping_mobile' => $input['shipping_mobile'],
                     'shipping_address' => $input['shipping_address'],
                     'shipping_address1' => $input['shipping_address1'],
@@ -2264,7 +2299,7 @@ public static function removeProductFromwishlist($cust_id){
             $rs = CheckoutBillingAddress::where('id', $id)->update($input_array);
 
             /* save the following details */
-            if ($rs) {               
+            if ($rs) {
                 MsgHelper::save_session_message('success', Config::get('messages.common_msg.shippingAddressUpdated'), $request);
                 return Redirect::route('billingAddresses');
             } else {
@@ -2311,6 +2346,6 @@ public static function removeProductFromwishlist($cust_id){
             'states' => $states
         ]);
     }
-	
- 
+
+
 }

@@ -10,12 +10,12 @@ if($dt){
 @section('metadescription', ' ')
 <?php } ?>
 
-{{-- @section('slider')
+ @section('slider')
     @include('fronted.mod_slider.home_banner_slider')
 
     @include('fronted.includes.advertisement')
 
-@endsection --}}
+@endsection
 @section('content')
 
 

@@ -1019,7 +1019,8 @@ class CartController extends Controller
     public function apply_coupon(Request $request)
     {
         $input = $request->all();
-        $cust_id=auth()->guard('customer')->user()->id;
+       // $cust_id=auth()->guard('customer')->user()->id;
+        $cust_id=1;
 
         $coupondata = CouponDetails::select(
                     'coupons.coupon_type',

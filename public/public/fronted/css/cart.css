@@ -1,90 +1,94 @@
 body,
 html {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .content {
-  /* min-height: 100vh; */
-  background-color: #f4f4f4;
-  padding: 20px;
+    /* min-height: 100vh; */
+    background-color: #f4f4f4;
+    padding: 20px;
 }
 
 .cart-drawer {
-  position: fixed;
-  top: 0;
-  right: -454px; /* Starts off the screen */
-  width: 454px;
+    position: fixed;
+    top: 0;
+    right: -454px; /* Starts off the screen */
+    width: 454px;
+    height: 100%;
+    background-color: #ffffff;
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.3);
+    transition: right 0.3s ease-in-out;
+    /* padding: 20px; */
     z-index: 5000;
-  height: 100%;
-  background-color: #ffffff;
-  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.3);
-  transition: right 0.3s ease-in-out;
-  /* padding: 20px; */
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .cart-drawer.open {
-  right: 0; /* Brings it onto the screen */
+    right: 0; /* Brings it onto the screen */
 }
 
 .close-btn {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
 }
 .logoContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #e7e7e7;
-  height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e7e7e7;
+    height: 5rem;
 }
 .cartHeader {
-  margin: 0px 30px;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  color: #000;
-  font-family: "League Spartan";
-  font-size: 25px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
+    margin: 0px 30px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #000;
+    font-family: "League Spartan";
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
 }
 .productCardWrapper {
-  /* background-color: red; */
-  padding-top: 20px;
-  height: 50%;
-  overflow-y: scroll;
+    /* background-color: red; */
+    padding-top: 20px;
+    height: 50%;
+    overflow-y: scroll;
 }
 .productCardWrapper::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 .productCard {
-  position: relative;
-  display: flex;
-  /* justify-content: space-between; */
-  /* align-items: center; */
+    position: relative;
+    display: flex;
+    /* justify-content: space-between; */
+    /* align-items: center; */
 
-  border-bottom: 1px solid #ccc;
-  padding: 8px;
-  /* padding-bottom: 20px; */
-  margin: 0px 30px;
-  border-radius: 10px;
-  border: 1px solid #e7e7e7;
-  background: #fff;
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
-  height: 120px;
-  margin-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+    padding: 8px;
+    /* padding-bottom: 20px; */
+    /* margin: 0px 2rem; */
+    margin-left: 2rem;
+    margin-right: 2rem;
+    border-radius: 10px;
+    border: 1px solid #e7e7e7;
+    background: #fff;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+    height: 120px;
+    margin-bottom: 30px;
 }
 .productCardImage {
-  width: 73px;
-  height: 118px;
-  object-fit: contain;
+    width: 73px;
+    height: 118px;
+    object-fit: contain;
 }
 /* .productCard .productInfo {
   display: flex;
@@ -95,193 +99,678 @@ html {
   margin-left: 20px;
 } */
 .productCardDetails {
-  padding: 8px 20px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    padding: 0.5rem 1.25rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .productCardTitle {
-  color: #000;
-  font-family: League Spartan;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px; /* 100% */
+    color: #000;
+    font-family: League Spartan;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 100% */
 }
 .productCardSubTitle {
-  color: #000;
-  font-family: League Spartan;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 300;
-  line-height: 18px; /* 150% */
+    color: #000;
+    font-family: League Spartan;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 18px; /* 150% */
 }
 .bottomRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 .countWrapper {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100px;
 }
 .plusBtn {
-  background: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 .minusBtn {
-  background: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 .quantity {
-  color: #000;
-  text-align: center;
-    font-family: League Spartan;
-    width: 33px;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  padding: 0px 10px;
+    color: #000;
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    padding: 0px 10px;
 }
 .productCardPrice {
-  color: #000;
-  font-family: League Spartan;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 18px; /* 90% */
-  display: flex;
+    color: #000;
+    font-family: League Spartan;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 90% */
+    display: flex;
 }
 .mrp {
-  padding-left: 10px;
-  opacity: 0.25;
-  text-decoration: line-through;
+    padding-left: 10px;
+    opacity: 0.25;
+    text-decoration: line-through;
 }
 .productCardRemove {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-top: -15px;
-  margin-right: -15px;
-  cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: -15px;
+    margin-right: -15px;
+    cursor: pointer;
 }
 .subTotalSection {
-  margin: 0px 30px;
+    margin: 0px 30px;
+    /* display: none; */
+}
+.subTotalSection1 {
+    margin: 0px 30px;
+    background-color: transparent;
+    display: none;
 }
 .subTotalTitle {
-  color: #000;
-  font-family: League Spartan;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  padding: 20px 0px;
+    color: #000;
+    font-family: League Spartan;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 20px 0px;
 }
 .subTotalCard {
-  border-radius: 10px;
-  border: 1px solid #e7e7e7;
-  background: #fff;
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
-  /* height: 146px; */
-  padding: 8px 20px;
+    border-radius: 10px;
+    border: 1px solid #e7e7e7;
+    background: #fff;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+    /* height: 146px; */
+    padding: 8px 20px;
 }
+
 .subItemWrapper {
-  overflow-y: scroll;
-  height: 80px;
+    overflow-y: scroll;
+    height: 80px;
 }
 .subItemWrapper::-webkit-scrollbar {
-  display: none;
+    display: none;
+}
+.subItemWrapper1 {
+    /* overflow-y: scroll; */
+    height: auto;
 }
 .subItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0px;
-  color: #000;
-  font-family: League Spartan;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 18px; /* 120% */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0px;
+    color: #000;
+    font-family: League Spartan;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 120% */
 }
 .subTotal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0px;
-  color: #000;
-  font-family: League Spartan;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 18px; /* 90% */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0px;
+    color: #000;
+    font-family: League Spartan;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 90% */
 }
 .divider {
-  height: 1px;
-  background: #e7e7e7;
-  margin-top: 15px;
-  margin-bottom: 15px;
+    height: 1px;
+    background: #e7e7e7;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 .paymentBtn {
-  height: 59.736px;
-  width: 100%;
-  background: #000;
-  border-radius: 10px;
-  color: #fff;
-  font-family: League Spartan;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 40px;
+    height: 59.736px;
+    width: 100%;
+    background: #000;
+    border-radius: 10px;
+    color: #fff;
+    font-family: League Spartan;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 1rem;
 }
 .paymentBtn:hover {
-  /* background: #000;
-  opacity: 0.6; */
-  cursor: pointer;
-  border: 1px solid #000;
-  background-color: white;
-  color: #000;
+    /* background: #000;
+    opacity: 0.6; */
+    cursor: pointer;
+    border: 1px solid #000;
+    background-color: white;
+    color: #000;
 }
-.closeBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
 
-  margin-top: 10px;
-  margin-right: 10px;
-  cursor: pointer;
-  border: 1px solid #000;
-  background-color: white;
-  color: #000;
-  border-radius: 50%;
-  height: 25px;
-  width: 25px;
+.paymentBtnOffline {
+    height: 59.736px;
+    width: 100%;
+    background: #000;
+    border-radius: 10px;
+    color: #fff;
+    font-family: League Spartan;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 1rem;
+}
+.paymentBtnOffline:hover {
+    /* background: #000;
+    opacity: 0.6; */
+    cursor: pointer;
+    border: 1px solid #000;
+    background-color: white;
+    color: #000;
+}
+
+.paymentBtnOfflin2e{
+    height: 59.736px;
+    width: 100%;
+    background: #000;
+    border-radius: 10px;
+    color: #fff;
+    font-family: League Spartan;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px;
+}
+
+.paymentBtnOfflin2e:hover {
+    /* background: #000;
+    opacity: 0.6; */
+    cursor: pointer;
+    border: 1px solid #000;
+    background-color: white;
+    color: #000;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    margin-top: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 1px solid #000;
+    background-color: white;
+    color: #000;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
 }
 .closeBtn:hover {
-  background-color: #000;
-  color: #fff;
+    background-color: #000;
+    color: #fff;
+}
+
+@media (max-width: 1000px) {
+    .cart-drawer {
+        position: fixed;
+        top: 0;
+        right: -454px; /* Starts off the screen */
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.3);
+        transition: right 0.3s ease-in-out;
+        /* padding: 20px; */
+        box-sizing: border-box;
+        overflow-y: scroll;
+    }
+    .productCard {
+        margin-left: 0rem;
+        margin: 1rem;
+    }
+    /* .subTotalCard {
+      padding: 1rem;
+    } */
+}
+
+/* Checkout CSS */
+
+body {
+    /* background-color: #f5f5f5; */
+    font-family: "League Spartan";
+    margin: auto;
+}
+.navigation {
+    display: flex;
+    /* width: 100%; */
+    justify-content: space-between;
+    align-items: center;
+    /* margin-bottom: 20px; */
+    border-bottom: 1px solid #e7e7e7;
+    height: 5rem;
+    font-family: "League Spartan";
+    padding: 0px 4rem;
+}
+.navLeft {
+    display: flex;
+    align-items: center;
+}
+.toggleWrapper {
+    display: flex;
+    align-items: center;
+    margin-right: 2rem;
+    font-family: "League Spartan";
+    margin-left: 2rem;
+}
+.navRight {
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e7e7e7;
+    height: 5rem;
+    font-family: "League Spartan"; */
+}
+
+.toggleText {
+    color: #000;
+    text-align: center;
+    font-family: League Spartan;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+}
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.toggle-input {
+    display: none;
+}
+
+.toggle-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 24px;
+    background-color: transparent;
+    border: 4px solid #e7e7e7;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toggle-label::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -4px;
+    width: 18px; /* Adjusted to fit the reduced size */
+    height: 18px;
+    background-color: black;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.toggle-input:checked + .toggle-label::before {
+    transform: translateX(
+        20px
+    ); /* Adjusted to move to the other end of the reduced toggle switch */
+}
+
+.checkoutContainer {
+    display: flex;
+    justify-content: space-between !important;
+    align-items: center;
+    /* margin-bottom: 20px; */
+    font-family: "League Spartan";
+    /* padding: 0px 4rem; */
+    padding-left: 4rem;
+    /* flex-wrap: wrap; */
+}
+
+.leftSection {
+    background-color: white;
+    width: 58%;
+    padding-right: 4rem;
+    /* height: calc(100vh - 5rem); */
+}
+.rightSection {
+    background-color: rgba(237, 237, 237, 0.37);
+    width: 42%;
+    padding-right: 4rem;
+    height: 100vh;
+    height: calc(100vh - 5rem);
+    overflow-y: scroll;
+}
+
+.rightSection::-webkit-scrollbar {
+    display: none;
+}
+
+.headerTitleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 3rem;
+}
+.headerTitle {
+    color: #000;
+    font-family: League Spartan;
+    font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+.inputWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+}
+.inputBoxHalf {
+    /* width: 48%; */
+    width: 319px;
+    height: 63px;
+    border-radius: 10px;
+    border: 1px solid #e7e7e7;
+    background: #fff;
+    padding: 10px 20px;
+}
+.inputLable {
+    color: #000;
+    font-family: League Spartan;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.inputStyle {
+    /* width: 360px; */
+    padding: 5px 0px;
+    border: none;
+    background: transparent;
+    font-family: League Spartan;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    outline: none;
+}
+
+.div-7 {
+    display: flex;
+    margin-top: 30px;
+    flex-direction: row;
+    align-items: flex-start;
+    align-self: stretch;
+    gap: 11px;
+}
+
+@media (max-width: 991px) {
+    .div-7 {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+.div-8 {
+    border-radius: 10px;
+    border: 1px solid #e7e7e7;
+    background-color: #fff;
+    display: flex;
+    padding-top: 14px;
+    padding-right: 20px;
+    padding-bottom: 14px;
+    padding-left: 20px;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-basis: auto;
+    align-self: stretch;
+}
+
+.a-2 {
+    justify-content: center;
+    color: #000;
+    font-family: League Spartan, sans-serif;
+    font-weight: 400;
+    opacity: 0.5;
+    font-size: 14px;
+    margin-left: 1px;
+    align-self: start;
+}
+
+.a-3 {
+    justify-content: center;
+    color: #000;
+    font-family: League Spartan, sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    margin-top: 17px;
+    margin-left: 1px;
+    align-self: start;
+}
+
+.div-9 {
+    border-radius: 10px;
+    border: 1px solid #e7e7e7;
+    background-color: #fff;
+    display: flex;
+    padding-top: 14px;
+    padding-right: 20px;
+    padding-bottom: 14px;
+    padding-left: 20px;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-basis: auto;
+    align-self: stretch;
+}
+
+.a-4 {
+    justify-content: center;
+    color: #000;
+    font-family: League Spartan, sans-serif;
+    font-weight: 400;
+    opacity: 0.5;
+    font-size: 14px;
+    margin-left: 1px;
+    margin-bottom: 9px;
+    align-self: start;
+}
+
+.a-5 {
+    justify-content: center;
+    color: #000;
+    font-family: League Spartan, sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    width: 160px;
+    margin-top: 49px;
+    align-self: start;
+}
+.checkboxWrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+}
+.checkbox-input {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 1.5px solid #e7e7e7 !important;
+    background: #fff;
+    padding: 10px 20px;
+    margin: 0px;
+}
+.couponTypeWarpepr {
+    display: flex;
+    align-items: center;
+    padding-top: 3rem;
+    padding-left: 2rem;
+}
+.couponType {
+    padding: 13px 25px;
+    border: 1px solid black;
+    border-radius: 35px;
+    margin-right: 5px;
+    background-color: white;
+}
+.couponInputWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    background-color: white;
+    border: 1px solid #e7e7e7;
+    border-radius: 15px;
+    color: #000;
+    font-family: League Spartan;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 10px;
+    padding-left: 20px;
+}
+.applyBtn {
+    background-color: #000;
+    border-radius: 10px;
+    color: #fff;
+    font-family: League Spartan;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 14px 30px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.couponInputWrapper1 {
+    background-color: white;
+    border: 1px solid #e7e7e7;
+    border-radius: 10px;
+    color: #000;
+    font-family: League Spartan;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 10px;
+    padding-left: 20px;
+}
+.buttonGrp {
+    display: flex;
+    align-items: center;
+    margin-top: 2rem;
+}
+.paymentMode {
+    width: 95px;
+    height: 95px;
+    border-radius: 10px;
+    border: 1px solid #e7e7e7;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+.paymentMode:hover {
+    border: 1px solid #000;
+    cursor: pointer;
+}
+.paymentMode.selected {
+    background-color: black;
+    color: white;
+}
+
+@media (max-width: 1000px) {
+    .checkoutContainer {
+        display: flex;
+        flex-direction: column !important;
+        font-family: "League Spartan";
+        /* padding: 0px 4rem; */
+        padding-left: 4rem;
+        flex-wrap: wrap;
+        margin: 0px;
+        padding: 0px 10px;
+    }
+    .leftSection {
+        width: 100% !important;
+        padding-right: 0px !important;
+    }
+    .rightSection {
+        width: 100% !important;
+        padding-right: 0px !important;
+        margin-top: 2rem;
+    }
+    .navigation {
+        padding: 0px 15px;
+    }
+    .navRight {
+        display: none;
+    }
+    .headerTitle {
+        font-size: 1rem;
+    }
+    .headerSubtitle {
+        font-size: 0.7rem;
+    }
+    .inputStyle {
+        width: 100%;
+    }
+    .applyBtn {
+        padding: 10px 20px;
+    }
 }

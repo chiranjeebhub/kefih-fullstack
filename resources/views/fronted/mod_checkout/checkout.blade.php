@@ -1,200 +1,198 @@
 @extends('fronted.layouts.app_new')
 @section('content')
-@section('breadcrum') 
-<a href="{{ route('index')}}">Home</a><i class="fa fa-long-arrow-right"></i>
-<a href="javascript:void(0)">Checkout</a>
-@endsection   
 
-	<section class="main_section checkout-section">
-		<div class="container">
-           
-            <div class="row">
-                <div class="col-lg-12 col-sm-12 col-md-12 col-12 pt-4">
-                    <h2 class="heading mb-30">Select a delivery address</h2>
-                    <div class="card_main">
-                        <div class="row">
-                        <?php for($i=0;$i<count($shipping_listing);$i++){?>
-                    
-                            <div class="col-md-4 col-xs-12">
-                                <div class="row">
-                                    <div class="col-lg-9 col-sm-9 col-md-10 col-8">
-                                        <div class="card_box"> 
-
-                                            <!--<div class="location_icon">
-                                                <i class="fa fa-map-marker"></i>
-                                            </div>-->
-                                            <div class="card_info">
-                                                <h2><?php echo ucwords($shipping_listing[$i]['shipping_name']);?></h2> 
-                                                <p>	<?php echo $shipping_listing[$i]['shipping_address'];?>,
-                                                    <?php echo $shipping_listing[$i]['shipping_address1'];?>
-                                                    <?php echo $shipping_listing[$i]['shipping_address2'];?><br>
-                                                    <?php echo $shipping_listing[$i]['shipping_city'];?>
-                                                    <?php echo $shipping_listing[$i]['shipping_state'];?> : <?php echo $shipping_listing[$i]['shipping_pincode'];?></p>
-                                                <a class="btn btn-warning" href="{{route('selectShippingAddress',base64_encode($shipping_listing[$i]['id']))}}" class="btnn">Deliver to this address</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-sm-3 col-md-2 col-4 d-flex">
-
-                                        <div class="remove_card">
-                                            <?php  if($shipping_listing[$i]['shipping_address_default']==1){?>
-                                            <span class="defaultbox">Default</span>
-                                            <?php }?>
-
-                                            <a href="{{route('editShippingAddress',base64_encode($shipping_listing[$i]['id']))}}"
-                                    onclick = "if (! confirm('Do you want to edit ?')) { return false; }" class="editbtn pull-left"><i class="fa fa-pencil"></i> </a>
-                                            <a href="{{route('removeShippingAddress',base64_encode($shipping_listing[$i]['id']))}}"
-                                    onclick = "if (! confirm('Do you want to delete ?')) { return false; }"
-                                    class="editbtn pull-right"><i class="fa fa-trash"></i> </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                    <?php } ?>
-                            </div>
-                        
-                    </div>
+    <style>
+        .paymentBtn, .paymentBtnOffline{
+            display: none;
+        }
+    </style>
+    <div class="navigation">
+        <div class="navLeft">
+            <div class="toggleWrapper">
+                <div class="toggleText">Exhibition</div>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="toggle" class="toggle-input" checked>
+                    <label for="toggle" class="toggle-label"></label>
                 </div>
-                <div class="col-lg-12 col-sm-12 col-md-12 col-12 pt-4 pb-4">
+                <div class="toggleText">Online</div>
+            </div>
+        </div>
+        <div class="navRight">
+            <span>Cart</span>
+            <span style="padding: 0px 5px;">&rsaquo;</span>
+            <span style="font-weight: bold;">Information</span>
+            <span style="padding: 0px 5px;">&rsaquo;</span>
+            <span>Payment</span>
+        </div>
+    </div>
+
+    <form action="{{route('addShippingAddress')}}" method="post">
+        <div class="checkoutContainer">
+            @csrf
+            <div class="leftSection">
                 @if ($errors->any())
-                    @foreach ($errors->all() as $error)
-                        <span class="help-block">
+                    <div class="errors mt-2">
+                        @foreach ($errors->all() as $error)
+                            <span class="help-block">
                             <p style="color:red">{{$error}}</p>
                         </span>
-                    @endforeach
+                        @endforeach
+                    </div>
                 @endif
-                
-                @php 
-                $plusminus = ($errors->any())?'minus':'plus';
-                $plusminusmethod = ($errors->any())?1:0;
-                $isDisplay =  ($errors->any())?'style="display:block"':'style="display:none"';
-                @endphp 
-                    
-                    <div class="profile_form ">
-                        <h2 class="heading mb-30">Add New Address <i class="fa fa-{{$plusminus}} iconpointer addAddressForm"
-						method="{{$plusminusmethod}}"></i></h2>  
-                        <div id="myAddressForm" {!! $isDisplay !!}>
-                            <form class="row" action="{{route('addShippingAddress')}}" method="post">
-						      @csrf
+                    <input type="hidden" name="shipping_address_type" value="Home">
 
-						<div class="col-lg-4 col-sm-12 col-md-4 col-12">
-							<div class="form-group">
-                                <label>Full Name</label>
-								<input type="text" class="form-control" name="shipping_name" placeholder="Enter Name">
-							</div>
-						</div>
-
-						<div class="col-lg-4 col-sm-12 col-md-4 col-12">
-							<div class="form-group">
-                                <label>Mobile Number</label>
-								<input type="text" class="form-control" name="shipping_mobile" id=" " placeholder="9999999999" onkeypress="javascript:return onlyPincodeDigit(event,this.value,9)">
-							</div>
-						</div>
-
-						<div class="col-lg-4 col-sm-12 col-md-4 col-12">
-							<div class="form-group">
-                                <label>Pincode</label>
-								<input type="text" class="form-control" name="shipping_pincode" id=" " placeholder="000 000" onkeypress="javascript:return onlyPincodeDigit(event,this.value,5)">
-							</div>
-						</div>
-
-						<div class="col-lg-12 col-sm-12 col-md-12 col-12">
-							<div class="form-group">
-                                <label>Address Line 1</label>
-								<input type="text" class="form-control" name="shipping_address" id=" " placeholder="Flat, House no., Building, Company, Apartment">
-							</div>
-						</div>
-
-						<div class="col-lg-12 col-sm-12 col-md-12 col-12">
-							<div class="form-group">
-                                <label>Address Line 2</label>
-								<input type="text" class="form-control" name="shipping_address1" id=" " placeholder="Area, Colony, Street, Sector, Village">
-							</div>
-						</div>
-						<div class="col-lg-12 col-sm-12 col-md-12 col-12">
-							<div class="form-group">
-                                <label>Address Line 3</label>
-								<input type="text" class="form-control" name="shipping_address2" id=" " placeholder="Landmark e.g. near apollo hospital">
-							</div>
-						</div>
-				        <div class="col-lg-4 col-sm-12 col-md-4 col-12">
-							<div class="form-group">
-                                <label>State</label>
-								<select class="form-control custom-select" name="shipping_state" id="selectState">
-								<option value="">Select State</option>
-								@foreach($states as $state)
-								<option value="{{$state->id}}">{{$state->name}}</option>
-								@endforeach
-								</select>
-								
-							</div>
-						</div>
-						
-						<div class="col-lg-4 col-sm-12 col-md-4 col-12">
-							<div class="form-group editionaldropdn">
-                                <label>City</label>
-                                <select class="form-control" name="shipping_city" id="selectcity">
-                                    <option value="">Select City</option>
-                                </select>
-							</div>
-						</div>
-					
-						<div class="col-lg-4 col-sm-12 col-md-4 col-12">
-							<div class="form-group">
-                                <label>Address Type</label>
-								<select name="shipping_address_type" class="form-control custom-select" id="sel1">
-									<option value="">Select Address Type</option>
-									<option value="1">Home</option>
-									<option value="2">Office</option>
-										<option value="3">Others</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-lg-12 col-sm-12 col-md-12 col-12">
-							<div class="form-group">
-									<?php if(sizeof($shipping_listing)>0){?>
-                                
-                                        <div class="form-group switch_box">
-                                            <div class="form-check form-switch">
-                                              <input class="form-check-input" type="checkbox" name="payment_mode" id="flexSwitchCheckChecked" value="0">
-                                              <label class="form-check-label" for="flexSwitchCheckChecked">Make Default Address</label>
-                                                
-                                            </div>
-                                        </div>
-                                
-                                            <!--<div class="paymnetthod">
-                                            <div class="checkbox checkbox-circle">
-                                            <input id="default_address" name="payment_mode" type="checkbox" checked="" value="0">
-                                            <label for="default_address"> Make Default Card</label>
-                                            </div>
-                                            </div>-->
-                            <?php } else{?>
-                            <input type="hidden" name="shipping_address_default" value="1"/>
-                            <?php }?>
-								
-							
-							</div>
-						</div>
-						<div class="col-md-12 col-xs-12">
-							<div class="form-group">
-								<button type="submit" value="submit" class="continue">Save</button>
-							</div>
-						</div>
-					</form>
-                        </div>
+                <div class="headerTitleContainer">
+                    <div class="headerTitle">Contact Information</div>
+                    <div class="headerSubtitle">Already Bought Something? <span style="font-weight: bold;">Click Here</span>
                     </div>
                 </div>
+                <div class="div-7">
+                    <div class="div-8">
+                        <div class="a-2">Phone Number</div>
+                        <div class="a-3" style="display: flex; align-items: center;">
+                            <div style="padding-right: 10px; margin-top: 2px;">+91</div>
+                            <div>
+                                <input type="text" class="inputStyle" name="shipping_mobile" value="{{old('shipping_mobile')}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="div-9">
+                        <div class="a-4">Email (Optional)</div>
+                        <input class="inputStyle" type="text" id="name" name="shipping_email" value="{{old('shipping_email')}}">
+                    </div>
+                </div>
+                <div class="headerTitleContainer">
+                    <div class="headerTitle">Shipping Address</div>
+                </div>
+                <div class="div-7">
+                    <div class="div-9">
+                        <div class="a-4">Country</div>
+                        <input class="inputStyle" type="text" id="name" readonly value="india" placeholder="India">
+                    </div>
+                </div>
+                <div class="div-7">
+
+                    <div class="div-9">
+                        <div class="a-4">First Name</div>
+                        <input class="inputStyle" name="shipping_name" value="{{old('shipping_name')}}" type="text" id="name">
+                    </div>
+                    <div class="div-9">
+                        <div class="a-4">Last Name</div>
+                        <input class="inputStyle" name="last_name" value="{{old('last_name')}}" type="text" id="name">
+                    </div>
+                </div>
+                <div class="div-7">
+                    <div class="div-9">
+                        <div class="a-4">Address</div>
+                        <input class="inputStyle" value="{{old('shipping_address')}}" name="shipping_address" type="text" id="name">
+                    </div>
+                </div>
+                <div class="div-7">
+                    <div class="div-9">
+                        <div class="a-4">Apartment, suite, etc. (optional)</div>
+                        <input class="inputStyle" name="shipping_address2" value="{{old('shipping_address2')}}" type="text" id="name">
+                    </div>
+                </div>
+                <div class="div-7">
+
+                    <div class="div-9">
+                        <div class="a-4">City</div>
+                        <input class="inputStyle" value="{{old('shipping_city')}}" name="shipping_city" type="text" id="name">
+                    </div>
+                    <div class="div-9">
+                        <div class="a-4">State</div>
+                        <input class="inputStyle" value="{{old('shipping_state')}}" name="shipping_state" type="text" id="name">
+                    </div>
+                    <div class="div-9">
+                        <div class="a-4">Pin Code</div>
+                        <input class="inputStyle" value="{{old('shipping_pincode')}}" name="shipping_pincode" type="text" id="name">
+                    </div>
+                </div>
+                <input type="hidden" name="payment_mode" id="payment_type" value="1">
+                <div class="checkboxWrapper">
+
+                    <input type="checkbox" size="large" id="checkbox" class="checkbox-input" checked="true">
+                    <div style="padding-left: 10px;">
+                        Billing Address Same As Shipping Address
+                    </div>
+                </div>
+                <!-- <div class="inputWrapper">
+                    <div class="inputBoxHalf">
+                        <div class="inputLable">Phone Number</div>
+                        <div style="display: flex; align-items: center;">
+                            <div>+91</div>
+                            <input class="inputStyle" type="text" id="name" placeholder="Enter your name">
+                        </div>
+                    </div>
+                    <div class="inputBoxHalf">
+                        <div class="inputLable">Phone Number</div>
+                        <input class="inputStyle" type="text" id="name" placeholder="Enter your name">
+                    </div>
+                </div> -->
             </div>
-		</div>
-	</section>
+            <div class="rightSection">
+                <div class="couponTypeWarpepr">
+                    <div class="couponType">Personalized</div>
+                    <div class="couponType">General</div>
+                </div>
+                <div class="couponInputWrapper">
+                    <input type="text" class="inputStyle form-ctrl couponcode_back"  id="Coupon_code" placeholder="Enter Coupon Code" value="">
+
+                    <button type="submit" id="cartToalReview" class="applyBtn couponApply" index="code" cart_total="">Redeem</button>
+                    <button class="btn btn-remove" style="display:none;" type="button" id="removeCopuonapply">Remove Coupon</button>
+
+                </div>
+                <span class="couponerrormsg" style="margin: 10px 30px; display: inline-block" id="CouponMsg_code"></span>
+                <h2 class="cartHeader" style="font-size: 18px;">Items</h2>
+                <div class="cart_table_list">
 
 
+                </div>
+
+                <button type="submit" class="paymentBtnOfflin2e">
+                    Confirm Order
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+    <br>
+    <br>
+    <br>
 
 @endsection
-    
 
-  
-  
 
-    
+@section('scripts')
+    <script src="{{asset('public/fronted/js/checkout.js')}}"></script>
+
+    @php
+        session()->forget('ExibutionData');
+
+    @endphp
+
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $('#toggle').on('click', function (){
+                if ($('#toggle').is(':checked')) {
+                    $(".subTotalSection").css('display', 'block');
+                    $(".subTotalSection1").css('display', 'none');
+                    $('#payment_type').val(1);
+                }else{
+                    $(".subTotalSection").css('display', 'none');
+                    $(".subTotalSection1").css('display', 'block');
+
+                    $('#payment_type').val(null);
+                };
+            })
+        })
+    </script>
+@endsection
+
+
+
+
+
+
+
