@@ -95,14 +95,30 @@
                 </div>
                 <div class="div-7">
 
-                    <div class="div-9">
-                        <div class="a-4">City</div>
-                        <input class="inputStyle" value="{{old('shipping_city')}}" name="shipping_city" type="text" id="name">
+                    <div class="col-lg-4 col-sm-12 col-md-4 col-12">
+                        <div class="form-group">
+                            <label>State</label>
+                            <select class="form-control custom-select" name="shipping_state" id="selectState">
+                                <option value="">Select State</option>
+                                @foreach($states as $state)
+                                    <option value="{{$state->id}}">{{$state->name}}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
                     </div>
-                    <div class="div-9">
-                        <div class="a-4">State</div>
-                        <input class="inputStyle" value="{{old('shipping_state')}}" name="shipping_state" type="text" id="name">
+
+                    <div class="col-lg-4 col-sm-12 col-md-4 col-12">
+                        <div class="form-group editionaldropdn">
+                            <label>City</label>
+                            <select class="form-control" name="shipping_city" id="selectcity">
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
                     </div>
+
+
+
                     <div class="div-9">
                         <div class="a-4">Pin Code</div>
                         <input class="inputStyle" value="{{old('shipping_pincode')}}" name="shipping_pincode" type="text" id="name">
