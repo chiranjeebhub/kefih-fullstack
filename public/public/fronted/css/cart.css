@@ -82,7 +82,7 @@ html {
     border: 1px solid #e7e7e7;
     background: #fff;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
-    height: 120px;
+    height: 130px;
     margin-bottom: 30px;
 }
 .productCardImage {
@@ -308,9 +308,9 @@ html {
     color: #000;
 }
 
-.paymentBtnOfflin2e{
+.paymentBtnOfflin2e {
     height: 59.736px;
-    width: 100%;
+    width: 88%;
     background: #000;
     border-radius: 10px;
     color: #fff;
@@ -323,6 +323,7 @@ html {
     justify-content: center;
     align-items: center;
     margin: 30px;
+    /* margin-right: 1rem; */
 }
 
 .paymentBtnOfflin2e:hover {
@@ -358,7 +359,7 @@ html {
     .cart-drawer {
         position: fixed;
         top: 0;
-        right: -454px; /* Starts off the screen */
+        right: -1000px; /* Starts off the screen */
         width: 100%;
         height: 100%;
         background-color: #ffffff;
@@ -368,6 +369,7 @@ html {
         box-sizing: border-box;
         overflow-y: scroll;
     }
+
     .productCard {
         margin-left: 0rem;
         margin: 1rem;

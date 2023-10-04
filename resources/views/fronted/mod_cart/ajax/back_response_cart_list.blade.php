@@ -378,7 +378,7 @@
 
 @else
     <div class="col-md-12">
-        <h3 class="px-4">No Product Added to Cart</h3>
+        <h4 class="px-4" style="margin-left:8px;">No Product Added to Cart</h4>
     </div>
 @endif
 
