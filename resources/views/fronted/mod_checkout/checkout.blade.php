@@ -43,7 +43,9 @@
 
                 <div class="headerTitleContainer">
                     <div class="headerTitle">Contact Information</div>
-                    <div class="headerSubtitle">Already Bought Something? <span style="font-weight: bold;">Click Here</span>
+                    <div class="headerSubtitle">Already Bought Something? 
+                        
+                    <span style="font-weight: bold;">Click Here</span>
                     </div>
                 </div>
                 <div class="div-7">
@@ -149,7 +151,7 @@
             <div class="rightSection">
                 <div class="couponTypeWarpepr">
                     <div class="couponType">Personalized</div>
-                    <div class="couponType">General</div>
+                    <div class="couponType" style="opacity:0.2">General</div>
                 </div>
                 <div class="couponInputWrapper">
                     <input type="text" class="inputStyle form-ctrl couponcode_back"  id="Coupon_code" placeholder="Enter Coupon Code" value="">
@@ -164,10 +166,12 @@
 
 
                 </div>
-
+                <div>
                 <button type="submit" class="paymentBtnOfflin2e">
                     Confirm Order
                 </button>
+                </div>
+             
             </div>
 
         </div>

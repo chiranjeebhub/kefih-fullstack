@@ -5,9 +5,13 @@
 /vendor
 /Api
 /seller/vendor
+/public/uploads
 .env
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+.DS_Store
+*/.DS_Store
+**/.DS_Store
