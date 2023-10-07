@@ -8,13 +8,13 @@
             @endif
 		  <!-- mini logo for sidebar mini 50x50 pixels -->
 		  <b class="logo-mini">
-			  <span class="light-logo"><img src=" {{ asset('public/images/logo.png') }}" alt="logo"></span>
-			  <span class="dark-logo"><img src="{{ asset('public/images/logo.png') }}" alt="logo"></span>
+			  <span class="light-logo"><img src=" {{ asset('images/logo.png') }}" alt="logo"></span>
+			  <span class="dark-logo"><img src="{{ asset('images/logo.png') }}" alt="logo"></span>
 		  </b>
 		  <!-- logo for regular state and mobile devices -->
 		  <!--<span class="logo-lg">
-			  <img src="{{ asset('public/images/logo.png') }}" alt="logo" class="light-logo">
-			  <img src="{{ asset('public/images/logo.png') }}" alt="logo" class="dark-logo">
+			  <img src="{{ asset('images/logo.png') }}" alt="logo" class="light-logo">
+			  <img src="{{ asset('images/logo.png') }}" alt="logo" class="dark-logo">
 		  </span>-->
 		</a>
 		<!-- Header Navbar -->
@@ -41,11 +41,11 @@
 				     @if(auth()->guard('vendor')->user()->profile_pic)
 				      <img src=" {{URL::to('/uploads/vendor/profile_pic')}}/{{auth()->guard('vendor')->user()->profile_pic}}" class="user-image rounded-circle" alt="User Image">
 				     @else
-				      <img src=" {{ asset('public/images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
+				      <img src=" {{ asset('images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
 				     @endif
 				    
 				     @else
-				     <img src=" {{ asset('public/images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
+				     <img src=" {{ asset('images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
 				     @endif
 				  
 				</a>
@@ -56,10 +56,10 @@
                         @if(auth()->guard('vendor')->user()->profile_pic)
                         <img src=" {{URL::to('/uploads/vendor/profile_pic')}}/{{auth()->guard('vendor')->user()->profile_pic}}" class="user-image rounded-circle" alt="User Image">
                         @else
-                        <img src=" {{ asset('public/images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
+                        <img src=" {{ asset('images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
                         @endif
 				     @else
-				     <img src=" {{ asset('public/images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
+				     <img src=" {{ asset('images/user5-128x128.jpg') }}" class="user-image rounded-circle" alt="User Image">
 				     @endif
 
 					<p>

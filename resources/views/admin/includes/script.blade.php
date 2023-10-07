@@ -1,7 +1,7 @@
-<script src=" {{ asset('public/assets/vendor_components/jquery-3.3.1/jquery-3.3.1.js') }}"></script>
+<script src=" {{ asset('assets/vendor_components/jquery-3.3.1/jquery-3.3.1.js') }}"></script>
 	
 	<!-- jQuery UI 1.11.4 -->
-	<!--<script src="{{ asset('public/assets/vendor_components/jquery-ui/jquery-ui.js') }}"></script>-->
+	<!--<script src="{{ asset('assets/vendor_components/jquery-ui/jquery-ui.js') }}"></script>-->
 	
 	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 	<!--<script>
@@ -9,51 +9,51 @@
 	</script>-->
 	
 	<!-- popper -->
-	<script src=" {{ asset('public/assets/vendor_components/popper/dist/popper.min.js') }}"></script>
+	<script src=" {{ asset('assets/vendor_components/popper/dist/popper.min.js') }}"></script>
 	
 	<!-- Bootstrap 4.0-->
-	<script src="{{ asset('public/assets/vendor_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+	<script src="{{ asset('assets/vendor_components/bootstrap/dist/js/bootstrap.js') }}"></script>
 	
 	<!-- Slimscroll -->
-	<script src="{{ asset('public/assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 	
 
-	<script src="{{ asset('public/assets/vendor_components/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
+	<script src="{{ asset('assets/vendor_components/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
 	
 	<!-- FastClick -->
-	<script src=" {{ asset('public/assets/vendor_components/fastclick/lib/fastclick.js') }}"></script>
+	<script src=" {{ asset('assets/vendor_components/fastclick/lib/fastclick.js') }}"></script>
 		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 	
 	<!-- Morris.js charts -->
-	<!--<script src=" {{ asset('public/assets/vendor_components/raphael/raphael.min.js') }}"></script>
-	<script src=" {{ asset('public/assets/vendor_components/morris.js/morris.min.js') }}"></script>
+	<!--<script src=" {{ asset('assets/vendor_components/raphael/raphael.min.js') }}"></script>
+	<script src=" {{ asset('assets/vendor_components/morris.js/morris.min.js') }}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>-->
 	
 	<!-- Fab Admin App -->
-	<script src=" {{ asset('public/js/template.js') }}"></script>
+	<script src=" {{ asset('js/template.js') }}"></script>
 	
 	<!-- Fab Admin dashboard demo (This is only for demo purposes) -->
-	<!--<script src=" {{ asset('public/js/pages/dashboard.js') }}"></script>-->
+	<!--<script src=" {{ asset('js/pages/dashboard.js') }}"></script>-->
 	
 	<!-- Fab Admin for demo purposes -->
-	<script src=" {{ asset('public/js/demo.js') }}"></"></script>	
+	<script src=" {{ asset('js/demo.js') }}"></"></script>	
 	
 	<!-- Fab admin horizontal-layout -->
-	<script src=" {{ asset('public/js/horizontal-layout.js') }}"></script>
+	<script src=" {{ asset('js/horizontal-layout.js') }}"></script>
 	
-	 <!--<script src=" {{ asset('public/assets/vendor_components/datatable/datatables.min.js') }}"></script>-->
+	 <!--<script src=" {{ asset('assets/vendor_components/datatable/datatables.min.js') }}"></script>-->
 	
 	<!-- Fab Admin for Data Table -->
-	<!--<script src=" {{ asset('public/js/pages/data-table.js') }}"></script>
-	<script src=" {{ asset('public/js/pages/advanced-form-element.js') }}"></script>-->
+	<!--<script src=" {{ asset('js/pages/data-table.js') }}"></script>
+	<script src=" {{ asset('js/pages/advanced-form-element.js') }}"></script>-->
 	
-	<script src="{{ asset('public/assets/vendor_components/ckeditor/ckeditor.js') }}"></script>
+	<script src="{{ asset('assets/vendor_components/ckeditor/ckeditor.js') }}"></script>
 
 	
 	<!-- Fab Admin for editor -->
-	<!--<script src=" {{ asset('public/js/pages/editor.js') }}"></script>
+	<!--<script src=" {{ asset('js/pages/editor.js') }}"></script>
 
-	<script src="{{ asset('public/js/jquery.rateit.min.js') }}"></script>-->
+	<script src="{{ asset('js/jquery.rateit.min.js') }}"></script>-->
 	<script>
 	function searchProducts()
 		{

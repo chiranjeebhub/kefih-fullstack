@@ -33,7 +33,7 @@
 
         </div>
     </div>
-	<script type="text/javascript" src="{{ asset('public/js/jsLists.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/jsLists.min.js') }}"></script>
 <script type="text/javascript">
 	JSLists.applyToList('simple_list', 'ALL');
 </script>	

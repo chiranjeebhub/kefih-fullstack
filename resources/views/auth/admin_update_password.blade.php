@@ -12,23 +12,23 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
   
     <title>Update Password</title> 
-	<link rel="icon" href="{{ asset('public/images/favicon.png') }}">
-	<link rel="stylesheet" href="{{ asset('public/assets/vendor_components/bootstrap/dist/css/bootstrap.css') }}">
+	<link rel="icon" href="{{ asset('images/favicon.png') }}">
+	<link rel="stylesheet" href="{{ asset('assets/vendor_components/bootstrap/dist/css/bootstrap.css') }}">
 	
 	<!-- Bootstrap extend-->
-	<link rel="stylesheet" href="{{ asset('public/css/bootstrap-extend.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/bootstrap-extend.css') }}">
 	
 	<!-- theme style -->
-	<link rel="stylesheet" href="{{ asset('public/css/master_style.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/master_style.css') }}">
 	
 	<!-- horizontal menu style -->
-	<link rel="stylesheet" href="{{ asset('public/css/horizontal_menu_style.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/horizontal_menu_style.css') }}">
 	
 	<!-- Fab Admin skins -->
-	<link rel="stylesheet" href=" {{ asset('public/css/skins/_all-skins.css') }}">
+	<link rel="stylesheet" href=" {{ asset('css/skins/_all-skins.css') }}">
 	
 	<!-- Morris charts -->
-	<link rel="stylesheet" href="{{ asset('public/assets/vendor_components/morris.js/morris.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/vendor_components/morris.js/morris.css') }}">
   
 </head>
 <style>

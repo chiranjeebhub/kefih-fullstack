@@ -1,18 +1,18 @@
 	<!-- popper -->
-	<script src=" {{ asset('public/assets/vendor_components/popper/dist/popper.min.js') }}"></script>
+	<script src=" {{ asset('assets/vendor_components/popper/dist/popper.min.js') }}"></script>
 	
 	<!-- Bootstrap 4.0-->
-	<script src="{{ asset('public/assets/vendor_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+	<script src="{{ asset('assets/vendor_components/bootstrap/dist/js/bootstrap.js') }}"></script>
 
 
 <!-- Fab Admin App -->
-<script src=" {{ asset('public/js/template.js') }}"></script>
-<script src=" {{ asset('public/js/horizontal-layout.js') }}"></script>
+<script src=" {{ asset('js/template.js') }}"></script>
+<script src=" {{ asset('js/horizontal-layout.js') }}"></script>
 
-<script src="{{ asset('public/assets/vendor_components/ckeditor/ckeditor.js') }}"></script>
+<script src="{{ asset('assets/vendor_components/ckeditor/ckeditor.js') }}"></script>
 
 <!-- Fab Admin for editor -->
-<script src=" {{ asset('public/js/pages/editor.js') }}"></script>
+<script src=" {{ asset('js/pages/editor.js') }}"></script>
 
 
 

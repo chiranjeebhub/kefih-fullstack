@@ -12,40 +12,40 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
   
     <title>@yield('pageTitle')</title> 
-		<link rel="icon" href="{{ asset('public/images/favicon.png') }}">
-	<link rel="stylesheet" href="{{ asset('public/assets/vendor_components/bootstrap/dist/css/bootstrap.css') }}">
+		<link rel="icon" href="{{ asset('images/favicon.png') }}">
+	<link rel="stylesheet" href="{{ asset('assets/vendor_components/bootstrap/dist/css/bootstrap.css') }}">
 	
 	<!-- Bootstrap extend-->
-	<link rel="stylesheet" href="{{ asset('public/css/bootstrap-extend.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/bootstrap-extend.css') }}">
 	
-	<link rel="stylesheet" href="{{ asset('public/assets/vendor_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/vendor_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
 
-	<link rel="stylesheet" href="{{ asset('public/assets/vendor_plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/vendor_plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.css') }}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-	<link rel="stylesheet" href="{{ asset('public/css/rateit.css') }}"> 
+	<link rel="stylesheet" href="{{ asset('css/rateit.css') }}"> 
 	<!-- theme style -->
-	<link rel="stylesheet" href="{{ asset('public/css/master_style.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/master_style.css') }}">
 	
-	<link rel="stylesheet" href="{{ asset('public/css/master_style_new.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/master_style_new.css') }}">
 	<!-- horizontal menu style -->
-	<link rel="stylesheet" href="{{ asset('public/css/horizontal_menu_style.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/horizontal_menu_style.css') }}">
 	
 	<!-- Fab Admin skins -->
-	<link rel="stylesheet" href=" {{ asset('public/css/skins/_all-skins.css') }}">
+	<link rel="stylesheet" href=" {{ asset('css/skins/_all-skins.css') }}">
 	
 	<!-- Morris charts -->
-	<link rel="stylesheet" href="{{ asset('public/assets/vendor_components/morris.js/morris.css') }}">
-	<link rel="stylesheet" href="{{ asset('public/css/vrp.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/vendor_components/morris.js/morris.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/vrp.css') }}">
 		   	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /> 
 	<style>
-	@import url({{ asset('public/assets/vendor_components/font-awesome/css/font-awesome.css') }});
-	@import url({{ asset('public/assets/vendor_components/Ionicons/css/ionicons.css') }});
-	@import url({{ asset('public/assets/vendor_components/themify-icons/themify-icons.css') }});
-	@import url({{ asset('public/assets/vendor_components/linea-icons/linea.css') }});
-	@import url({{ asset('public/assets/vendor_components/glyphicons/glyphicon.css') }});
-	@import url({{ asset('public/assets/vendor_components/flag-icon/css/flag-icon.css') }});
-	@import url({{ asset('public/assets/vendor_components/material-design-iconic-font/css/materialdesignicons.css') }});
-	@import url({{ asset('public/assets/vendor_components/simple-line-icons-master/css/simple-line-icons.css') }});
+	@import url({{ asset('assets/vendor_components/font-awesome/css/font-awesome.css') }});
+	@import url({{ asset('assets/vendor_components/Ionicons/css/ionicons.css') }});
+	@import url({{ asset('assets/vendor_components/themify-icons/themify-icons.css') }});
+	@import url({{ asset('assets/vendor_components/linea-icons/linea.css') }});
+	@import url({{ asset('assets/vendor_components/glyphicons/glyphicon.css') }});
+	@import url({{ asset('assets/vendor_components/flag-icon/css/flag-icon.css') }});
+	@import url({{ asset('assets/vendor_components/material-design-iconic-font/css/materialdesignicons.css') }});
+	@import url({{ asset('assets/vendor_components/simple-line-icons-master/css/simple-line-icons.css') }});
 	</style>
   	
 	
