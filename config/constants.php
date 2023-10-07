@@ -6,7 +6,7 @@ return [
         // etc
     ],
 	'Url' => [
-	         'public_url' => "https://b2cdomain.in/kefih/",
+	         'public_url' => "https://kefihdemo.marketsverse.com/",
     ],
     'Razorpay' => [
       'key' => "rzp_test_OsSZokXnscHxu2",
