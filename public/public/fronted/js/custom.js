@@ -6,11 +6,11 @@ var animating;
 /* drawer script */
 $('.close_times').on('click', function(){
     $(".drawer").toggleClass('hide_right');
-})
+});
 /* drawer script */
 $('#cart').on('click', function(){
     $(".drawer").toggleClass('hide_right');
-})
+});
 //new
 (function () {
 		$("#account-btn").on("click", function () {
