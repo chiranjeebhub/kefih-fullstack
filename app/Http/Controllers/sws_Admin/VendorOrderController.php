@@ -600,7 +600,6 @@ $pagedata = array(
                         'orders_shipping.order_shipping_zip as customer_zip',
                         'orders_shipping.order_shipping_phone as customer_phone',
                         'orders_shipping.order_shipping_email as customer_email'
-
 						)
                 ->join('orders', 'orders.id', '=', 'order_details.order_id')
                  ->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')
@@ -989,7 +988,7 @@ $pagedata = array(
 								 'order_details.payment_gateway_tax',	
 								 'order_details.logistics_tax',	
 								 'order_details.seller_invoice_date',
-								 'order_details.seller_invoice_num',
+								 'order_details.seller_invoice_num'
 								 )
 							 ->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')
 							 ->join('order_details', 'orders.id', '=', 'order_details.order_id')
@@ -1058,7 +1057,7 @@ $pagedata = array(
 									'order_details.payment_gateway_tax',	
 									'order_details.logistics_tax',	
 									'order_details.seller_invoice_date',
-									'order_details.seller_invoice_num',
+									'order_details.seller_invoice_num'
 									)
 								->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')
 								->join('order_details', 'orders.id', '=', 'order_details.order_id')
