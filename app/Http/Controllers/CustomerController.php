@@ -901,7 +901,7 @@ if ($validate_user) {
 						'name',
 						'email',
 						'phone',
-						'country_code',						
+						'country_code'					
 			 )			
 			->where(['country_code' => $input['login_country_code'], 'phone' => trim($input['login_phone'])])
 			->first();
