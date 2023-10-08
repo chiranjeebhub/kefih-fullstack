@@ -710,7 +710,7 @@ $id=auth()->guard('customer')->user()->id ;
 'order_details.order_shipping_charges as  details_shipping_charges',
 'order_details.order_cod_charges as  details_cod_charges',
 'order_details.order_coupon_amount as  details_cpn_amt',
-'order_details.order_wallet_amount as  details_wlt_amt',
+'order_details.order_wallet_amount as  details_wlt_amt'
                     )
                     ->join('order_details','orders.id','order_details.order_id')
                     ->where('order_details.order_status',$type)->where('orders.customer_id',$id)
