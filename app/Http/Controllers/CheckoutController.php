@@ -685,6 +685,7 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 			$CheckoutShipping->shipping_pincode = $input['shipping_pincode'];
 			$CheckoutShipping->shipping_address_type = $input['shipping_address_type'];
 			$CheckoutShipping->shipping_address_default = isset($input['shipping_address_default']) ? 1 : 0;
+            $CheckoutShipping->shipping_email = $input['shipping_email'];
 
 		  /* save the following details */
 		  if($CheckoutShipping->save()){
@@ -1051,6 +1052,8 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
                 die();
          }
 
+         $shippingEmail = !empty($shipping_adddress->shipping_email) ? $shipping_adddress->shipping_email : auth()->guard('customer')->user()->email;
+
          if(@count($cart_data)!='0'){
         $order_shipping=array(
             'order_id'=>'',
@@ -1062,7 +1065,7 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
             'order_shipping_state'=>$shipping_adddress->shipping_state,
             'order_shipping_zip'=>$shipping_adddress->shipping_pincode,
             'order_shipping_phone'=>$shipping_adddress->shipping_mobile,
-            'order_shipping_email'=>auth()->guard('customer')->user()->email
+            'order_shipping_email'=> $shippingEmail
 			);
 				DB::table('orders_shipping')->insert($order_shipping);
 				$shipping_id=DB::getPdo()->lastInsertId();
