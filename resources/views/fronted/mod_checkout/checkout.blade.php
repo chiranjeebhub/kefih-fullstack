@@ -183,6 +183,82 @@
 
 
                 </div>
+                <!-- <div style="display:flex; padding-top:20px;padding-left:30px">
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="togglecod" class="toggle-input">
+                        <label for="togglecod" class="toggle-label1"></label>
+                    </div>
+                    <div class="toggleText">COD (Cash on delivery)</div>
+                </div> -->
+                <div class="paymnetthod" style="padding-top:20px; padding-left:30px;padding-right:30px;">
+                                        <div id="_paymethods1">
+                                            <div class="paymnetthodBox" id="codpayment">
+                                                <div class="checkbox checkbox-circle">
+
+                                                    <input class="form-check-input" id="radio1" name="payment_mode" checked="" type="radio"  value="0" onclick="payment_method(0)">
+                                                    <label class="form-check-label" for="radio1">COD (Cash on delivery)</label> <img align=“absmiddle” src="{{ asset('public/fronted/images/cash-on-delivery.png') }}" class="pull-right" />
+                                                </div>
+
+                                            </div>
+                                            <div class="paymnetthodBox">
+                                                <div class="checkbox checkbox-circle">
+                                                    <input class="form-check-input" id="radio2" name="payment_mode"  type="radio" value="1" onclick="payment_method(1)">
+                                                    <label class="form-check-label" for="radio2">Online Payment</label> <img src="{{ asset('public/fronted/images/online-payment.png') }}" class="pull-right" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="_paymethods2" style="display:none">
+                                            <div class="paymnetthodBox">
+                                                <div class="checkbox checkbox-circle">
+                                                    <input class="form-check-input" id="radio3" name="payment_mode"  type="radio" value="2" onclick="payment_method(2)">
+                                                    <label class="form-check-label" for="radio3">Paytm</label> <img src="{{ asset('public/fronted/images/paytm.png') }}" class="pull-right" />
+                                                </div>
+                                            </div>
+
+                                            <div class="paymnetthodBox">
+                                                <div class="checkbox checkbox-circle">
+                                                    <input class="form-check-input" id="radio4" name="payment_mode"  type="radio" value="3" onclick="payment_method(3)">
+                                                    <label class="form-check-label" for="radio4">Gpay</label> <img src="{{ asset('public/fronted/images/gpay.png') }}" class="pull-right" />
+                                                </div>
+                                            </div>
+
+                                            <div class="paymnetthodBox">
+                                                <div class="checkbox checkbox-circle">
+                                                    <input class="form-check-input" id="radio5" name="payment_mode"  type="radio" value="4" onclick="payment_method(4)">
+                                                    <label class="form-check-label" for="radio5">Phone Pay</label> <img src="{{ asset('public/fronted/images/phonepay.png') }}" class="pull-right" />
+                                                </div>
+                                            </div>
+
+                                            <div class="paymnetthodBox">
+                                                <div class="checkbox checkbox-circle">
+                                                    <input class="form-check-input" id="radio6" name="payment_mode"  type="radio" value="6" onclick="payment_method(6)">
+                                                    <label class="form-check-label" for="radio6">Cash</label> <img src="{{ asset('public/fronted/images/cash.png') }}" class="pull-right" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div id="_paymethods3" style="display:none">
+                                            <div class="paymnetthodBox">
+                                                <div class="checkbox checkbox-circle">
+                                                    <input class="form-check-input" id="radio6" name="payment_mode"  type="radio" value="5" onclick="payment_method(5)">
+                                                    <label class="form-check-label" for="radio6">Wallet</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <!--<div class="paymnetthodBox">-->
+                                        <!--    <div class="checkbox checkbox-circle">-->
+                                        <!--        <input id="checkbox1" type="checkbox" checked name="wallet" class="wallet_button" value="1">-->
+                                        <!--        <label for="checkbox1">Use Coins <i class="fa fa-inr"></i> <?php echo $cust_info->total_reward_points;?></label> <i class="fa fa-google-wallet pull-right" aria-hidden="true"></i>-->
+
+                                        <!--    </div>-->
+
+                                        <!--</div>-->
+                                    </div>
                 <!-- <div>
              
                 </div> -->

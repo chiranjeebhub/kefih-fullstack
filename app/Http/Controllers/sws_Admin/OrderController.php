@@ -362,7 +362,7 @@ public function srefundConfirm(Request $request){
 						'order_details.color',
 						'order_details.color_id',
 						'order_details.size_id',
-						'order_details.order_status',
+						'order_details.order_status'
 						)
 					
 					->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')					

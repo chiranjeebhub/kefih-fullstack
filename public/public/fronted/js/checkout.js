@@ -1,21 +1,20 @@
-
 document.getElementById("toggle").addEventListener("change", function () {
-  if (this.checked) {
-    console.log("Toggle is ON");
-    let subtotal = document.getElementById("subTotalSection");
-    let subtotal = $('#subTotalSection');
-    let subtotal1 = document.getElementById("subTotalSection1");
+    if (this.checked) {
+        console.log("Toggle is ON");
+        let subtotal = document.getElementById("subTotalSection");
+        let subtotal = $("#subTotalSection");
+        let subtotal1 = document.getElementById("subTotalSection1");
 
-    subtotal.style.display = "block";
-    subtotal1.style.display = "none";
-  } else {
-    console.log("Toggle is OFF");
-    let subtotal = document.getElementById("subTotalSection");
-    let subtotal1 = document.getElementById("subTotalSection1");
+        subtotal.style.display = "block";
+        subtotal1.style.display = "none";
+    } else {
+        console.log("Toggle is OFF");
+        let subtotal = document.getElementById("subTotalSection");
+        let subtotal1 = document.getElementById("subTotalSection1");
 
-    subtotal.style.display = "none";
-    subtotal1.style.display = "block";
-  }
+        subtotal.style.display = "none";
+        subtotal1.style.display = "block";
+    }
 });
 
 // document.addEventListener("DOMContentLoaded", function () {
@@ -57,43 +56,43 @@ document.getElementById("toggle").addEventListener("change", function () {
 // }
 
 function selectPaymentMode(element) {
-  const modes = document.querySelectorAll(".paymentMode");
+    const modes = document.querySelectorAll(".paymentMode");
 
-  // Check if the clicked element is already selected
-  let alreadySelected = element.classList.contains("selected");
+    // Check if the clicked element is already selected
+    let alreadySelected = element.classList.contains("selected");
 
-  // Remove the 'selected' class from all divs
-  modes.forEach(function (mode) {
-    mode.classList.remove("selected");
-  });
+    // Remove the 'selected' class from all divs
+    modes.forEach(function (mode) {
+        mode.classList.remove("selected");
+    });
 
-  // If the clicked element was not previously selected, add the 'selected' class to it
-  if (!alreadySelected) {
-    element.classList.add("selected");
-  }
+    // If the clicked element was not previously selected, add the 'selected' class to it
+    if (!alreadySelected) {
+        element.classList.add("selected");
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const productCards = document.querySelectorAll(
-    ".productCardWrapper1 .productCard"
-  );
+    const productCards = document.querySelectorAll(
+        ".productCardWrapper1 .productCard"
+    );
 
-  productCards.forEach((card) => {
-    const minusBtn = card.querySelector(".minusBtn");
-    const plusBtn = card.querySelector(".plusBtn");
-    const quantityEl = card.querySelector(".quantity");
-    const sellingPriceEl = card.querySelector(".sellingPrice");
+    productCards.forEach((card) => {
+        const minusBtn = card.querySelector(".minusBtn");
+        const plusBtn = card.querySelector(".plusBtn");
+        const quantityEl = card.querySelector(".quantity");
+        const sellingPriceEl = card.querySelector(".sellingPrice");
 
-    minusBtn.addEventListener("click", function () {
-      updateQuantity(quantityEl, sellingPriceEl, -1);
-      updateTotal();
+        minusBtn.addEventListener("click", function () {
+            updateQuantity(quantityEl, sellingPriceEl, -1);
+            updateTotal();
+        });
+
+        plusBtn.addEventListener("click", function () {
+            updateQuantity(quantityEl, sellingPriceEl, 1);
+            updateTotal();
+        });
     });
-
-    plusBtn.addEventListener("click", function () {
-      updateQuantity(quantityEl, sellingPriceEl, 1);
-      updateTotal();
-    });
-  });
 });
 
 // function updateQuantity(quantityEl, priceEl, change) {
@@ -127,47 +126,50 @@ document.addEventListener("DOMContentLoaded", function () {
 //   }
 // }
 function updateQuantity(quantityEl, priceEl, change) {
-  let currentQuantity = parseInt(quantityEl.textContent);
-  let price = parseFloat(priceEl.textContent.replace("₹", ""));
+    let currentQuantity = parseInt(quantityEl.textContent);
+    let price = parseFloat(priceEl.textContent.replace("₹", ""));
 
-  if (change == -1 && currentQuantity > 1) {
-    currentQuantity -= 1;
-  } else if (change == 1) {
-    currentQuantity += 1;
-  }
-
-  // Update quantity on the card
-  quantityEl.textContent = currentQuantity;
-
-  // Find the index of the product card
-  const productCards = Array.from(document.querySelectorAll(".productCard"));
-  const cardIndex = productCards.findIndex((card) => card.contains(quantityEl));
-
-  // Use the index to update the corresponding subItem
-  const subItem = document.querySelectorAll(".subItemWrapper1 .subItem")[
-    cardIndex
-  ];
-  if (subItem) {
-    const subItemTitle = subItem.querySelector("div:nth-child(1)");
-    const subItemPrice = subItem.querySelector("div:nth-child(2)");
-
-    subItemPrice.textContent = `₹${price * currentQuantity}`;
-    const itemTitleMatch = subItemTitle.textContent.match(/(.*)\s\((\d+)\)/);
-    if (itemTitleMatch) {
-      subItemTitle.textContent = `${itemTitleMatch[1]} (${currentQuantity})`;
+    if (change == -1 && currentQuantity > 1) {
+        currentQuantity -= 1;
+    } else if (change == 1) {
+        currentQuantity += 1;
     }
-  }
+
+    // Update quantity on the card
+    quantityEl.textContent = currentQuantity;
+
+    // Find the index of the product card
+    const productCards = Array.from(document.querySelectorAll(".productCard"));
+    const cardIndex = productCards.findIndex((card) =>
+        card.contains(quantityEl)
+    );
+
+    // Use the index to update the corresponding subItem
+    const subItem = document.querySelectorAll(".subItemWrapper1 .subItem")[
+        cardIndex
+    ];
+    if (subItem) {
+        const subItemTitle = subItem.querySelector("div:nth-child(1)");
+        const subItemPrice = subItem.querySelector("div:nth-child(2)");
+
+        subItemPrice.textContent = `₹${price * currentQuantity}`;
+        const itemTitleMatch =
+            subItemTitle.textContent.match(/(.*)\s\((\d+)\)/);
+        if (itemTitleMatch) {
+            subItemTitle.textContent = `${itemTitleMatch[1]} (${currentQuantity})`;
+        }
+    }
 }
 
 function updateTotal() {
-  const subItems = document.querySelectorAll(
-    ".subItemWrapper1 .subItem div:nth-child(2)"
-  );
-  let total = 0;
+    const subItems = document.querySelectorAll(
+        ".subItemWrapper1 .subItem div:nth-child(2)"
+    );
+    let total = 0;
 
-  subItems.forEach((item) => {
-    total += parseFloat(item.textContent.replace("₹", ""));
-  });
+    subItems.forEach((item) => {
+        total += parseFloat(item.textContent.replace("₹", ""));
+    });
 
-  document.querySelector(".toatlValue").textContent = `₹${total}`;
+    document.querySelector(".toatlValue").textContent = `₹${total}`;
 }
