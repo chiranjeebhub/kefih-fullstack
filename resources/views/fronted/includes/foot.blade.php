@@ -260,7 +260,7 @@
     
     if($(window).width() >= 767){
         $(window).on('scroll', function() {
-            console.log($(window).scrollTop() ); 
+            // console.log($(window).scrollTop() ); 
           if($(window).scrollTop() > 0){
             $("#navbarNavDropdown").removeClass('show');
           }

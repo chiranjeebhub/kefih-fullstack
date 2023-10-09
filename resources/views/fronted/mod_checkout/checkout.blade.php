@@ -183,10 +183,13 @@
 
 
                 </div>
-                <div>
-                <button type="submit" class="paymentBtnOfflin2e">
-                    Confirm Order
-                </button>
+                <!-- <div>
+             
+                </div> -->
+                <div style="width:100%; padding-right:4rem;">
+                    <button type="submit" class="paymentBtnOfflin2e">
+                        Confirm Order
+                    </button>
                 </div>
              
             </div>
