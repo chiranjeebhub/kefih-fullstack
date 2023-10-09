@@ -2162,7 +2162,7 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 										 'order_details.payment_gateway_tax',	
 										 'order_details.logistics_tax',	
 										 'order_details.seller_invoice_date',
-										 'order_details.seller_invoice_num',
+										 'order_details.seller_invoice_num'
 										 )
 									 ->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')
 									 ->join('order_details', 'orders.id', '=', 'order_details.order_id')

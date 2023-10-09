@@ -710,7 +710,7 @@ if ($err) {
 
 
                               $mail->Host = 'mail.b2csoftwares.com';
-                              $mail->SMTPAuth = false;
+                              $mail->SMTPAuth = true;
                                 $mail->SMTPAutoTLS = false;
                                 // $mail->SMTPSecure = false;
 
