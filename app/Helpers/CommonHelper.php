@@ -709,18 +709,18 @@ if ($err) {
 
 
 
-                              $mail->Host = 'mail.b2csoftwares.com';
+                              $mail->Host = 'mail.kefih.com';
                               $mail->SMTPAuth = true;
-                                $mail->SMTPAutoTLS = false;
-                                // $mail->SMTPSecure = false;
+                                // $mail->SMTPAutoTLS = true;
+                                $mail->SMTPSecure = 'tls';
 
-                                $mail->Port = 25;                          
+                                $mail->Port = 587;                          
 
-                                $mail->Username = 'mailto@b2csoftwares.com';
-                                $mail->Password = 'KRP5wSFwty9x';                        
-                                $mail->From = 'mailto@b2csoftwares.com';     
+                                $mail->Username = 'contact@kefih.com';
+                                $mail->Password = 'Faykhaabu';                        
+                                $mail->From = 'contact@kefih.com';
                  
-                                $mail->FromName = 'b2csoftwares.com';
+                                $mail->FromName = 'kefih.com';
 
                                 $mail->AddAddress($email_to);
                                 $mail->IsHTML(true);
