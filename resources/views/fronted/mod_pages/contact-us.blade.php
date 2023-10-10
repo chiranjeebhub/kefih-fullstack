@@ -64,8 +64,15 @@ background-size: cover; background-repeat: no-repeat;">
 					</div>
 </div>    
 </div>
-<div class="col-xs-12 col-sm-7 col-md-8">
+  
+  
+<div class="col-xs-12 col-sm-7 col-md-8" style="overflow-y:hidden !important, padding-top:-30px !important">
+  
+  
 <div class="contactform">
+    <div class="calendly-inline-widget" style="overflow:hidden !important; height:100vh; padding:0px !impo" data-url="https://calendly.com/socioosyndicate/seller-onboarding-kefih" style="min-width:320px;height:600px;"></div>
+
+  {{--
 <h6>Get In <span>Touch</span></h6>    
      <form role="form" class="form-element" action="{{route('contact_us')}}" method="post">
 			   @csrf
@@ -113,9 +120,12 @@ background-size: cover; background-repeat: no-repeat;">
     </div>
   
    
-    </form>      
+    </form>     
+  --}}
 </div>    
 </div>    
+  
+ 
     
 </div>    
 </div>       
@@ -123,5 +133,10 @@ background-size: cover; background-repeat: no-repeat;">
 <section>
 <!--<iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d15549.082440695503!2d77.61839967002575!3d13.018431653201299!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sNo%3A3%2F23%2C+2nd+Floor%2C+Anand+Complex%2C+Outer+Ring+Road%2C+Malagala%2C+Nagarbhavi+2nd+Stage%2C+Bengaluru%2C+Karanataka+%3A+560072!5e0!3m2!1sen!2sin!4v1566331329120!5m2!1sen!2sin" width="100%" height="350" frameborder="0" style="border:0" allowfullscreen></iframe>-->
 </section> 
+
+<!-- Calendly inline widget begin -->
+
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<!-- Calendly inline widget end -->
    
 @endsection
