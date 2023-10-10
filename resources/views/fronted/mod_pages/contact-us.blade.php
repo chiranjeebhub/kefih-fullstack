@@ -70,7 +70,7 @@ background-size: cover; background-repeat: no-repeat;">
   
   
 <div class="contactform">
-    <div class="calendly-inline-widget" style="overflow:hidden !important; height:100vh; padding:0px !impo" data-url="https://calendly.com/kefih/kefih-seller-onboarding-demo-call" style="min-width:320px;height:600px;"></div>
+    <div class="calendly-inline-widget"  data-url="https://calendly.com/kefih/kefih-seller-onboarding-demo-call" style="min-width:320px;height:700px;"></div>
 
   {{--
 <h6>Get In <span>Touch</span></h6>    
