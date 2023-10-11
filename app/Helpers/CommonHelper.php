@@ -26,11 +26,11 @@ use \stdClass;
 use URL;
 class CommonHelper
 {
-    
-    
+
+
     public static function GetAdminProductDetails($productID,$colorID,$sizeID){
         $productData = Products::where('id',$productID)->first();
-        
+
         if($productData->product_type == '1')
         {
             $imagespathfolder='uploads/products/'.$productData->vendor_id.'/'.$productData->sku;
@@ -45,16 +45,16 @@ class CommonHelper
 
 
             if($colorID!='' && $productData->product_type==3 )
-			{   
+			{
                 $color_image= ProductImages::getConfiguredImages($productID,$colorID,0);
-                $prd_img=URL::to($imagespathfolder).'/'.$color_image[0]['image'];                
+                $prd_img=URL::to($imagespathfolder).'/'.$color_image[0]['image'];
 
              }else{
                 $prd_slider=App\Products::prdImages($product_id);
                 $prd_img=URL::to($imagespathfolder).'/'.$prd_slider[0]['image'];
 			}
 
-       return ['short_description' => $productData->short_description, 'image' => $prd_img]; 
+       return ['short_description' => $productData->short_description, 'image' => $prd_img];
     }
 
     public static function productHeartCheck($productID){
@@ -70,7 +70,7 @@ class CommonHelper
             if(count($wishlist_data) > 0){
                 $productWishlistIcon = '<i class="fa fa-heart text-danger wishList prdheart'.$productID.'" prd_id="'.$productID.'" ></i>';
             }
-        }        
+        }
         return $productWishlistIcon;
      }
 
@@ -82,55 +82,55 @@ class CommonHelper
             ->join('order_details','order_details.order_id','orders.id')
 			->join('products','products.id','order_details.product_id')
 			->join('vendors','vendors.id','products.vendor_id');
-			
+
                             if( ($cat!=0)){
                                       $products =$products
                             		->join('product_categories','product_categories.product_id','=','products.id')
                             		->join('categories','categories.id','=','product_categories.cat_id');
                             			$products =$products->where('product_categories.cat_id',$cat);
-                            } 
+                            }
             if($daterange!='All' && $daterange!=''){
                     	$daterange_array=explode('.',$daterange);
                     	$from= date("Y-m-d", strtotime($daterange_array[0]));
                     	$to=date("Y-m-d", strtotime($daterange_array[1]));
         $from    = Carbon::parse($from)
-             ->startOfDay()       
-             ->toDateTimeString(); 
+             ->startOfDay()
+             ->toDateTimeString();
 
     $to= Carbon::parse($to)
-         ->endOfDay()         
+         ->endOfDay()
          ->toDateTimeString();
                    $products=$products
 				 			 ->whereBetween('order_details.order_date',[$from,$to]);
                 }
-            $products=$products->where('vendors.id', $vendor_id)->groupBy('vendors.id')->orderBy('total_sales','desc')->first(); 	
+            $products=$products->where('vendors.id', $vendor_id)->groupBy('vendors.id')->orderBy('total_sales','desc')->first();
             return ($products)?$products->total_sales:0;
-			
+
      }
 
 
       public static function getVendorCompanyProfile($id){
-        return DB::table('vendor_company_info')->where('vendor_id',$id)->first();  
+        return DB::table('vendor_company_info')->where('vendor_id',$id)->first();
       }
       public static function sendMailToVendorQtyLess(){
-          
+
           //'sizes.*',  $size_row->name
-          
-              $size =DB::table('product_attributes')->select('product_attributes.qty','product_attributes.product_id','products.name as product_name','products.qty_out','products.vendor_id','vendors.email')					   	   
-                    
+
+              $size =DB::table('product_attributes')->select('product_attributes.qty','product_attributes.product_id','products.name as product_name','products.qty_out','products.vendor_id','vendors.email')
+
                      ->join('products','products.id','product_attributes.product_id')
                       ->join('vendors','vendors.id','products.vendor_id')
                       ->orderBy('product_attributes.size_id','ASC')->get();
-                
-                
+
+
                 foreach($size as $size_row){
-	
+
 	//$row=DB::table('products')->select('id','name','qty_out','vendor_id')->where(['id'=>$size_row->product_id,'status'=>1,'isdeleted'=>0])->first(); connect@redliips.com
 	$cust_info=DB::table('vendors')->select('id','email')->where(['id'=>@$size_row->vendor_id,'status'=>1,'isdeleted'=>0])->first();
-	$details= base64_encode($size_row->product_id);						
+	$details= base64_encode($size_row->product_id);
 	$prdimage=URL::to('admin/addStock/'.$details);
-				
-				
+
+
 		if($size_row->qty <= $size_row->qty_out){
 				$email_data = [
                             'to'=>(@$size_row->email)?$size_row->email:'connect@redliips.com',
@@ -148,7 +148,7 @@ class CommonHelper
                 self::SendmailCustom($email_data);
 		}
 /*	if($size_row->qty ==0){
-	
+
 			        $email_data = [
                                     'to'=>"Jyoti@b2cmarketing.in",
                                     'subject'=>'Stock Notification',
@@ -163,24 +163,24 @@ class CommonHelper
                                     'phone_msg'=>''
                                   ];
 
-                    
+
                  self::SendmailCustom($email_data);
 
 
 			}	*/
 
-		
+
 			}
 
     }
-    
+
     public static function sendMailToVendorQtyLess_yogi(){
                  $array=[
             	"name"=>"Yogendra verma",
             	"email"=>"yogendraverma325@gmail.com"
             	];
             	//file_put_contents(time()."mail.txt",json_encode($_SERVER));
-            	
+
             // 	  $email_data = [
             //             'to'=>'jyoti@b2cmarketing.in',
             //             'subject'=>'Add Stock ',
@@ -193,7 +193,7 @@ class CommonHelper
             // 	     'phone'=>'',
             // 	     'phone_msg'=>''
             //              ];
-            
+
              $email_data = [
                             'to'=>'jyoti@b2cmarketing.in',
                             'subject'=>'Add Stock jyoti',
@@ -202,8 +202,8 @@ class CommonHelper
                             'phone_msg'=>''
                          ];
                 self::SendmailCustom($email_data);
-                
-                
+
+
                  $email_data1 = [
                             'to'=>'anurag@b2cmarketing.in',
                             'subject'=>'Add Stock ',
@@ -212,29 +212,29 @@ class CommonHelper
                             'phone_msg'=>''
                          ];
                 //self::SendmailCustom($email_data1);
-                
+
 
     }
     public static function selectedCityName($city_id){
         $name='';
             $sitecityname = DB::table('cities')->select('name')->where('id',$city_id)->where(['isdeleted'=>0,'status'=>1])->first();
             if($sitecityname){
-               $name=$sitecityname->name; 
+               $name=$sitecityname->name;
             }
             return $name;
           }
     public static function logisticsAuth($method,$url=''){
-        
+
         switch($method){
-           
+
             case 'POST':
-                
+
                     try{
             $user_id=Config::get('constants.logisctics.user_id');
             $txt = sprintf($url,$user_id);
             $api_key=Config::get('constants.logisctics.api_key');
             $secret_key=Config::get('constants.logisctics.secret_key');
-            
+
             $string_to_sign="$method\n/$txt";
             $utf_encoded=urlencode($string_to_sign);
             $hash=hash_hmac("sha1", $utf_encoded, $secret_key,FALSE);
@@ -243,91 +243,91 @@ class CommonHelper
             return array(
                     'auth_token'=>$auth_token,
                     'url'=>$txt
-                ); 
-                    } 
+                );
+                    }
                 catch(Exception $e) {
                            return array(
                             'auth_token'=>$auth_token,
                             'url'=>$txt
                         );
                   }
-             
-                
+
+
         }
-        
+
     }
     public static function trackOrder($method,$auth,$post_json_request){
          switch($method){
-            
+
             case 'POST':
         $ch = curl_init();
-        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);     
+        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',"Authorization:".$auth['auth_token']));
         curl_setopt( $ch,CURLOPT_POST, true );
         curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
-        curl_setopt( $ch,CURLOPT_POSTFIELDS, 
+        curl_setopt( $ch,CURLOPT_POSTFIELDS,
         json_encode($post_json_request));
         $result = curl_exec($ch );
         return $result;
-                
+
         }
           switch($method){
-            
+
             case 'GET':
         $ch = curl_init();
-        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);     
+        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',"Authorization:".$auth['auth_token']));
         curl_setopt( $ch,CURLOPT_POST, false );
         curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
-        curl_setopt( $ch,CURLOPT_POSTFIELDS, 
+        curl_setopt( $ch,CURLOPT_POSTFIELDS,
         json_encode($post_json_request));
         $result = curl_exec($ch );
         return $result;
-                
+
         }
-    }
-    
-    public static function logisticsResponse($method,$auth,$post_json_request){
-        switch($method){
-            
-            case 'POST':
-        $ch = curl_init();
-        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);     
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',"Authorization:".$auth['auth_token']));
-        curl_setopt( $ch,CURLOPT_POST, true );
-        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
-        curl_setopt( $ch,CURLOPT_POSTFIELDS, 
-        json_encode($post_json_request));
-        $result = curl_exec($ch );
-        return $result;
-                
-        }
-        
-    }
-    
-    public static function logisticsResponse1($method,$auth,$post_json_request){
-        switch($method){
-            
-            case 'POST':
-        $ch = curl_init();
-        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);     
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',"Authorization:".$auth['auth_token']));
-        curl_setopt( $ch,CURLOPT_POST, true );
-        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
-        curl_setopt( $ch,CURLOPT_POSTFIELDS, 
-        json_encode($post_json_request));
-        $result = curl_exec($ch );
-        return $result;
-                
-        }
-        
     }
 
-    public static function checkDelivery_new($inputs){   
+    public static function logisticsResponse($method,$auth,$post_json_request){
+        switch($method){
+
+            case 'POST':
+        $ch = curl_init();
+        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',"Authorization:".$auth['auth_token']));
+        curl_setopt( $ch,CURLOPT_POST, true );
+        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $ch,CURLOPT_POSTFIELDS,
+        json_encode($post_json_request));
+        $result = curl_exec($ch );
+        return $result;
+
+        }
+
+    }
+
+    public static function logisticsResponse1($method,$auth,$post_json_request){
+        switch($method){
+
+            case 'POST':
+        $ch = curl_init();
+        curl_setopt( $ch,CURLOPT_URL, Config::get('constants.logisctics.base_url').$auth['url']);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',"Authorization:".$auth['auth_token']));
+        curl_setopt( $ch,CURLOPT_POST, true );
+        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $ch,CURLOPT_POSTFIELDS,
+        json_encode($post_json_request));
+        $result = curl_exec($ch );
+        return $result;
+
+        }
+
+    }
+
+    public static function checkDelivery_new($inputs){
 
         $data=DB::table('logistic_vendor_pincode')
         ->join('logistic_partner','logistic_vendor_pincode.logistic_partner_id', 'logistic_partner.id')
@@ -336,7 +336,7 @@ class CommonHelper
 		->where('logistic_vendor_pincode.status',1)
         ->where('logistic_partner.status',1)
 		->first();
-        
+
         if(@$data){
             return true;
         }else{
@@ -345,11 +345,11 @@ class CommonHelper
 }
 
      public static function checkDelivery($inputs){
-         
+
                 $method='POST';
                 $url="users/%u/pincodeservice/rate";
                 $auth_response=self::logisticsAuth($method,$url);
-                
+
                 $post_json_request = array(
                 "pickup_pincode"=>"641603",
                 "delivery_pincode"=>$inputs['pincode'],
@@ -374,22 +374,22 @@ class CommonHelper
                                         )
                               )
                 );
-              
+
         $res=self::logisticsResponse($method,$auth_response,$post_json_request);
         return $res;
     }
-    
+
     public static function ShipmentCharges($inputs){
-         
+
         $method='POST';
         $url="users/%u/pincodeservice/rate";
         $auth_response=self::logisticsAuth($method,$url);
-                
+
         $post_json_request = array(
                 "pickup_pincode"=>$inputs['pickup_pincode'], // got
                 "delivery_pincode"=>$inputs['delivery_pincode'], // got
                 "invoice_value"=>$inputs['price'], // got
-                "payment_mode"=>"cod", 
+                "payment_mode"=>"cod",
                 "insurance"=>false,
                 "number_of_package"=>1,
                 "product_type"=>"Parcel",
@@ -408,30 +408,30 @@ class CommonHelper
                                         )
                               )
                 );
-              
+
         $res=self::logisticsResponse($method,$auth_response,$post_json_request);
         return $res;
     }
-    
+
     public static function removeProductFromCustomerWishlistAndSaveForlater($customer_id,$product_id){
-        
+
         DB::table('tbl_save_later')
         ->where('fld_user_id',$customer_id)
         ->where('fld_product_id',$product_id)
         ->delete();
-        
+
         DB::table('tbl_wishlist')
         ->where('fld_user_id',$customer_id)
         ->where('fld_product_id',$product_id)
         ->delete();
-        
+
     }
     public static function PickupRequest($inputs){
-         
+
         $method='POST';
         $url="users/%u/pickup";
         $auth_response=self::logisticsAuth($method,$url);
-        
+
         $post_json_request = array(
                 "courier_id"=>$inputs['courier_id'],
                 "service_id"=>(int) $inputs['service_id'],
@@ -446,7 +446,7 @@ class CommonHelper
                                         "contact_name"=>$inputs['pickup_contact_name'], //got
                                         "company_name"=> substr($inputs['pickup_company_name'],0,30),
                                         "address1"=>$inputs['pickup_address1'], //got
-                                        "address2"=>$inputs['pickup_address2'], 
+                                        "address2"=>$inputs['pickup_address2'],
                                         "landmark"=>$inputs['pickup_landmark'],
                                         "city"=>$inputs['pickup_city'], //got
                                         "state"=>$inputs['pickup_state'], //got
@@ -455,7 +455,7 @@ class CommonHelper
                                         "contact_no"=>$inputs['pickup_contact'],
                                         "email"=>$inputs['pickup_email']
                                         ),
-                                        
+
                 "delivery_address"=>array(
                                     "contact_name"=>$inputs['delivery_contact_name'], //got
                                     "company_name"=>substr($inputs['company_name'],0,30),
@@ -463,7 +463,7 @@ class CommonHelper
                                     "address2"=>$inputs['delivery_address2'], //got
                                     "landmark"=>$inputs['delivery_landmark'],
                                     "city"=>$inputs['delivery_city'], //got
-                                    "state"=>$inputs['delivery_state'], //got 
+                                    "state"=>$inputs['delivery_state'], //got
                                     "pincode"=>$inputs['delivery_pincode'], //got
                                     "country"=>$inputs['delivery_country'], //got
                                     "contact_no"=>$inputs['delivery_mobile'], //got
@@ -482,10 +482,10 @@ class CommonHelper
                                             )
                                      )),
                 "insurance"=>"false"
-                                    
+
                 );
-        
-        $request_body = json_encode($post_json_request); 
+
+        $request_body = json_encode($post_json_request);
 
 //$base_url = "https://apicouriers.getgologistics.com/";
 $base_url = "http://api.couriers.getgologistics.com";
@@ -520,7 +520,7 @@ curl_setopt_array($curl, array(
   ),
 ));
 
-$response = curl_exec($curl); 
+$response = curl_exec($curl);
 $err = curl_error($curl);
 curl_close($curl);
 
@@ -529,27 +529,27 @@ if ($err) {
 } else {
   return $response;
 }
-        
+
     }
-   
-    
+
+
     public static function ShipmentOrder($inputs){
-        
+
         $method='POST';
         $url="orders";
         $auth_response=self::logisticsAuth($method,$url);
         $user_id = Config::get('constants.logisctics.user_id');
         $key=Config::get('constants.logisctics.api_key');
         $secret=Config::get('constants.logisctics.secret_key');
-        //$base_url = "https://apicouriers.getgologistics.com/";       
-        $base_url = "http://api.couriers.getgologistics.com";       
+        //$base_url = "https://apicouriers.getgologistics.com/";
+        $base_url = "http://api.couriers.getgologistics.com";
         $post_url = $base_url."/orders";
         $StringtoSign = "POST\n/orders";
         $utf8_encode = urlencode($StringtoSign);
         $sha1 = hash_hmac("sha1", $utf8_encode, $secret);
         $Signature = base64_encode($sha1);
-        $header ="Authorization: SHIPIT ".$key.":".$Signature;     
-        
+        $header ="Authorization: SHIPIT ".$key.":".$Signature;
+
         $post_json_request = array(
                 "shipmentIds"=>[$inputs['shipmentIds']],
                 "user_id"=>$user_id,
@@ -559,8 +559,8 @@ if ($err) {
                 "client_source"=> "TEST",
                 "api_key"=>$key
                 );
-                
-                
+
+
              $request_body = json_encode($post_json_request);
 
  //echo '<pre>';print_r($request_body);die;
@@ -591,23 +591,23 @@ if ($err) {
   return "cURL Error #:" . $err;
 } else {
   return $response;
-}   
-                
-                
+}
+
+
     }
-    
+
     public static function CourierOrder($inputs){
-         
+
         $method='GET';
         $url="orders/{orderCode}?details=true";
-        $auth_response=self::logisticsAuth($method,$url); 
-        
+        $auth_response=self::logisticsAuth($method,$url);
+
         //$base_url = "https://apicouriers.getgologistics.com/";
         $base_url = "http://api.couriers.getgologistics.com";
         $user_id = Config::get('constants.logisctics.user_id');
         $key=Config::get('constants.logisctics.api_key');
         $secret=Config::get('constants.logisctics.secret_key');
-        
+
         $ordercode = $inputs['ordercode'];
 $post_url = $base_url."/orders/".$ordercode."?details=true";
 
@@ -646,9 +646,9 @@ if ($err) {
 } else {
   return $response;
 }
-                
+
     }
-    
+
      public static function getCityFromState($id){
  //	$states=DB::table('states')->where('name',$id)->first();
      $cities=DB::table('cities')->where('state_id',$id)->get();
@@ -661,17 +661,17 @@ if ($err) {
             return  $states;
            }
 
-           
+
      public static function getState($id='101'){
          $states=DB::table('states')->where('country_id',101)->get();
          return $states;
     }
-    
+
       public static function getType(){
         $types=DB::table('company_types')->get();
         return $types;
     }
-    
+
     public static function getCityFromState_old($id){
      $cities=DB::table('cities')->where('state_id',$id)->get();
      return  $cities;
@@ -681,7 +681,7 @@ if ($err) {
          return $states;
     }
     public static function SendmailCustom($data){
-       
+
                 $email_to = strip_tags ($data['to']);
                             $mail = new PHPMailer();
                     // try{
@@ -689,22 +689,22 @@ if ($err) {
                             // $mail->Host = 'mail.kefih.com';
                             // $mail->SMTPAuth = true;
                             // $mail->SMTPSecure = "tls";
-                            // $mail->Port =587;                          
+                            // $mail->Port =587;
 
                             // $mail->Username = 'contact@kefih.com';
-                            // $mail->Password = 'Faykhaabu';                        
+                            // $mail->Password = 'Faykhaabu';
                             // $mail->From = 'contact@kefih.com';
-                        
+
                             // $mail->FromName = 'kefih.com';
 
 
                             // $mail->Host = 'mail.b2cdomain.in';
                             // $mail->SMTPAuth = true;
                             // $mail->SMTPSecure = "tls";
-                            // $mail->Port = 587;                          
+                            // $mail->Port = 587;
 
                             // $mail->Username = 'kefih@b2cdomain.in';
-                            // $mail->Password = 'mav3Lf-y[W{&';                        
+                            // $mail->Password = 'mav3Lf-y[W{&';
                             // $mail->From = 'kefih@b2cdomain.in';
 
 
@@ -714,39 +714,39 @@ if ($err) {
                                 // $mail->SMTPAutoTLS = true;
                                 $mail->SMTPSecure = 'tls';
 
-                                $mail->Port = 587;                          
+                                $mail->Port = 587;
 
                                 $mail->Username = 'contact@kefih.com';
-                                $mail->Password = 'Faykhaabu';                        
+                                $mail->Password = 'Faykhaabu';
                                 $mail->From = 'contact@kefih.com';
-                 
+
                                 $mail->FromName = 'kefih.com';
 
                                 $mail->AddAddress($email_to);
                                 $mail->IsHTML(true);
                                 $mail->Subject = $data['subject'];
                                 $mail->Body = $data['body'];
-                      
+
 
                            if(!$mail->send()) {
                             //    return $mail->ErrorInfo;
                             echo 'Message could not be sent.';
                             echo 'Mailer Error: ' . $mail->ErrorInfo;
-                            die; 
+                            die;
                         } else {
-                            
+
                             $msg = 'Mail successfully send';
                             return $msg;
                         }
-                        
+
                         // } catch (phpmailerException $e) {
                         //     echo $e->errorMessage(); //Pretty error messages from PHPMailer
                         //   }
-                    
-    }
-    
 
-    
+    }
+
+
+
         public static function brandCount(){
         $total=Brands::select('id')->where('isdeleted',0)->get();
         return sizeof($total);
@@ -754,12 +754,12 @@ if ($err) {
 
 
         public static function getShippingDetails(){
-          $data= DB::table('store_shipping_charges')->first();  
+          $data= DB::table('store_shipping_charges')->first();
           return $data;
         }
 
         public static function getServiceCharge(){
-            $data= DB::table('store_info')->select('service_charge')->first();  
+            $data= DB::table('store_info')->select('service_charge')->first();
             return $data;
         }
 
@@ -789,7 +789,7 @@ public static function orderDetailsLog($data,$sts){
           $total=Customer::select('id')->where('isdeleted',0)->get();
     return sizeof($total);
 }
-    
+
     public static function vendorCount(){
     $total=Vendor::select('id')->where('isdeleted',0)->get();
     return sizeof($total);
@@ -840,17 +840,17 @@ public static function invoiceOrderCount(){
     return sizeof($total);
 }
 
-public static function successOrderAmount(){   
+public static function successOrderAmount(){
     return self::calculateOrderAmount(3);
 }
 
 public static function cancelOrderAmount(){
-   
+
     return self::calculateOrderAmount(4);
 }
 
 public static function returnOrderAmount(){
-   
+
     return self::calculateOrderAmount(5);
 }
 
@@ -914,17 +914,17 @@ public static function calculateVendorReverseShippingCharge($vendor_id){
 //--------------- Function for report count --------------------------------//
 public static function reports_count($type){
 	 //$products =DB::select("select count(*) AS orders, SUM(od.product_qty) AS `total_sales`, SUM(od.product_price) AS `total_price`, p.id, p.name, p.default_image from orders o, order_details od, products p where od.order_id=o.id and p.id=od.product_id group by p.id order by total_price desc");
-					
+
      //echo '<pre>'; print_r($products);die;
 
-       
+
         $page_details=array(
         "Title"=>"Reports",
         "Box_Title"=>"",
         "search_route"=>'',
         "reset_route"=>''
         );
-        
+
         if(@$type==0){
 		$products=Orders::
                select('products.id','products.name','products.default_image','products.spcl_price','products.sku','order_details.order_shipping_charges',
@@ -932,10 +932,10 @@ public static function reports_count($type){
                 )
             ->join('order_details','order_details.order_id','orders.id')
             ->join('products','products.id','order_details.product_id')
-            ->where('order_details.order_status','3')->groupBy('products.id')->orderBy('total_price','desc')->get(); 
-            
+            ->where('order_details.order_status','3')->groupBy('products.id')->orderBy('total_price','desc')->get();
+
 		}
-       
+
         if(@$type==1){
 		$products=Orders::
                select('products.id','products.name','products.default_image','products.spcl_price','products.sku','order_details.order_shipping_charges','orders_shipping.order_shipping_zip','orders_shipping.order_shipping_city',
@@ -944,9 +944,9 @@ public static function reports_count($type){
             ->join('order_details','order_details.order_id','orders.id')
             ->join('products','products.id','order_details.product_id')
             ->join('orders_shipping','orders_shipping.order_id','order_details.order_id')
-            ->where('order_details.order_status','3')->groupBy('orders_shipping.order_shipping_zip')->orderBy('total_price','desc')->get(); 	
-		} 
-       
+            ->where('order_details.order_status','3')->groupBy('orders_shipping.order_shipping_zip')->orderBy('total_price','desc')->get();
+		}
+
         if(@$type==2){
 		$products=Orders::
                select('products.id','products.name','products.default_image','products.spcl_price','products.sku','order_details.order_shipping_charges','orders_shipping.order_shipping_zip','orders_shipping.order_shipping_city',
@@ -955,11 +955,11 @@ public static function reports_count($type){
             ->join('order_details','order_details.order_id','orders.id')
             ->join('products','products.id','order_details.product_id')
             ->join('orders_shipping','orders_shipping.order_id','order_details.order_id')
-            ->where('order_details.order_status','5')->groupBy('orders_shipping.order_shipping_zip')->orderBy('total_price','desc')->get(); 	
-		} 
-		
-	
-		
+            ->where('order_details.order_status','5')->groupBy('orders_shipping.order_shipping_zip')->orderBy('total_price','desc')->get();
+		}
+
+
+
 		if(@$type==3){
 		$products=Orders::
                select('vendors.id','vendors.username','order_details.order_shipping_charges',
@@ -968,15 +968,15 @@ public static function reports_count($type){
             ->join('order_details','order_details.order_id','orders.id')
 			->join('products','products.id','order_details.product_id')
 			->join('vendors','vendors.id','products.vendor_id')
-            
-            ->where('order_details.order_status','3')->groupBy('vendors.id')->get(); 	
-			
-			
-		} 
-		
-		
+
+            ->where('order_details.order_status','3')->groupBy('vendors.id')->get();
+
+
+		}
+
+
 		return count($products);
-        
+
 }
 
 public static function getSizes($prd_id){
@@ -991,7 +991,7 @@ public static function getSizes($prd_id){
             // $comments = new stdClass;
             // $comments->id =0;
             // $comments->name ="NA";
-            
+
             // $Sizes->prepend($comments);
 		return $Sizes;
 }
@@ -1002,7 +1002,7 @@ public static function getProductCategory($prd)
 			foreach($ProductCategories as $row){
 				array_push($data,$row['cat_id']);
 			}
-		return $data;			
+		return $data;
     }
 public static function getColors($prd_id){
              $cats=self::getProductCategory($prd_id);
@@ -1034,15 +1034,15 @@ public static function getSubChild($parent_id=1,$sub_mark='',$selected){
 
 	$Categories =self::getcats($parent_id);
 					$str='';
-					
+
 					foreach ($Categories as $row) {
 						$selected_id=($row['id']==$selected)?"selected":"";
 				$str.='<option value="'.$row['id'].'" '.$selected_id.'>'.$sub_mark.ucwords($row['name']).'</option>';
                 // $str.='<option>'.$selected.'</option>';
-					$str.=self::getSubChild($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);		
+					$str.=self::getSubChild($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);
 			}
 			return $str;
-					
+
 }
 public static function getChilds($parent_id=1,$selected){
 		$Categories =self::getcats($parent_id);
@@ -1050,10 +1050,10 @@ public static function getChilds($parent_id=1,$selected){
 					foreach ($Categories as $row) {
 												$selected_id=($row['id']==$selected)?"selected":"";
 				$str.='<option value="'.$row['id'].'" '.$selected_id.'>'.ucwords($row['name']).'</option>';
-						$str.=self::getSubChild($row['id'],$selected);			
+						$str.=self::getSubChild($row['id'],$selected);
 			}
 			return $str;
-					
+
 }
 public static function getAdminChilds($parent_id=1,$sub_mark='',$selected){
 
@@ -1062,10 +1062,10 @@ public static function getAdminChilds($parent_id=1,$sub_mark='',$selected){
 					foreach ($Categories as $row) {
 												$selected_id=($row['id']==$selected)?"selected":"";
 				$str.='<option value="'.$row['id'].'" '.$selected_id.'>'.$sub_mark.ucwords($row['name']).'</option>';
-						$str.=self::getSubChild($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);			
+						$str.=self::getSubChild($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);
 			}
 			return $str;
-					
+
 }
 
 public static function getSubChild12($parent_id=1,$sub_mark='',$selected){
@@ -1074,16 +1074,16 @@ public static function getSubChild12($parent_id=1,$sub_mark='',$selected){
                     $str='';
 
             $new_selected=  explode(',',$selected);
-                    
+
                     foreach ($Categories as $row) {
                         // $selected_id=($row['id']==$selected)?"selected":"";
                          $selected_id=in_array($row['id'],$new_selected)?"selected":"";
                 $str.='<option value="'.$row['id'].'" '.$selected_id.'>'.$sub_mark.ucwords($row['name']).'</option>';
                 // $str.='<option>'.$selected.'</option>';
-                    $str.=self::getSubChild12($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);     
+                    $str.=self::getSubChild12($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);
             }
             return $str;
-                    
+
 }
 
 public static function getAdminChilds12($parent_id=1,$sub_mark='',$selected){
@@ -1104,10 +1104,10 @@ public static function getAdminChilds12($parent_id=1,$sub_mark='',$selected){
                                                 }
                 $str.='<option value="'.$row['id'].'" '.$selected_id.'>'.$sub_mark.ucwords($row['name']).'</option>';
                 // dd($row['id'],$select_id);
-                        $str.=self::getSubChild12($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);         
+                        $str.=self::getSubChild12($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);
             }
             return $str;
-                    
+
 }
 
 
@@ -1116,12 +1116,12 @@ public static function getAdminChildsAdver($parent_id=1,$sub_mark='',$selected){
 					$str='';
 					foreach ($Categories as $row) {
 					$selected_id=($row['id']==$selected)?"selected":"";
-			 if($row['id']==215 || $row['id']==216){ 									
+			 if($row['id']==215 || $row['id']==216){
 				$str.='<option value="'.$row['id'].'" '.$selected_id.'>'.$sub_mark.ucwords($row['name']).'</option>';
-			}		//$str.=self::getSubChild($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);			
+			}		//$str.=self::getSubChild($row['id'],'&nbsp;&nbsp;'.$sub_mark.'-',$selected);
 			}
 			return $str;
-					
+
 }
 public static function getSubChildTreeView($parent_id=1,$selected){
 	$Categories =self::getcats($parent_id);
@@ -1137,16 +1137,16 @@ public static function getSubChildTreeView($parent_id=1,$selected){
 									$str.='<i class="fa fa-folder" aria-hidden="true"></i>';
 					$str.='<span><label><input type="checkbox" class="catTreeSeletcted" name="cat[]" value="'.$row['id'].'" '.$selected_id.'>'.ucwords($row['name']).'</label> </span>';
 						$str.=self::getSubChildTreeView($row['id'],$selected);
-	$str.='</li>';					
+	$str.='</li>';
 			}
 								$str.='</ul>';
 			return $str;
-					
+
 }
 public static function getChildsTreeView($parent_id=1,$selected){
 		$Categories =self::getcats($parent_id);
 					$str='';
-					
+
 					foreach ($Categories as $row) {
 						$str.='<li>';
 					$selected_id='';
@@ -1157,28 +1157,28 @@ public static function getChildsTreeView($parent_id=1,$selected){
 									$str.='<i class="fa fa-folder" aria-hidden="true"></i>';
 					$str.='<span><label><input type="checkbox" class="catTreeSeletcted" name="cat[]" value="'.$row['id'].'" '.$selected_id.'>'.ucwords($row['name']).'</label> </span>';
 						$str.=self::getSubChildTreeView($row['id'],$selected);
-	$str.='</li>';					
+	$str.='</li>';
 			}
-			
+
 			return $str;
-					
+
 }
 
     public static function email_verification_mail($data)
-    {  
-			 
+    {
 
- $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
-    $code = ''; 
-	  
-    for ($i = 0; $i < 20; $i++) { 
-        $index = rand(0, strlen($characters) - 1); 
-        $code .= $characters[$index]; 
-    } 
+
+ $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $code = '';
+
+    for ($i = 0; $i < 20; $i++) {
+        $index = rand(0, strlen($characters) - 1);
+        $code .= $characters[$index];
+    }
 	    $url=route('email_verify',['email'=>base64_encode($data['to']),'code'=>base64_encode($code)]);
-	
+
 	   $record = DB::table('email_verification')->where('email',$data['to'])->first();
-		
+
 		if($record){
 			 DB::table('email_verification')
                 ->where('email', $data['to'])
@@ -1190,7 +1190,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
 			[ 'email'=> $data['to'], 'code' =>$code]
 			);
 		}
-			
+
 			$email_msg='<tr>
                          <td style="padding:5px 10px;">
                             <strong>CLick the Link to verify</strong>
@@ -1199,7 +1199,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                                   <p><strong></strong><a href="'.$url.'">Click here</a></p>
                          </td>
                      </tr>';
-            
+
                     $email_data = [
                         'to'=>$data['to'],
                         'subject'=>'Email Verification',
@@ -1220,21 +1220,24 @@ public static function getChildsTreeView($parent_id=1,$selected){
     {
 			Mail::to($data['to'])->send(new EmailMessage($data));
     }
-    
+
     public static function changedPassword($data){
             $msg=$data['to_name']." , You have changed the password successfullly.";
             $data['message']=$msg;
             self::sendEmail($data);
     }
-	
+
 	public static function generateMailforOrderSts($order_id,$type=0){
-	    
+
 	    switch($type){
 	            // invoice generated
                 case 0:
                 $master_orders=OrdersDetail::where('id',$order_id)->first();
                 $master_order=Orders::where('id',$master_orders->order_id)->first();
-                
+
+                // print_r($master_order->customer_id);
+                // exit;
+
                 $customer_data=Customer::where('id',$master_order->customer_id)->first();
                 $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  invoice generated for  order('.$master_orders->suborder_no.') .redliips.com';
@@ -1250,7 +1253,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                         Invoice Number: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_num.'</span><br />
                         Invoice Date: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_date.'</span><br />
                     Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                    
+
                     </p>
                 </td>
             </tr>
@@ -1279,16 +1282,16 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -1300,12 +1303,12 @@ public static function getChildsTreeView($parent_id=1,$selected){
                          <th>Shipping charges </th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
 
-						   
-						   
-						   
+
+
+
                     $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                         //$master_orders->product_qty*$master_orders->product_price
                     $email_msg.='<tr>
@@ -1315,7 +1318,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_price.'</td>
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->order_shipping_charges.'</td>
                     <td style="border-bottom:dashed 1px #ccc;">'.$price.'</td></tr>';
-                            					 
+
                     $email_msg.='<tr bgcolor="#d1d4d1">
                     <td style="padding:5px 10px;">&nbsp;</td>
                     <td>&nbsp;</td>
@@ -1323,12 +1326,12 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td>&nbsp;</td>
                     <td><strong>Total Amount Rs.:'.$price.' </strong></td>
                     </tr>';
-					  										  
+
                     $email_msg.='</table>
 
                 </td>
             </tr>';
-               
+
 	           $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'Invoice generated',
@@ -1341,34 +1344,37 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-                   
+                if($customer_data->email)  {
                     self::SendmailCustom($email_data);
+                }
+                if($customer_data->phone) {
                     self::SendMsg($email_data);
+                }
                 break;
-                
+
                 // shipping
                  case 1:
                     // dd($order_id));
                          $master_orders=OrdersDetail::where('id',$order_id)->first();
-                                                                                
+
                             $master_order=Orders::where('id',$master_orders->order_id)->first();
-                            
+
                              $corier_data=DB::table('orders_courier')
                             ->select('couriers.*')
                             ->join('couriers','couriers.id','orders_courier.courier_name')
                             ->where('order_detail_id',$master_orders->order_id)->first();
-                        
+
                         $customer_data=Customer::where('id',$master_order->customer_id)->first();
-                      
+
                         $cr_name='';
                         if($corier_data){
                             $cr_name=$corier_data->name;
                         }
-                            
+
                         $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
 
                         if($master_order->payment_mode==0) {
-                            
+
                             // $msg=view("message_template.order_delivered",
              //                    array(
              //                    'data'=>array(
@@ -1377,8 +1383,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
              //                    'cr_name'=>$cr_name
              //                    )
              //                    ) )->render();
-                             $msg="Hello Customer, We are happy to inform you that your Kefih order has been dispatched. Thank you. - Kefih E-Commerce Private Limited";                  
-                            
+                             $msg="Hello Customer, We are happy to inform you that your Kefih order has been dispatched. Thank you. - Kefih E-Commerce Private Limited";
+
                             }
                         else {
                             $msg=view("message_template.order_delivered",
@@ -1388,9 +1394,9 @@ public static function getChildsTreeView($parent_id=1,$selected){
                                 'suborder_no'=>$master_orders->suborder_no,
                                 'cr_name'=>$cr_name
                                 )
-                                ) )->render();                  
+                                ) )->render();
                         }
-                        
+
                         //$msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your  order('.$master_orders->suborder_no.') is  successfully delivered  with('.$cr_name.') .redliips.com';
                         $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                             $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
@@ -1404,7 +1410,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                                 Invoice Number: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_num.'</span><br />
                                 Invoice Date: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_date.'</span><br />
                             Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                            
+
                             </p>
                         </td>
                     </tr>
@@ -1433,16 +1439,16 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             '.$shipping_data->order_shipping_city.'<br />
                             '.$shipping_data->order_shipping_state.'<br />
                             '.$shipping_data->order_shipping_zip.'<br />
-                                
+
                             </p>
                         </td>
-                    </tr> 
+                    </tr>
                     <tr>
                         <td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                             <p>Order Summary</p>
                         </td>
                     </tr>';
-                    
+
                     $email_msg.='<tr>
                         <td colspan="2">
                             <table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -1454,7 +1460,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                                  <th>Shipping charges </th>
                                 <th>Amt</th>
                               </tr>';
-                              
+
                               $i=1;
                             $email_msg.='<tr>
                             <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
@@ -1463,8 +1469,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_price.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->order_shipping_charges.'</td>
                             <td style="border-bottom:dashed 1px #ccc;">'.$price.'</td></tr>';
-                                    
-                             
+
+
                             $email_msg.='<tr bgcolor="#d1d4d1">
                             <td style="padding:5px 10px;">&nbsp;</td>
                             <td>&nbsp;</td>
@@ -1472,9 +1478,9 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             <td>&nbsp;</td>
                             <td><strong>Total Amount Rs.:'.$price.' </strong></td>
                             </tr>';
-                              
-                            
-                              
+
+
+
                             $email_msg.='</table>
 
                         </td>
@@ -1485,9 +1491,9 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     'data'=>array(
                     'message'=>$email_msg
                     )
-                    ) )->render(); 
+                    ) )->render();
 
-                    die; 
+                    die;
 
 
                     $email_data = [
@@ -1502,183 +1508,36 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-                   
-                 // 18/05/23
-					// if(count($order_id)>0)
-					// {
-					// 	$orderid=$order_id;
-					// }else{
-					// 	$orderid=explode(',',$order_id);
-						
-					// }
-					
-					// $master_orders=OrdersDetail::whereIn('id',$orderid)->get();
-					
-					// $corier_info=DB::table('tbl_courierorderinfo')
-					// 				->select('*')
-					// 				->where('order_detail_id',$master_orders[0]->id)->first();
-					
-     //                $master_order=Orders::where('id',$master_orders[0]->order_id)->first();
-					
-					// $customer_data=Customer::where('id',$master_order->customer_id)->first();
-					// $shipping_data=OrdersShipping::where('order_id',$master_orders[0]->order_id)->first();
-					
-     //                /*$master_orders=OrdersDetail::where('id',$order_id)->first();
-                   
-     //                $corier_data=DB::table('orders_courier')
-     //                ->select('couriers.*')
-     //                ->join('couriers','couriers.id','orders_courier.courier_name')
-     //                ->where('order_detail_id',$order_id)->first();
-                    
-					// $master_order=Orders::where('id',$master_orders->order_id)->first();
-                
-     //            $customer_data=Customer::where('id',$master_order->customer_id)->first();
-     //            $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();   */             
-                
-     // //            $msg=view("message_template.order_shipped",
-     // //                array(
-     // //            'data'=>array(  
-     // //                'name'=>$customer_data->name,
-     // //                'suborder_no'=>$master_orders[0]->suborder_no,
-     // //                //'courier_data' => $corier_data->name
-					// // 'courier_data' => $corier_info->courier_name
-     // //                )
-     // //                ) )->render();   
 
-     //            $msg="Hello Customer, We are happy to inform you that your Kefih order has been dispatched. Thank you. - Kefih E-Commerce Private Limited";
-                
-					// $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
-                    
-					// $email_msg= array(
-     //                         'payment_mode' =>  $mode,
-     //                         'master_order' => $master_orders,
-     //                         'customer_data' => $customer_data,
-     //                         'shipping_data' => $shipping_data,
-					// 		 'courier_data' => $corier_info,
-     //                     );
-					
-					// $email_msg='<tr>
-     //        	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
-     //            	<p>Hi '.$customer_data->name.' '.$customer_data->last_name.'</p>
-     //                <p>Your   order('.$master_orders->suborder_no.')is on th way with('.$corier_data->name.'). We will send you an Email and SMS for further process</p>
-     //                <p>
-     //                Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
-     //                Order Date: <span style="color:#00bbe6;">'.$master_order->order_date.'</span><br />
-     //                    Invoice Number: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_num.'</span><br />
-     //                    Invoice Date: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_date.'</span><br />
-     //                Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                    
-     //                </p>
-     //            </td>
-     //        </tr>
-     //        <tr>
-     //            <td style="border-bottom:solid 1px #999; border-right:solid 1px #999; padding:0px 10px; width:50%;">
-     //            	<p><strong>Billing Info</strong><br />
-     //                        '.$shipping_data->order_shipping_name.'<br />
-     //                        '.$shipping_data->order_shipping_phone.'<br />
-     //                        '.$shipping_data->order_shipping_email.'<br />
-     //                        '.$shipping_data->order_shipping_address.'<br />
-     //                        '.$shipping_data->order_shipping_address1.'<br />
-     //                        '.$shipping_data->order_shipping_address2.'<br />
-     //                        '.$shipping_data->order_shipping_city.'<br />
-     //                        '.$shipping_data->order_shipping_state.'<br />
-     //                        '.$shipping_data->order_shipping_zip.'<br />
-     //                </p
-     //            </td>
-     //            <td style="border-bottom:solid 1px #999; padding:0px 10px; width:50%;">
-     //            	<p><strong>Shipping Info</strong><br />
-     //                '.$shipping_data->order_shipping_name.'<br />
-     //                '.$shipping_data->order_shipping_phone.'<br />
-     //                '.$shipping_data->order_shipping_email.'<br />
-     //                '.$shipping_data->order_shipping_address.'<br />
-     //                '.$shipping_data->order_shipping_address1.'<br />
-     //                '.$shipping_data->order_shipping_address2.'<br />
-     //                '.$shipping_data->order_shipping_city.'<br />
-     //                '.$shipping_data->order_shipping_state.'<br />
-     //                '.$shipping_data->order_shipping_zip.'<br />
-                        
-     //                </p>
-     //            </td>
-     //        </tr> 
-     //        <tr>
-     //        	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
-     //            	<p>Order Summary</p>
-     //            </td>
-     //        </tr>';
-            
-     //        $email_msg.='<tr>
-     //        	<td colspan="2">
-     //            	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
-     //                  <tr>
-     //                    <th style="padding:5px 0px;">S.no.</th>
-     //                    <th>Item Name</th>
-					// 	<th>Quantity</th>
-     //                    <th>Price</th>
-					// 	<th>Amt</th>
-     //                  </tr>';
-                      
-     //                  $i=1;
-     //                $email_msg.='<tr>
-     //                <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
-     //                <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_name.'('.$master_orders->size.' '.$master_orders->color.')</td>
-     //                <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_qty.'</td>
-     //                <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_price.'</td>
-     //                <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_qty*$master_orders->product_price.'</td></tr>';
-                            					 
-     //                $email_msg.='<tr bgcolor="#d1d4d1">
-     //                <td style="padding:5px 10px;">&nbsp;</td>
-     //                <td>&nbsp;</td>
-     //                <td>&nbsp;</td>
-     //                <td>&nbsp;</td>
-     //                <td><strong>Total Amount Rs.:'.$master_orders->product_qty*$master_orders->product_price.' </strong></td>
-     //                </tr>';
-					  										  
-     //                $email_msg.='</table>
-
-     //            </td>
-     //        </tr>';
-            
-            
-	      //      $email_data = [
-       //                      //'to'=>$customer_data->email,
-							// 'to'=>'b2cmarketing.in@gmail.com',
-       //                      'subject'=>'Order Shipped',
-       //                      //"body"=>view("emails_template.order_sts_change",
-							// "body"=>view("emails_template.order_shipped",
-       //                      array(
-       //                      'data'=>array(
-       //                      'message'=>$email_msg
-       //                      )
-       //                      ) )->render(),
-       //                      'phone'=>$customer_data->phone,
-       //                      'phone_msg'=>$msg
-       //                   ];
-                   
-                    self::SendmailCustom($email_data);
-                    self::SendMsg($email_data);
+                    if($customer_data->email) {
+                        self::SendmailCustom($email_data);
+                    }
+                    if($customer_data->phone) {
+                        self::SendMsg($email_data);
+                    }
                 break;
                 // order delivered
                 case 2:
                     $master_orders=OrdersDetail::where('id',$order_id)->first();
-                                                                        
+
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
-                    
+
                      $corier_data=DB::table('orders_courier')
                     ->select('couriers.*')
                     ->join('couriers','couriers.id','orders_courier.courier_name')
                     ->where('order_detail_id',$master_orders->order_id)->first();
-                
+
                 $customer_data=Customer::where('id',$master_order->customer_id)->first();
-              
+
                 $cr_name='';
                 if($corier_data){
                     $cr_name=$corier_data->name;
                 }
-                    
+
                 $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
 
 				if($master_order->payment_mode==0) {
-					
+
 					// $msg=view("message_template.order_delivered",
      //                    array(
      //                    'data'=>array(
@@ -1687,8 +1546,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
      //                    'cr_name'=>$cr_name
      //                    )
      //                    ) )->render();
-                        $msg="Hello Customer, Your Kefih order has been successfully delivered! We thank you for shopping with Kefih! - Kefih E-Commerce Private Limited";					
-					
+                        $msg="Hello Customer, Your Kefih order has been successfully delivered! We thank you for shopping with Kefih! - Kefih E-Commerce Private Limited";
+
 					}
 				else {
 					$msg=view("message_template.order_delivered",
@@ -1698,9 +1557,9 @@ public static function getChildsTreeView($parent_id=1,$selected){
                         'suborder_no'=>$master_orders->suborder_no,
                         'cr_name'=>$cr_name
                         )
-                        ) )->render();					
+                        ) )->render();
                 }
-                
+
                 //$msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your  order('.$master_orders->suborder_no.') is  successfully delivered  with('.$cr_name.') .redliips.com';
                 $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
@@ -1714,7 +1573,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                         Invoice Number: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_num.'</span><br />
                         Invoice Date: <span style="color:#00bbe6;">'.$master_orders->order_detail_invoice_date.'</span><br />
                     Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                    
+
                     </p>
                 </td>
             </tr>
@@ -1743,16 +1602,16 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -1764,7 +1623,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                          <th>Shipping charges </th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
                     $email_msg.='<tr>
                     <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
@@ -1773,8 +1632,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_price.'</td>
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->order_shipping_charges.'</td>
                     <td style="border-bottom:dashed 1px #ccc;">'.$price.'</td></tr>';
-                            
-					 
+
+
                     $email_msg.='<tr bgcolor="#d1d4d1">
                     <td style="padding:5px 10px;">&nbsp;</td>
                     <td>&nbsp;</td>
@@ -1782,15 +1641,15 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td>&nbsp;</td>
                     <td><strong>Total Amount Rs.:'.$price.' </strong></td>
                     </tr>';
-					  
-					
-					  
+
+
+
                     $email_msg.='</table>
 
                 </td>
             </tr>';
-            
-            
+
+
 	           $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'Order Delivered',
@@ -1803,32 +1662,36 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-                   
+
+                if($customer_data->email) {
                     self::SendmailCustom($email_data);
+                }
+                if($customer_data->phone) {
                     self::SendMsg($email_data);
+                }
                 break;
-                
+
                 // pickup the order
                 case 3:
                     $master_orders=OrdersDetail::where('id',$order_id)->first();
-                  
-                     
+
+
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
-                    
+
                      $corier_data=DB::table('orders_courier')
                     ->select('couriers.*')
                     ->join('couriers','couriers.id','orders_courier.courier_name')
                     ->where('order_detail_id',$master_orders->order_id)->first();
-                
+
                 $customer_data=Customer::where('id',$master_order->customer_id)->first();
-                
-                   
-                
-                
+
+
+
+
                 $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
                 $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  is accpeted  . Pickup query is generated  .redliips.com';
-                
+
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
                     $email_msg='<tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
@@ -1838,7 +1701,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
                     Order Date: <span style="color:#00bbe6;">'.$master_order->order_date.'</span><br />
                     Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                    
+
                     </p>
                 </td>
             </tr>
@@ -1867,16 +1730,16 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -1888,7 +1751,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                          <th>Shipping charges </th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
                     $email_msg.='<tr>
                     <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
@@ -1898,8 +1761,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->order_shipping_charges.'</td>
                      <td style="border-bottom:dashed 1px #ccc;">'.$price.'</td>
                     </tr>';
-                            
-					 
+
+
                     $email_msg.='<tr bgcolor="#d1d4d1">
                     <td style="padding:5px 10px;">&nbsp;</td>
                     <td>&nbsp;</td>
@@ -1907,15 +1770,15 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td>&nbsp;</td>
                     <td><strong>Total Amount Rs.:'.$price.' </strong></td>
                     </tr>';
-					  
-					
-					  
+
+
+
                     $email_msg.='</table>
 
                 </td>
             </tr>';
-            
-            
+
+
 	           $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'Order Pickup Confirmation',
@@ -1928,11 +1791,11 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-                   
-                    self::SendmailCustom($email_data);
-                    self::SendMsg($email_data);
+
+                    if($customer_data->email) self::SendmailCustom($email_data);
+                    if($customer_data->phone) self::SendMsg($email_data);
                 break;
-                
+
                 // order pickuped
                 case 4:
                     $master_orders=OrdersDetail::where('id',$order_id)->first();
@@ -1941,7 +1804,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     ->join('couriers','couriers.id','orders_courier.courier_name')
                      ->where('order_detail_id',$order_id)->first();
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
-                
+
                 $customer_data=Customer::where('id',$master_order->customer_id)->first();
                 $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  is successfully pickuped    .redliips.com';
@@ -1955,7 +1818,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
                     Order Date: <span style="color:#00bbe6;">'.$master_order->order_date.'</span><br />
                     Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                    
+
                     </p>
                 </td>
             </tr>
@@ -1984,16 +1847,16 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -2005,7 +1868,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                          <th>Shipping charges </th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
                     $email_msg.='<tr>
                     <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
@@ -2015,8 +1878,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->order_shipping_charges.'</td>
                      <td style="border-bottom:dashed 1px #ccc;">'.$price.'</td>
                     </tr>';
-                            
-					 
+
+
                     $email_msg.='<tr bgcolor="#d1d4d1">
                     <td style="padding:5px 10px;">&nbsp;</td>
                     <td>&nbsp;</td>
@@ -2024,15 +1887,15 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td>&nbsp;</td>
                     <td><strong>Total Amount Rs.:'.$price.' </strong></td>
                     </tr>';
-					  
-					
-					  
+
+
+
                     $email_msg.='</table>
 
                 </td>
             </tr>';
-            
-            
+
+
 	           $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'Order Pickup Confirmed',
@@ -2045,12 +1908,12 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-                   
-                    self::SendmailCustom($email_data);
-                    self::SendMsg($email_data);
+
+                    if($customer_data->email) self::SendmailCustom($email_data);
+                    if($customer_data->phone) self::SendMsg($email_data);
                 break;
-                
-                
+
+
                 // replaced order generated
                 case 5:
                     $master_orders=OrdersDetail::where('id',$order_id)->first();
@@ -2059,7 +1922,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     ->join('couriers','couriers.id','orders_courier.courier_name')
                     ->where('order_detail_id',$order_id)->first();
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
-                
+
                 $customer_data=Customer::where('id',$master_order->customer_id)->first();
                 $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  accepted and generated new order    .redliips.com';
@@ -2073,7 +1936,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
                     Order Date: <span style="color:#00bbe6;">'.$master_order->order_date.'</span><br />
                     Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                    
+
                     </p>
                 </td>
             </tr>
@@ -2102,16 +1965,16 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -2123,7 +1986,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                          <th>Shipping charges </th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
                     $email_msg.='<tr>
                     <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
@@ -2133,8 +1996,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->order_shipping_charges.'</td>
                      <td style="border-bottom:dashed 1px #ccc;">'.$price.'</td>
                     </tr>';
-                            
-					 
+
+
                     $email_msg.='<tr bgcolor="#d1d4d1">
                     <td style="padding:5px 10px;">&nbsp;</td>
                     <td>&nbsp;</td>
@@ -2142,15 +2005,15 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td>&nbsp;</td>
                     <td><strong>Total Amount Rs.:'.$price.' </strong></td>
                     </tr>';
-					  
-					
-					  
+
+
+
                     $email_msg.='</table>
 
                 </td>
             </tr>';
-            
-            
+
+
 	           $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'Replaced confirm genetaed new order',
@@ -2163,11 +2026,11 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-                   
-                    self::SendmailCustom($email_data);
-                    self::SendMsg($email_data);
+
+                    if($customer_data->email) self::SendmailCustom($email_data);
+                    if($customer_data->phone) self::SendMsg($email_data);
                 break;
-                
+
                 // refunded order generated
                 case 6:
                     $master_orders=OrdersDetail::where('id',$order_id)->first();
@@ -2176,7 +2039,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     ->join('couriers','couriers.id','orders_courier.courier_name')
                      ->where('order_detail_id',$order_id)->first();
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
-                
+
                 $customer_data=Customer::where('id',$master_order->customer_id)->first();
                 $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  accepted and refunded   .redliips.com';
@@ -2190,7 +2053,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
                     Order Date: <span style="color:#00bbe6;">'.$master_order->order_date.'</span><br />
                     Payment Mode: <span style="color:#00bbe6;">'.$mode.'</span>
-                    
+
                     </p>
                 </td>
             </tr>
@@ -2219,16 +2082,16 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     '.$shipping_data->order_shipping_city.'<br />
                     '.$shipping_data->order_shipping_state.'<br />
                     '.$shipping_data->order_shipping_zip.'<br />
-                        
+
                     </p>
                 </td>
-            </tr> 
+            </tr>
             <tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
                 	<p>Order Summary</p>
                 </td>
             </tr>';
-            
+
             $email_msg.='<tr>
             	<td colspan="2">
                 	<table cellpadding="0" cellspacing="0" style="width:100%; text-align:left; padding:5px 10px;">
@@ -2240,7 +2103,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                          <th>Shipping charges </th>
 						<th>Amt</th>
                       </tr>';
-                      
+
                       $i=1;
                     $email_msg.='<tr>
                     <td style="padding:10px 10px 5px; border-bottom:dashed 1px #ccc;">'.$i.'</td>
@@ -2248,8 +2111,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_qty.'</td>
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_price.'</td>
                     <td style="border-bottom:dashed 1px #ccc;">'.$master_orders->product_qty*$master_orders->product_price.'</td></tr>';
-                            
-					 
+
+
                     $email_msg.='<tr bgcolor="#d1d4d1">
                     <td style="padding:5px 10px;">&nbsp;</td>
                     <td>&nbsp;</td>
@@ -2257,15 +2120,15 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     <td>&nbsp;</td>
                     <td><strong>Total Amount Rs.:'.$master_orders->product_qty*$master_orders->product_price.' </strong></td>
                     </tr>';
-					  
-					
-					  
+
+
+
                     $email_msg.='</table>
 
                 </td>
             </tr>';
-            
-            
+
+
 	           $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'Return order refunded',
@@ -2278,32 +2141,32 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-                   
-                    self::SendmailCustom($email_data);
-                    self::SendMsg($email_data);
+
+                    if($customer_data->email) self::SendmailCustom($email_data);
+                    if($customer_data->phone) self::SendMsg($email_data);
                 break;
                 //cancel order mail
                 case 7:
-                    
+
                 $opeation_pr='Cancel';
-        
+
                 $master_orders=OrdersDetail::where('id',$order_id)->first();
                 $master_order=Orders::where('id',$master_orders->order_id)->first();
                 $product_data = DB::table('products')->where('id',$master_orders->product_id)->first();
-                
+
                 $customer_data=Customer::where('id',$master_order->customer_id)->first();
                 $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
 
 				if($master_order->payment_mode==0) {
-					
+
 					$msg=view("message_template.cod_order_cancel_byadmin",
                         array(
                         'data'=>array(
                         'name'=>$customer_data->name,
                         'suborder_no'=>$master_orders->suborder_no
                         )
-                        ) )->render();					
-					
+                        ) )->render();
+
 					}
 				else {
 					$msg=view("message_template.online_order_cancel_byadmin",
@@ -2312,12 +2175,12 @@ public static function getChildsTreeView($parent_id=1,$selected){
                         'name'=>$customer_data->name,
                         'suborder_no'=>$master_orders->suborder_no
                         )
-                        ) )->render();					
+                        ) )->render();
 				}
-				
+
 
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
-                    
+
                     $email_msg=view("emails_template.order_cancel_byadmin",
                         array(
                         'data'=>array(
@@ -2351,7 +2214,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                                                                     'order_wallet_amount'=>$master_orders->order_wallet_amount,
                                                                     )
                                      )
-                                     
+
                         ) )->render();
             $email_data = [
                             'to'=>$customer_data->email,
@@ -2360,19 +2223,19 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'phone'=>$customer_data->phone,
                             'phone_msg'=>$msg
                          ];
-            CommonHelper::SendmailCustom($email_data);
-            CommonHelper::SendMsg($email_data);
+                         if($customer_data->email) self::SendmailCustom($email_data);
+                         if($customer_data->phone) self::SendMsg($email_data);
                     break;
 	    }
 	}
-	
+
 	public static function generate_otp($data)
     {
 		$otp=rand(0,9).rand(0,9).rand(0,9).rand(0,9);
 		$msg='Hello ,'.$otp.' this is phone otp . Otp is valid for only 10 min.';
 		$data['message']=$msg;
             $customer_data=DB::table('vendors')->where('phone',$mob)->orwhere('email',$mob)->first();
-            
+
             $email_msg='<tr>
                              <td style="padding:5px 10px;">
                                 <strong>OTP</strong>
@@ -2381,7 +2244,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                                       <p><strong></strong>'.$msg.'</p>
                              </td>
                          </tr>';
-                
+
                         $email_data = [
                             'to'=>$customer_data->email,
                             'subject'=>'OTP',
@@ -2394,8 +2257,8 @@ public static function getChildsTreeView($parent_id=1,$selected){
                         	     'phone'=>'',
                         	     'phone_msg'=>''
                              ];
-                    self::SendmailCustom($email_data);
-		
+                             if($customer_data->email) self::SendmailCustom($email_data);
+
 			$ch = curl_init();
                 $user="testuser"; //your username
                 $password="test@123"; //your password
@@ -2403,12 +2266,12 @@ public static function getChildsTreeView($parent_id=1,$selected){
                 $message = $msg; //enter Your Message
                 $senderid="TEST"; //Your senderidCURLOPT_URL =>
                 $url="https://api-alerts.kaleyra.com/v4/?method=sms&sender=".$senderid."&to=".$mobilenumbers."&message=".$msg."&api_key=Ad6cf2841bd5f2bdc1d717c23d11dcdfa";
-                
-                // curl_setopt( $ch,CURLOPT_URL, $url ); 
-   
-// curl_setopt( $ch,CURLOPT_URL, 'http://sms.b2cmarketing.in/api/swsendSingle.asp?username=t1testb2c&password=48566224&sender=testbc&sendto=91'.$mob.'&message='.$msg );           
 
-                       
+                // curl_setopt( $ch,CURLOPT_URL, $url );
+
+// curl_setopt( $ch,CURLOPT_URL, 'http://sms.b2cmarketing.in/api/swsendSingle.asp?username=t1testb2c&password=48566224&sender=testbc&sendto=91'.$mob.'&message='.$msg );
+
+
 
 //                         curl_setopt( $ch,CURLOPT_POST, true );
 
@@ -2425,8 +2288,8 @@ $api_key = '45EDF740109A10';
         $contacts = $mobilenumbers;
         $from = 'ALERTS';
         $sms_text = $msg;
-        
-        
+
+
         //Submit to server
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL, "http://sms.b2chosting.in/app/smsapi/index.php");
@@ -2435,9 +2298,9 @@ $api_key = '45EDF740109A10';
         curl_setopt($ch, CURLOPT_POSTFIELDS,"key=".$api_key."&routeid=468&type=text&contacts=".$contacts."&senderid=".$from."&msg=".$sms_text);
         $response = curl_exec($ch);
         curl_close($ch);
-		
+
 		$record = DB::table('phone_otp')->where('phone',$data['phone'])->first();
-		
+
 		if($record){
 			 DB::table('phone_otp')
                 ->where('phone', $data['phone'])
@@ -2449,21 +2312,21 @@ $api_key = '45EDF740109A10';
 			[ 'phone'=> $data['phone'], 'otp' =>$otp  ,'expired_on'=>Carbon::now()->addMinutes(10)]
 			);
 		}
-		
+
 		/**self::sendEmail($data);****/
-			
-		  
+
+
     }
       public static function generate_profile_otp($data)
     {   $mob=$data['phone'];
         $otp=rand(0,9).rand(0,9).rand(0,9).rand(0,9);
-       
-		
-		
+
+
+
 		$customer_data=DB::table('customers')->where('id',$data['userId'])->first();
-		
+
 		$msg='Hello ,'.ucfirst($customer_data->name).' OTP is '.$otp.' for change your profile on redliips.com enter OTP and verify your account.';
-		
+
 		$email_msg='<tr>
                          <td style="padding:5px 10px;">
                             <strong>OTP</strong>
@@ -2472,7 +2335,7 @@ $api_key = '45EDF740109A10';
                                   <p><strong></strong>'.$msg.'</p>
                          </td>
                      </tr>';
-            
+
                     $email_data = [
                         'to'=>$data['email'],
                         'subject'=>'OTP',
@@ -2485,23 +2348,23 @@ $api_key = '45EDF740109A10';
                     	     'phone'=>'',
                     	     'phone_msg'=>''
                          ];
-                self::SendmailCustom($email_data);
-		
-       
+                if($data['email']) self::SendmailCustom($email_data);
+
+
         $flag=0;
         if (array_key_exists("flag",$data))
   {
   $flag=$data['flag'];
   }
-  
-        
+
+
 		$record = DB::table('customer_phone_otp')->where('phone',$mob)->first();
-		
+
                self::msgCurl($mob,$msg);
 		if($record){
-		
 
-                      
+
+
 			 DB::table('customer_phone_otp')
                 ->where('phone',$mob)
                // ->where('flag',$flag)
@@ -2513,27 +2376,27 @@ $api_key = '45EDF740109A10';
 			[ 'phone'=> $mob, 'otp' =>$otp  ,'expired_on'=>Carbon::now()->addMinutes(10) ,'user_id'=>$data['userId'] ,'flag'=> $flag  ]
 			);
 		}
-		
+
 		/**self::sendEmail($data);****/
-			
-		  
+
+
     }
         public static function SendMsg($data){
-        
+
         $message=$data['phone_msg'];
         $mobile_number=$data['phone'];
         //   file_put_contents('email.txt',json_encode($data));
         self::msgCurl($mobile_number,$message);
-      
-        
+
+
     }
 
     /*
     public static function msgCurl($mobile,$msg){
-                
+
                $msg=urlencode($msg);
 				$fields=array(
-						
+
 							);
 				$curl = curl_init();
 
@@ -2549,11 +2412,11 @@ $api_key = '45EDF740109A10';
 				CURLOPT_POSTFIELDS => json_encode( $fields ),
 				));
 
-				$response = curl_exec($curl);			
+				$response = curl_exec($curl);
 				$err = curl_error($curl);
 				curl_close($curl);
-			return $response;		
-               
+			return $response;
+
     }
     */
 
@@ -2563,27 +2426,27 @@ $api_key = '45EDF740109A10';
                     //https://api.textlocal.in/docs/sendsms
                     // Account details
                     $apiKey = urlencode('NjI2OTU0NTU1MDMwMzc0ZDM4NDg0ZTc4MzU1NzY0NGU=');
-                    
+
                     // Message details
                     $numbers = array($mobile);
                     $sender = urlencode('KEFIHW');
                     $message = rawurlencode($msg);
-                
+
                     $numbers = implode(',', $numbers);
-                
+
                     // Prepare data for POST request
                     $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
-                
+
                     // Send the POST request with cURL
                     $ch = curl_init('https://api.textlocal.in/send/');
                     curl_setopt($ch, CURLOPT_POST, true);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);        
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
                     $response = curl_exec($ch);
                     curl_close($ch);
-                    
+
                     // Process your response here
                     // echo $response;
                     return $response;
@@ -2593,15 +2456,15 @@ $api_key = '45EDF740109A10';
 
     public static  function generate($data){
          $otp=rand(0,9).rand(0,9).rand(0,9).rand(0,9);
-         
+
         $mob=9389649459;
         $msg="This is the AJAX CALL OTP ".$otp;
         	  self::msgCurl($mob,$msg);
     }
     public static function generate_user_otpApp($data)
-    {  
-        
-     
+    {
+
+
         $mob=$data['phone'];
         $otp=rand(0,9).rand(0,9).rand(0,9).rand(0,9);
         $msg = view("message_template.register_message",
@@ -2612,11 +2475,11 @@ $api_key = '45EDF740109A10';
                     ) )->render();
                 $msg=$otp.' is your OTP and is valid for 10 minutes';
           self::msgCurl($mob,$msg);
-            	
-		
+
+
 		$customer_data=DB::table('customers')->where('phone',$mob)->orwhere('email',$mob)->first();
-                	
-		
+
+
 		$email_msg='<tr>
                          <td style="padding:5px 10px;">
                             <strong>OTP</strong>
@@ -2625,7 +2488,7 @@ $api_key = '45EDF740109A10';
                                   <p><strong></strong>'.$msg.'</p>
                          </td>
                      </tr>';
-            
+
                     $email_data = [
                         'to'=>$customer_data->email,
                         'subject'=>'OTP',
@@ -2638,12 +2501,11 @@ $api_key = '45EDF740109A10';
                     	     'phone'=>'',
                     	     'phone_msg'=>''
                          ];
-                self::SendmailCustom($email_data);
-		
-       
+                if($customer_data->email) self::SendmailCustom($email_data);
+
                 $record = DB::table('customer_phone_otp')->where('phone',$mob)->first();
-                
-              
+
+
 		if($record){
 		       DB::table('customer_phone_otp')
                 ->where('phone',$mob)
@@ -2655,15 +2517,15 @@ $api_key = '45EDF740109A10';
 			[ 'phone'=> $mob, 'otp' =>$otp  ,'expired_on'=>Carbon::now()->addMinutes(10) ,'user_id'=>$data['userId']  ]
 			);
 		}
-		
+
 		/**self::sendEmail($data);****/
-			
-		  
+
+
     }
     public static function generate_user_otp($data)
-    {  
-        
-     
+    {
+
+
         $mob=$data['phone'];
         // $otp=rand(0,9).rand(0,9).rand(0,9).rand(0,9);
         $otp = "1234";
@@ -2675,14 +2537,14 @@ $api_key = '45EDF740109A10';
                     ) )->render();
                 $msg=$otp.' is your Jaldi Kharido OTP and is valid for 10 minutes';
           self::msgCurl($mob,$msg);
-            	
-		
+
+
 		$customer_data=DB::table('customers')->where('phone',$mob)->orwhere('email',$mob)->first();
-                	
-                	
-                
-                
-		
+
+
+
+
+
 		$email_msg='<tr>
                          <td style="padding:5px 10px;">
                             <strong>OTP</strong>
@@ -2691,7 +2553,7 @@ $api_key = '45EDF740109A10';
                                   <p><strong></strong>'.$msg.'</p>
                          </td>
                      </tr>';
-            
+
                     $email_data = [
                         'to'=>$customer_data->email,
                         'subject'=>'OTP',
@@ -2704,22 +2566,22 @@ $api_key = '45EDF740109A10';
                     	     'phone'=>'',
                     	     'phone_msg'=>''
                          ];
-                self::SendmailCustom($email_data);
-		
-       
+                if($customer_data->email) self::SendmailCustom($email_data);
+
+
         $flag=0;
         if (array_key_exists("flag",$data))
   {
   $flag=$data['flag'];
   }
-  
-        
+
+
                 $record = DB::table('customer_phone_otp')->where('phone',$mob)->where('flag',$flag)->first();
-                
-               
-            
-           
-				
+
+
+
+
+
 		if($record){
 		       DB::table('customer_phone_otp')
                 ->where('phone',$mob)
@@ -2732,10 +2594,10 @@ $api_key = '45EDF740109A10';
 			[ 'phone'=> $mob, 'otp' =>$otp  ,'expired_on'=>Carbon::now()->addMinutes(10) ,'user_id'=>$data['userId'] ,'flag'=> $flag  ]
 			);
 		}
-		
+
 		/**self::sendEmail($data);****/
-			
-		  
+
+
     }
    public static function generate_customer_login_otp($data)
     { $mob=$data['Phone'];
@@ -2747,24 +2609,24 @@ $api_key = '45EDF740109A10';
                     'otp'=>$otp
                     )
                     ) )->render();
-	
-	
+
+
 		$record = DB::table('customer_login_otp')
 		->where('user_id',$data['User_id'])
 		->first();
-		
+
 		 self::msgCurl($mob,$msg);
-		
+
 
         $customer_data=DB::table('customers')->where('id',$data['User_id'])->first();
-        
+
         $msg = view("message_template.register_message",
                     array(
                 'data'=>array(
                     'otp'=>$otp
                     )
                     ) )->render();
-		
+
 	    $email_msg='<tr>
                      <td style="padding:5px 10px;">
                         <strong>OTP</strong>
@@ -2773,7 +2635,7 @@ $api_key = '45EDF740109A10';
                               <p><strong></strong>'.$msg.'</p>
                      </td>
                  </tr>';
-        
+
                 $email_data = [
                     'to'=>$customer_data->email,
                     'subject'=>'OTP',
@@ -2789,22 +2651,22 @@ $api_key = '45EDF740109A10';
             // self::SendmailCustom($email_data);
 
 		if($record){
-		                     
+
 			 DB::table('customer_login_otp')
                 	->where('user_id',$data['User_id'])
                 ->update([
 				'otp' =>$otp  ,'expired_on'=>Carbon::now()->addMinutes(1)
 				]);
 		} else{
-			
+
 			DB::table('customer_login_otp')->insert(
 			[ 'otp' =>$otp  ,'expired_on'=>Carbon::now()->addMinutes(1) ,'user_id'=>$data['User_id']  ]
 			);
 		}
-		
+
 		/**self::sendEmail($data);****/
-			
-		  
+
+
     }
 	/*******************************/
 	public static function convert_number_to_words($number) {
@@ -2917,14 +2779,14 @@ $api_key = '45EDF740109A10';
         }
 return $string;
 	}
-	
+
 	public static function vendor_forgot_password($data)
     {
 		$otp=rand(0,9).rand(0,9).rand(0,9).rand(0,9);
 		$msg='Hello ,'.$otp.' this is phone otp . Otp is valid for only 10 min.';
-		
+
         $mob=$data['Phone'];
-       
+
         $record = DB::table('vendor_admin_forgot_password')->where('Phone',$mob)->first();
        // dd($record);
         $fields='';
@@ -2936,14 +2798,14 @@ return $string;
                 $mobilenumbers=$mob; //enter Mobile numbers comma seperated
                 $message = $msg; //enter Your Message
                 $senderid="test"; //Your senderidCURLOPT_URL =>
-                
+
                 $url="https://api-alerts.kaleyra.com/v4/?method=sms&sender=".$senderid."&to=".$mobilenumbers."&message=".$message."&api_key=Ad6cf2841bd5f2bdc1d717c23d11dcdfa";
                 //dd($url);
-                // curl_setopt( $ch,CURLOPT_URL, $url ); 
-   
-// curl_setopt( $ch,CURLOPT_URL, 'http://sms.b2cmarketing.in/api/swsendSingle.asp?username=t1testb2c&password=48566224&sender=testbc&sendto=91'.$mob.'&message='.$msg );           
+                // curl_setopt( $ch,CURLOPT_URL, $url );
 
-                       
+// curl_setopt( $ch,CURLOPT_URL, 'http://sms.b2cmarketing.in/api/swsendSingle.asp?username=t1testb2c&password=48566224&sender=testbc&sendto=91'.$mob.'&message='.$msg );
+
+
 
 //                         curl_setopt( $ch,CURLOPT_POST, true );
 
@@ -2954,13 +2816,13 @@ return $string;
 //                         curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
 
 //                         $result = curl_exec($ch );
-                        
+
         $api_key = '45EDF740109A10';
         $contacts = $mobilenumbers;
         $from = 'ALERTS';
         $sms_text =$message;
-        
-        
+
+
         //Submit to server
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL, "http://sms.b2chosting.in/app/smsapi/index.php");
@@ -2971,9 +2833,9 @@ return $string;
         curl_close($ch);
 
 		if($record){
-		
 
-                      
+
+
 			 DB::table('vendor_admin_forgot_password')
                     ->where('phone',$data['Phone'])
                     ->where('email',$data['Email'])
@@ -2983,38 +2845,38 @@ return $string;
 				]);
 		} else{
 			DB::table('vendor_admin_forgot_password')->insert(
-			[ 
+			[
                 'email'=> $data['Email'],
                 'phone' =>$data['Phone'],
                 'otp'=>$otp,
                 'email_for'=>$data['Email_for'],
-                'expired_on'=>Carbon::now()->addMinutes(10) 
+                'expired_on'=>Carbon::now()->addMinutes(10)
 			    ]
 			);
 		}
-		
+
 		/**self::sendEmail($data);****/
-			
-		  
+
+
     }
 	/*******************************/
-	
+
 	public static function checkDeliveryCustom($inputs){
-         
+
 		$checkPincode=DB::table('logistic_vendor_pincode')
 			->where('pincode',$inputs['pincode'])
 			->where('status',1)
 			->where('isdeleted',0)
 			->first();
-		
-		if(@$checkPincode->pincode!=''){				
+
+		if(@$checkPincode->pincode!=''){
 			$res=json_encode(array('success'=>'found'));
 		}else{
 			$res=json_encode(array('error'=>'not found'));
 		}
-				 
+
         return $res;
     }
-	
-	
+
+
 }

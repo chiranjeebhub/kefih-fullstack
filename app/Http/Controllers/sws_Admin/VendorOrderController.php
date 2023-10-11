@@ -43,12 +43,12 @@ class VendorOrderController extends Controller
 
 public function refundConfirm(Request $request){
           $id= base64_decode($request->id);
-          
+
            $order__id=DB::table('replace_order_details')
                                     ->select('replace_order_details.sub_order_id')
                                     ->where('id',$id)
 								    ->first();
-								  
+
 							$OrdersDetail=OrdersDetail::
 							    select(
 							        'orders.customer_id',
@@ -62,8 +62,8 @@ public function refundConfirm(Request $request){
 							        )
 							        ->join('orders','orders.id','order_details.order_id')
 							    ->where('order_details.id',$order__id->sub_order_id)->first();
-							    
-               
+
+
                    DB::table('order_details')
 			->where('id', $OrdersDetail->id)
 			->update(
@@ -75,7 +75,7 @@ public function refundConfirm(Request $request){
 					'order_detail_tax_amt' => 0,
 				)
 			);
-          
+
         //   refund completed
           $isReplaced=DB::table('replace_order_details')
 								  ->where('id',$id)
@@ -84,9 +84,9 @@ public function refundConfirm(Request $request){
 								          'replceOrder_sts'=>1
 								          )
 								      );
-								       
+
                     if($isReplaced){
-                        
+
                          $wallet=array(
                 'fld_customer_id'=>$OrdersDetail->customer_id,
                 'fld_order_id'=>$OrdersDetail->order_id,
@@ -94,27 +94,27 @@ public function refundConfirm(Request $request){
                 'fld_reward_narration'=>'Deducted',
                 'fld_reward_deduct_points'=>$OrdersDetail->order_reward_points,
                 );
-                
+
                 // create wallet history
-                 
+
 			 DB::table('tbl_wallet_history')->insert($wallet);
-			 
+
 
 								   Products::increaseProductQty(
 								       $OrdersDetail->product_id,
 								       $OrdersDetail->size_id,
 								       $OrdersDetail->color_id,
 								       $OrdersDetail->product_qty
-								       ); 
-								       
+								       );
+
 								       // decease customers wallet amount
                         DB::table('customers')
                         ->where('id',$OrdersDetail->customer_id)
                         ->decrement('total_reward_points',$OrdersDetail->order_reward_points);
-                        
+
                     $replacement_data=DB::table('replace_order_details')->select('replace_order_details.sub_order_id')->where('id',$id)->first();
                     CommonHelper::generateMailforOrderSts($replacement_data->sub_order_id,6);
-                
+
                     MsgHelper::save_session_message('success',Config::get('messages.common_msg.data_save_success'),$request);
                     return redirect()->back();
                     } else{
@@ -124,13 +124,13 @@ public function refundConfirm(Request $request){
      }
      public function replaceConfirm(Request $request){
           $id= base64_decode($request->id);
-          
+
          $order__id=DB::table('replace_order_details')
                                     ->select('replace_order_details.*')
                                     ->where('id',$id)
 								    ->first();
-								
-								  
+
+
 							$OrdersDetail=OrdersDetail::where('order_details.id',$order__id->sub_order_id)->first();
 							DB::table('order_details')
 		->where('id', $order__id->sub_order_id)
@@ -142,7 +142,7 @@ public function refundConfirm(Request $request){
 				'order_detail_tax_amt' => 0,
 			)
 		);
-							
+
 							 $order_detail=array(
 				'suborder_no'=>$order__id->suborder_no,
 				'order_id'=>$OrdersDetail->order_id,
@@ -168,16 +168,16 @@ public function refundConfirm(Request $request){
                  'return_days'=>$OrdersDetail->return_days
 				);
 				 DB::table('order_details')->insert($order_detail);
-							    
+
             			$order_detail_id=DB::getPdo()->lastInsertId();
-            	
+
             	DB::table('order_details')->where('id',$order_detail_id)->update(
                  array(
                      'suborder_no'=>'JKR'.$order_detail_id
                      )
-                 );	   
-          
-          
+                 );
+
+
           $isReplaced=DB::table('replace_order_details')
 								  ->where('id',$id)
 								  ->update(
@@ -185,7 +185,7 @@ public function refundConfirm(Request $request){
 								          'replceOrder_sts'=>1
 								          )
 								      );
-								       
+
                     if($isReplaced){
                             $replacement_data=DB::table('replace_order_details')->select('replace_order_details.sub_order_id')->where('id',$id)->first();
                             CommonHelper::generateMailforOrderSts($replacement_data->sub_order_id,5);
@@ -196,14 +196,14 @@ public function refundConfirm(Request $request){
                     return redirect()->back();
                     }
      }
-     
+
        public function pickupOrderManual(Request $request){
           $id= base64_decode($request->id);
-        
+
            $replaceOrder=DB::table('replace_order_details')
 								  ->where('id',$id)
 								  ->first();
-								      
+
           $isReplaced=DB::table('replace_order_details')
 								  ->where('id',$id)
 								  ->update(
@@ -212,16 +212,16 @@ public function refundConfirm(Request $request){
 								          )
 								      );
                 CommonHelper::generateMailforOrderSts($replaceOrder->sub_order_id,3);
-                return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('flash_success', 'Pikup Request send successfully');  
-               
+                return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('flash_success', 'Pikup Request send successfully');
+
        }
      public function pickupOrder(Request $request){
           $id= base64_decode($request->id);
           $multiple_order_detail_id='';
            $replacement_data=DB::table('replace_order_details')->select('replace_order_details.sub_order_id')->where('id',$id)->first();
           $masterData=self::after_return_request_vendor_order_shipping_master_data_load($replacement_data->sub_order_id);
-         
-         
+
+
           $order_details=DB::table('order_details')
           ->select(
             'order_details.weight',
@@ -231,7 +231,7 @@ public function refundConfirm(Request $request){
             'order_details.package_description'
             )
           ->where('id',$replacement_data->sub_order_id)->first();
-         
+
            $ShipmentChargesData = array(
                         'delivery_pincode' => $masterData['delivery_pincode'],
                         'pickup_pincode' => $masterData['pickup_pincode'],
@@ -243,19 +243,19 @@ public function refundConfirm(Request $request){
                         'length'=>$order_details->length,
                         'width'=>$order_details->width
                              );
-         
+
             $back_response=CommonHelper::ShipmentCharges($ShipmentChargesData);
             $output = (array)json_decode($back_response);
-               
+
                 $courier_list=array();
                 if($output['success']==1)
         {
             $data=@$output['couriers'];
-            
+
             foreach($data as $row)
             {
                 $service_types=$row->service_types;
-                
+
                 foreach($row->service_types as $services)
                 {
                     $courier_list[]=array(
@@ -272,22 +272,22 @@ public function refundConfirm(Request $request){
     'expected_delivery'=>$services->expected_delivery_days
                  );
                 }
-    
+
             }
-            
+
 $pagedata = array(
                                 'Title' => 'Available Couriers to pickup',
                                 'Box_Title' => 'Available Couriers to pickup',
                                 );
-            
+
             return view('vendor.orders.pickup_after_delivery_courier_list',['page_details'=>$pagedata,'package_content'=>$order_details->package_description,'courier_list'=>$courier_list,'shipment_measure'=>$ShipmentChargesData,'multiple_order_detail_id'=>$multiple_order_detail_id,'order_detail_id'=>$replacement_data->sub_order_id]);
-           
+
         }
-          
+
         // echo "<pre>";
         // print_r($courier_list);
         // die();
-         
+
         //   $isReplaced=DB::table('replace_order_details')
 								//   ->where('id',$id)
 								//   ->update(
@@ -295,7 +295,7 @@ $pagedata = array(
 								//           'order_status'=>1
 								//           )
 								//       );
-								       
+
         //             if($isReplaced){
         //                 CommonHelper::generateMailforOrderSts($replacement_data->sub_order_id,3);
         //             MsgHelper::save_session_message('success',Config::get('messages.common_msg.data_save_success'),$request);
@@ -312,16 +312,16 @@ $pagedata = array(
 				'Box_Title' => 'Couirer Orders',
 				);
         $id= $request->order_detail_id;
-		
-		$multiple_order_detail_id=$request->select_check; 
-		$multi_order_detail_id=''; 
+
+		$multiple_order_detail_id=$request->select_check;
+		$multi_order_detail_id='';
 		if(count($multiple_order_detail_id)>0)
 		{
-			//$multi_order_detail_id=explode(',',$multiple_order_detail_id); 
+			//$multi_order_detail_id=explode(',',$multiple_order_detail_id);
 			$masterData=self::vendor_order_shipping_master_data_load($multiple_order_detail_id);
-			$id1=explode(',',$multiple_order_detail_id); 
+			$id1=explode(',',$multiple_order_detail_id);
 			$getpID=DB::table('order_details')->whereIn('id',$id1)->get();
-			$id=$multiple_order_detail_id; 
+			$id=$multiple_order_detail_id;
 			$sub_order_no='';
 			foreach($getpID as $row)
 			{
@@ -329,14 +329,14 @@ $pagedata = array(
 			}
 		}else{
 			$masterData=self::vendor_order_shipping_master_data_load($id);
-			$id1=explode(',',$id); 
+			$id1=explode(',',$id);
 			$getpID=DB::table('order_details')->whereIn('id',$id1)->first();
 			$id=$id;
 			$sub_order_no=$getpID->suborder_no;
 		}
-        
-        
-        
+
+
+
         //$prodcut_detail=DB::table('products')->where('id',$getpID->product_id)->first();
         $sub_order_no0=$sub_order_no1=$sub_order_no2='';
 		$ss=explode(' ',trim($sub_order_no));
@@ -353,34 +353,34 @@ $pagedata = array(
 		}else{
 			$sub_order_no0=trim($sub_order_no);
 		}
-		
+
         $shiporderRequestData = array(
                                "shipmentIds"=>$request->shipment_id,
                                "udf1"=>$sub_order_no0,
 							   "udf2"=>$sub_order_no1,
 							   "udf3"=>$sub_order_no2,
-                               
+
                                //"client_source": "JKR",
                              );
-        
-        
+
+
         $back_response1=CommonHelper::ShipmentOrder($shiporderRequestData);
-      
+
           $output1 = (array)json_decode($back_response1);
         if($output1['success']==1)
         {
         	$ordercode =$output1['order_code'];
 		}
-        
-       
+
+
     return view('vendor.orders.couirer_orders_list',[
     'page_details'=>$pagedata,
     'couirer_orders'=>$output1,
 	'multiple_order_detail_id'=>$multiple_order_detail_id,
     'order_detail_id'=>$id,
     'ordercode'=>$ordercode
-    ]);     
-        
+    ]);
+
 	}
      public function reutrn_vendor_order_shipping_couirer_pickup(Request $request)
     {$pikup_list =array();
@@ -389,15 +389,15 @@ $pagedata = array(
                                 'Box_Title' => 'Pikup Request',
                                 );
         $id= $request->order_detail_id;
-		
-		$multiple_order_detail_id=$request->select_check; 
-		$multi_order_detail_id=''; 
+
+		$multiple_order_detail_id=$request->select_check;
+		$multi_order_detail_id='';
 		if(count($multiple_order_detail_id)>0)
 		{
-			$multi_order_detail_id=explode(',',$multiple_order_detail_id); 
+			$multi_order_detail_id=explode(',',$multiple_order_detail_id);
 			$id=$multiple_order_detail_id;
 		}else{
-			
+
 		}
      $isReplaced=DB::table('replace_order_details')
 								  ->where('id',$id)
@@ -406,22 +406,22 @@ $pagedata = array(
 								          'order_status'=>1
 								          )
 								      );
-								       
-       
+
+
                        CommonHelper::generateMailforOrderSts($id,3);
         $masterData=self::after_return_request_vendor_order_shipping_master_data_load($id);
-        
-        
-     
+
+
+
         $vendor_info =DB::table('vendor_company_info')->where('vendor_id',43)->first();
          $vendor =DB::table('vendors')->where('id',43)->first();
-        
-        
+
+
         if($masterData['payment_mode']==0)
 		    $payment_mode='COD';
 		else
 		    $payment_mode='online';
-        
+
         $PickupRequestData = array(
                                  'payment_mode'=>$payment_mode,
                                 'pickup_company_name'=>'',
@@ -439,7 +439,7 @@ $pagedata = array(
                                 'height'=>$request->input('ship_length'),
                                 'length'=>$request->input('ship_width'),
                                 'width'=>$request->input('ship_height'),
-                                
+
                                 'order_number' => $masterData['order_number'],
                                 'order_total' => $masterData['order_price'],
                                 'delivery_pincode' => $masterData['delivery_pincode'],
@@ -458,41 +458,41 @@ $pagedata = array(
                                 'delivery_mobile' =>  $vendor->phone,
                                 'delivery_email' =>  'connect@myweb.com',
                              );
-        
-       
-      
+
+
+
         $back_response1=CommonHelper::PickupRequest($PickupRequestData);
-       
+
          file_put_contents('pickup123.txt',$back_response1);
         $output1 = (array)json_decode($back_response1);
-        
-       
+
+
         if(@$output1['success']==1)
         {
             $data=$output1['shipmentPackages'];
-			
+
             foreach($data as $row)
             {
-            	
+
                 $shipment_id=$output1['shipment_id'];
-                
+
                 $package_detail=$row->package_detail;
                  $pikup_list[]=array(
                             'shipment_id'=>$shipment_id,
                             'no_of_items'=>$package_detail->no_of_items,
                             'package_content'=>$package_detail->package_content,
                             'invoice_value'=>$package_detail->invoice_value,
-                           
+
                              );
-             
+
             }
-            
+
             }
-            
-            
+
+
             return view('vendor.orders.reurnPikup_list',['page_details'=>$pagedata,'pikup_list'=>$pikup_list,'multiple_order_detail_id'=>$multiple_order_detail_id,'order_detail_id'=>$id]);
-       
-        
+
+
     }
      public function packageReceived(Request $request){
           $id= base64_decode($request->id);
@@ -504,7 +504,7 @@ $pagedata = array(
 								          'order_status'=>2
 								          )
 								      );
-								       
+
                     if($isReplaced){
                          CommonHelper::generateMailforOrderSts($replacement_data->sub_order_id,4);
                     MsgHelper::save_session_message('success',Config::get('messages.common_msg.data_save_success'),$request);
@@ -518,32 +518,32 @@ $pagedata = array(
     {
 
 		    $vendors=array();
-                $vendor=$request->vendor;	
-                $str=$request->str;	
-                $daterange=$request->daterange;	
-               
-                
+                $vendor=$request->vendor;
+                $str=$request->str;
+                $daterange=$request->daterange;
+
+
                 $type= base64_decode($request->type);
-                
+
                 //echo  $type;
 				//exit();
                 $category_id =$request->category;
                  $Brands= Brands::where('isdeleted', 0);
-                 
+
                     $Brands1=$Brands->orderBy('id', 'DESC')->paginate(100);
-                    
+
                      $brands =$request->brand;
-                
+
 		$export=URL::to("admin/exportvorders")."/".$request->type;
 		if(!empty($daterange) || !empty($category_id) || !empty($brands) || !empty($str) ){
 		    $sstr = empty($request->str)?"All":$request->str;
 		    $dr = empty($request->daterange)?"All":$request->daterange;
 		    $CC = empty($request->category)?"All":$request->category;
 		   $bb = empty($request->brands)?"All":$request->brands;
-		    
-		   $export=URL::to("admin/exportsearchorder")."/".$request->type."/".$sstr."/".$dr."/".$CC."/".$bb; 
+
+		   $export=URL::to("admin/exportsearchorder")."/".$request->type."/".$sstr."/".$dr."/".$CC."/".$bb;
 		}
-		
+
 		$page_details=array(
 			   "Title"=>"Orders",
 			   "Box_Title"=>"List",
@@ -564,7 +564,7 @@ $pagedata = array(
 					)
 			)
 			 );
-        
+
 		$Orders=OrdersDetail::select(
 						'products.vendor_id',
                         'orders.delivery_time','orders.delivery_day','orders.delivery_date',
@@ -589,7 +589,7 @@ $pagedata = array(
                         'order_details.product_qty as qty',
                         'products.default_image',
                         'customers.name as cust_name',
-                        
+
                         'orders_shipping.order_shipping_name as customer_name',
                         'orders_shipping.order_shipping_address as customer_add',
                         'orders_shipping.order_shipping_address1 as customer_add1',
@@ -608,8 +608,8 @@ $pagedata = array(
                 ->join('categories','categories.id','=','product_categories.cat_id')
                   ->join('customers','orders.customer_id','=','customers.id')
                 // ->where('products.vendor_id',43)
-                  ->where('order_details.order_status',$type); 
-                  
+                  ->where('order_details.order_status',$type);
+
 				if($str!='All' && $str!=''){
                         $Orders=$Orders->where(function($query) use ($str){
                         $query->orWhere('orders.order_no','LIKE',$str.'%');
@@ -617,62 +617,62 @@ $pagedata = array(
 						$query->orWhere('orders.exhibition_code','LIKE',$str.'%');
 
                         });
-             
+
 				//   $Orders=$Orders
 				// 		->where('orders.order_no','LIKE',$str.'%')
 				// 		->orWhere('order_details.suborder_no','LIKE',$str.'%');
 				}
-				
+
 				if($brands!='All' &&  $brands!=''){
 		    	$selcted_brand=explode(",",$brands);
-		    
+
 				   $Orders=$Orders->whereIn('products.product_brand',$selcted_brand);
-		} 
-		   
-                             
+		}
+
+
 			if($category_id!='All' && $category_id!=''){
 		  	$Orders =$Orders->where('product_categories.cat_id',$category_id);
-		} 
-            
+		}
+
 				 if($daterange!='All' && $daterange!=''){
                     	$daterange_array=explode('.',$daterange);
                             $from= date("Y-m-d", strtotime($daterange_array[0]));
                             $to=date("Y-m-d", strtotime($daterange_array[1]));
-                    
+
                     $Orders->whereDate('orders.order_date', '>=',$from);
                       $Orders->whereDate('orders.order_date', '<=',$to);
-                    
+
         //           $Orders=$Orders
 				 			//  ->whereBetween('orders.order_date',[$from,$to]);
                 }
-            
+
 			$Orders=$Orders->orderBy('order_details.id','desc')->groupBy('order_details.id')->paginate(100);
-			
-			
+
+
 
 			$parameters = $request->type;
 		$parameters_level = base64_decode($parameters);
-             
+
 
 		return view('vendor.orders.list',
 	 ['orders'=>$Orders,'parameters_level'=>$parameters_level,'str'=>$str,'daterange'=>$daterange,'vendor'=>$vendor,'page_details'=>$page_details,'vendors'=>$vendors,'Brands'=>$Brands1]
 		);
     }
-    
+
 	public function exportvorders(Request $request)
     {
-		$str=$request->str;	
-        $daterange=$request->daterange;	
+		$str=$request->str;
+        $daterange=$request->daterange;
         $type= base64_decode($request->type);
         $category =$request->category;
         $brands =$request->brand;
 		return Excel::download(new OrdervExport($type,$str,$daterange,$category,$brands), 'Orders'.date('d-m-Y H:i:s').'.csv');
     }
-    
+
     public function exportsearchorder(Request $request)
     {
-		$str=$request->str;	
-        $daterange=$request->daterange;	
+		$str=$request->str;
+        $daterange=$request->daterange;
         $type= base64_decode($request->type);
         $category =$request->category;
         $brands =$request->brand;
@@ -684,9 +684,9 @@ $pagedata = array(
 		   "Title"=>"Order Details",
 		   "Box_Title"=>"Order Details"
 		 );
-		
+
 		$id= base64_decode($request->order_detail_id);
-		
+
 		$Order =Orders::select(
 		     'orders.delivery_time','orders.delivery_day','orders.delivery_date',
 						'orders.order_no',
@@ -720,10 +720,10 @@ $pagedata = array(
 						'order_details.order_shipping_charges',
 						'order_details.slot_price'
 						)
-					
-					
-					
-					
+
+
+
+
 					->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')
 					->join('order_details', 'orders.id', '=', 'order_details.order_id')
 					->where('order_details.id',$id)
@@ -731,32 +731,32 @@ $pagedata = array(
 				// 	echo "<pre>";
 				// 	print_r($Order);
 				// 	die();
-					
+
 			 return view('vendor.orders.detail',['Order'=>$Order,'page_details'=>$page_details]);
 	}
-	
+
 	public function order_cancel(Request $request)
 	{
 		$id= base64_decode($request->order_detail_id);
-		
+
 		$res=DB::table('order_details')->where('order_details.id','=',$id)
 				->update([
 					'order_details.order_status'=>4
 				]);
 		CommonHelper::generateMailforOrderSts($id,7);
 		return Redirect::route('vendor_orders',[base64_encode(0)]);
-		 
+
 	}
-	
+
 	public function orderdetail_shipping(Request $request)
 	{
 		$page_details=array(
 		   "Title"=>"Order Details",
 		   "Box_Title"=>"Order Details"
 		 );
-		
+
 		$id= base64_decode($request->order_detail_id);
-		
+
 		$Order =Orders::select(
 						'orders.order_no',
 						'orders.order_date',
@@ -783,25 +783,25 @@ $pagedata = array(
 						'order_details.color',
 						'order_details.w_size'
 						)
-					
+
 					->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')
 					->join('order_details', 'orders.id', '=', 'order_details.order_id')
 					->where('order_details.order_id',$id)
 					->where('order_details.order_status',1)
 					->get()->toarray();
 				// 	echo "<pre>";
-				// 	print_r($Order); 
+				// 	print_r($Order);
 				// 	die();
-					
+
 			 return view('vendor.orders.detail_shipping',['Order'=>$Order,'page_details'=>$page_details]);
 	}
-	
+
 	public function vendor_order_generate_invoice(Request $request)
     {
 
 		$id= base64_decode($request->order_detail_id);
-		
-	 	
+
+
 		$res=DB::table('order_details')->where('order_details.id','=',$id)
 				->update([
 					'order_details.order_status'=>1,
@@ -809,15 +809,15 @@ $pagedata = array(
 					'order_details.order_detail_invoice_date'=>date('Y-m-d H:i:s')
 				]);
 		 CommonHelper::generateMailforOrderSts($id,0);
-		
+
 		return Redirect::route('vendor_order_invoice',[$request->order_detail_id]);
     }
 	public function vendor_order_completed(Request $request)
     {
 
 		$id= base64_decode($request->order_detail_id);
-		
-	 	
+
+
 		$res=DB::table('order_details')->where('order_details.id','=',$id)
 				->update([
 					'order_details.order_status'=>8,
@@ -828,32 +828,32 @@ $pagedata = array(
 		$ordertype=base64_encode('8');
 		return Redirect::route('vendor_orders',[$ordertype]);
     }
-	
+
 	public function vendor_order_print_invoice(Request $request)
     {
 
-		$id= base64_decode($request->order_detail_id); 
-		
-	 	
+		$id= base64_decode($request->order_detail_id);
+
+
 		$res=DB::table('order_details')->where('order_details.id','=',$id)
 				->update([
 					'order_details.order_status'=>1,
 					'order_details.order_detail_invoice_num'=>'PHT/BLR/'.$id,
 					'order_details.order_detail_invoice_date'=>date('Y-m-d H:i:s')
 				]);
-		
+
 		return Redirect::route('vendor_order_invoice',[$request->order_detail_id]);
     }
-	
+
 	public function vendor_order_invoice(Request $request)
     {
 		$page_details=array(
 		   "Title"=>"Invoice",
 		   "Box_Title"=>"Invoice"
 		 );
-	  
+
 	  $id= base64_decode($request->order_detail_id);
-	  
+
 	  $Order =Orders::select(
 								'orders.order_no',
 								'orders.order_date',
@@ -898,21 +898,21 @@ $pagedata = array(
 								'order_details.color',
 								'order_details.w_size',	'order_details.slot_price'
 								)
-							
+
 							->join('orders_shipping', 'orders.id', '=', 'orders_shipping.order_id')
 							->join('order_details', 'orders.id', '=', 'order_details.order_id')
 							->where('order_details.id',$id)
 							->get()->toarray();
-							
-						
-						
-						
+
+
+
+
                             // $vdr_id=43;
                             $vdr=new Vendor();
                             $vdr_id=$vdr->vendor_id($id,1);
-                            
+
                             $vdr_data=$vdr->getVendorDetails($vdr_id);
-							
+
 
 							$billingAddress = [];
 							if(!empty($Order)){
@@ -920,14 +920,14 @@ $pagedata = array(
 							->where('order_id', $Order[0]['id'])
 							->first();
 							}
-						
+
 							$pdfData = ['billingAddress'=>$billingAddress,'Order'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data];
 							$type = $request->download;
 							if($type == 1){
 							   $pdf=PDF::loadView('vendor.orders.invoice_test',$pdfData);
-							   return $pdf->download($Order[0]['suborder_no'].'_product_invoice.pdf'); 
+							   return $pdf->download($Order[0]['suborder_no'].'_product_invoice.pdf');
 							}
-			 return view('vendor.orders.invoice_test',['billingAddress'=>$billingAddress,'Order'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data]);	
+			 return view('vendor.orders.invoice_test',['billingAddress'=>$billingAddress,'Order'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data]);
     }
 
 
@@ -937,7 +937,7 @@ $pagedata = array(
 			"Title"=>"Seller Invoice",
 			"Box_Title"=>"Seller Invoice"
 		  );
- 
+
 	   $id= base64_decode($request->order_detail_id);
 	   $Order =Orders::select(
 								 'orders.order_no',
@@ -966,7 +966,7 @@ $pagedata = array(
 								 'orders_shipping.order_shipping_zip',
 								 'order_details.id as order_detail_id',
 								 'order_details.product_id',
-								 'order_details.suborder_no',	
+								 'order_details.suborder_no',
 								 'order_details.order_detail_invoice_num',
 								 'order_details.order_detail_invoice_date',
 								 'order_details.product_name',
@@ -981,12 +981,12 @@ $pagedata = array(
 								 'order_details.order_wallet_amount',
 								 'order_details.size',
 								 'order_details.color',
-								 'order_details.w_size',	
+								 'order_details.w_size',
 								 'order_details.slot_price',
-								 'order_details.courier_charges',	
-								 'order_details.seller_invoice_tcs',	
-								 'order_details.payment_gateway_tax',	
-								 'order_details.logistics_tax',	
+								 'order_details.courier_charges',
+								 'order_details.seller_invoice_tcs',
+								 'order_details.payment_gateway_tax',
+								 'order_details.logistics_tax',
 								 'order_details.seller_invoice_date',
 								 'order_details.seller_invoice_num'
 								 )
@@ -994,11 +994,11 @@ $pagedata = array(
 							 ->join('order_details', 'orders.id', '=', 'order_details.order_id')
 							 ->where('order_details.id',$id)
 							 ->first();
-							
+
 							 $vdr=new Vendor();
-							 $vdr_id=$vdr->vendor_id($id,1);							 
+							 $vdr_id=$vdr->vendor_id($id,1);
 							 $vdr_data=$vdr->getVendorDetails($vdr_id);
-							 
+
 							 /**
 							  * Updating seller invoice number and date
 							  */
@@ -1035,7 +1035,7 @@ $pagedata = array(
 									'orders_shipping.order_shipping_zip',
 									'order_details.id as order_detail_id',
 									'order_details.product_id',
-									'order_details.suborder_no',	
+									'order_details.suborder_no',
 									'order_details.order_detail_invoice_num',
 									'order_details.order_detail_invoice_date',
 									'order_details.product_name',
@@ -1050,12 +1050,12 @@ $pagedata = array(
 									'order_details.order_wallet_amount',
 									'order_details.size',
 									'order_details.color',
-									'order_details.w_size',	
+									'order_details.w_size',
 									'order_details.slot_price',
-									'order_details.courier_charges',	
-									'order_details.seller_invoice_tcs',	
-									'order_details.payment_gateway_tax',	
-									'order_details.logistics_tax',	
+									'order_details.courier_charges',
+									'order_details.seller_invoice_tcs',
+									'order_details.payment_gateway_tax',
+									'order_details.logistics_tax',
 									'order_details.seller_invoice_date',
 									'order_details.seller_invoice_num'
 									)
@@ -1064,49 +1064,49 @@ $pagedata = array(
 								->where('order_details.id',$id)
 								->first();
 							  }
-							 
-							  $type = $request->download; 
+
+							  $type = $request->download;
 							  $pdfData = ['sellerData' => $vdr_data,'Order'=>$Order,'page_details'=>$page_details,'is_front'=>1];
-		  
+
 							  if($type == 1){
 								  $pdf=PDF::loadView('vendor.orders.seller_invoice',$pdfData);
-								  return $pdf->download($Order->suborder_no.'_seller_invoice.pdf'); 
-							   }  		 
+								  return $pdf->download($Order->suborder_no.'_seller_invoice.pdf');
+							   }
 
 			  return view('vendor.orders.seller_invoice',['sellerData' => $vdr_data,'Order'=>$Order,'page_details'=>$page_details]);
-	 
+
 	 }
-    
+
     public static function vendor_order_shipping_master_data_load($order_detail_id)
     {
-        $id=$order_detail_id; 
-       
+        $id=$order_detail_id;
+
         /**
          * Getting Order Details data
          */
-		 
-		 $id=explode(',',$order_detail_id);  
-		 
+
+		 $id=explode(',',$order_detail_id);
+
 		 $order_details = DB::table('order_details')->whereIn('id',$id)->get();
-		 
+
 		 $order_data=$shipping_data=$vendor_pickup_address_data='';
 		 $suborder_no='';
 		 $product_name='';
 		 $product_order_qty=0;
 		 $order_price=0;
 		 foreach($order_details as $order_details){
-			 
+
 			 $suborder_no.=$order_details->suborder_no.' ';
 			 $product_name.=$order_details->product_name.' ';
 			 $product_order_qty+=$order_details->product_qty;
-			 
-        $order_price+=($order_details->product_qty*$order_details->product_price)+$order_details->order_shipping_charges+$order_details->order_cod_charges-$order_details->order_coupon_amount-$order_details->order_wallet_amount;                     
-       
+
+        $order_price+=($order_details->product_qty*$order_details->product_price)+$order_details->order_shipping_charges+$order_details->order_cod_charges-$order_details->order_coupon_amount-$order_details->order_wallet_amount;
+
 			 //$order_price+= $order_details->product_price * $order_details->product_qty;
-			 
-			$order_data = DB::table('orders')->where('id',$order_details->order_id)->first(); 
+
+			$order_data = DB::table('orders')->where('id',$order_details->order_id)->first();
             $product_data = DB::table('products')->where('id',$order_details->product_id)->first();
-			
+
 			$shipping_data = DB::table('orders_shipping')
                 ->join('states', 'orders_shipping.order_shipping_state', '=', 'states.name')
                 ->join('cities', 'orders_shipping.order_shipping_city', '=', 'cities.name')
@@ -1114,30 +1114,30 @@ $pagedata = array(
                 //->join('cities', 'orders_shipping.order_shipping_city', '=', 'cities.id')
                 ->select('orders_shipping.*', 'states.name as state_name', 'cities.name as city_name')
                 ->where('orders_shipping.id',$order_data->shipping_id)->first();
-				
+
 			$vendor_pickup_address_data = DB::table('vendor_company_info')->where('vendor_id',$product_data->vendor_id)->first();
 		 }
-		 
+
 		 /*if(!empty($order_details)){
-            $order_data = DB::table('orders')->where('id',$order_details->order_id)->first(); 
+            $order_data = DB::table('orders')->where('id',$order_details->order_id)->first();
             $product_data = DB::table('products')->where('id',$order_details->product_id)->first();
          }
-         
+
          if(!empty($order_data)){
-                
+
                 $shipping_data = DB::table('orders_shipping')
                 ->join('states', 'orders_shipping.order_shipping_state', '=', 'states.name')
                 ->join('cities', 'orders_shipping.order_shipping_city', '=', 'cities.name')
                 ->select('orders_shipping.*', 'states.name as state_name', 'cities.name as city_name')
                 ->where('orders_shipping.id',$order_data->shipping_id)->first();
          }
-         
+
          if(!empty($product_data)){
-                
+
                 $vendor_pickup_address_data = DB::table('vendor_company_info')->where('vendor_id',$product_data->vendor_id)->first();
 
          }*/
-        
+
          $masterData = array(   'payment_mode' => $order_data->payment_mode,
                                 'order_number' => $suborder_no,
                                 'delivery_pincode' => @$shipping_data->order_shipping_zip,
@@ -1146,7 +1146,7 @@ $pagedata = array(
                                 'pickup_address1' => $vendor_pickup_address_data->address,
                                 'pickup_city' => $vendor_pickup_address_data->city,
                                 'pickup_state' => $vendor_pickup_address_data->state,
-                                
+
                                 'delivery_contact_name' => @$shipping_data->order_shipping_name,
                                 'delivery_address1' => '#'.@$shipping_data->order_shipping_address,
                                 'delivery_address2' =>  @$shipping_data->order_shipping_address1,
@@ -1159,96 +1159,96 @@ $pagedata = array(
                                 'delivery_country'=>"IN",
                                 'delivery_mobile' => @$shipping_data->order_shipping_phone,
                                 'delivery_email' => @$shipping_data->order_shipping_email,
-                                
+
 								'product_name' => $product_name,
                                 'product_order_qty' => $product_order_qty,
                                 'order_price' => $order_price,
                              );
-                             
+
         return $masterData;
     }
     public static function after_return_request_vendor_order_shipping_master_data_load($order_detail_id)
     {
-        $id=$order_detail_id; 
-       
+        $id=$order_detail_id;
+
         /**
          * Getting Order Details data
          */
-		 
-		 $id=explode(',',$order_detail_id);  
-		 
+
+		 $id=explode(',',$order_detail_id);
+
 		 $order_details = DB::table('order_details')->whereIn('id',$id)->get();
-		 
+
 		 $order_data=$shipping_data=$vendor_pickup_address_data='';
 		 $suborder_no='';
 		 $product_name='';
 		 $product_order_qty=0;
 		 $order_price=0;
 		 foreach($order_details as $order_details){
-			 
+
 			 $suborder_no.=$order_details->suborder_no.' ';
 			 $product_name.=$order_details->product_name.' ';
 			 $product_order_qty+=$order_details->product_qty;
-			 
-        $order_price+=($order_details->product_qty*$order_details->product_price)+$order_details->order_shipping_charges+$order_details->order_cod_charges-$order_details->order_coupon_amount-$order_details->order_wallet_amount;                     
-       
-			$order_data = DB::table('orders')->where('id',$order_details->order_id)->first(); 
+
+        $order_price+=($order_details->product_qty*$order_details->product_price)+$order_details->order_shipping_charges+$order_details->order_cod_charges-$order_details->order_coupon_amount-$order_details->order_wallet_amount;
+
+			$order_data = DB::table('orders')->where('id',$order_details->order_id)->first();
             $product_data = DB::table('products')->where('id',$order_details->product_id)->first();
-			
+
 			$shipping_data = DB::table('orders_shipping')
                 ->join('states', 'orders_shipping.order_shipping_state', '=', 'states.name')
                 ->join('cities', 'orders_shipping.order_shipping_city', '=', 'cities.name')
                 ->select('orders_shipping.*', 'states.name as state_name', 'cities.name as city_name')
                 ->where('orders_shipping.id',$order_data->shipping_id)->first();
-				
+
 			$vendor_pickup_address_data = DB::table('vendor_company_info')->join('vendors','vendor_company_info.vendor_id','vendors.id')->where('vendors.id',$product_data->vendor_id)->first();
 		 }
-		 
-	
-        
+
+
+
          $masterData = array(   'payment_mode' => $order_data->payment_mode,
                                 'order_number' => $suborder_no,
                             'delivery_pincode' =>  $vendor_pickup_address_data->pincode,
                             'pickup_pincode' => @$shipping_data->order_shipping_zip,
-                            
+
                                 'pickup_contact_name' =>  @$shipping_data->order_shipping_name,
                                 'pickup_address1' =>@$shipping_data->order_shipping_address.' '.@$shipping_data->order_shipping_address1.' '.@$shipping_data->order_shipping_address2 ,
                                 'pickup_city' =>  @$shipping_data->city_name,
                                 'pickup_state' => @$shipping_data->state_name ,
-                                
+
                                 'pickup_mobile' => @$shipping_data->order_shipping_phone ,
                                 'pickup_email' => @$shipping_data->order_shipping_email ,
-                                
+
                                 'delivery_contact_name' => $vendor_pickup_address_data->name,
                                 'delivery_address1' =>   'Ground floor, sf no',
                                 'delivery_address2' =>  '133-134, road,',
                                 'delivery_address3' =>  'Lic colony 1st street, college road ,',
 								'delivery_city' =>  $vendor_pickup_address_data->city,
-                                'delivery_state' =>  $vendor_pickup_address_data->state, 
+                                'delivery_state' =>  $vendor_pickup_address_data->state,
                                 'delivery_country'=>"IN",
-                                
-                                
+
+
                                 'delivery_mobile' => $vendor_pickup_address_data->phone	,
                                 'delivery_email' => $vendor_pickup_address_data->email,
-                                
+
 								'product_name' => $product_name,
                                 'product_order_qty' => $product_order_qty,
                                 'order_price' => $order_price,
                              );
-                             
+
         return $masterData;
     }
-    
+
     public function vendor_order_shipping_extradetails(Request $request){
-             
+
     $id= base64_decode($request->order_detail_id);
-	
-	$multiple_order_detail_id=$request->select_check; 
-	$multi_order_detail_id=''; 
+
+	$multiple_order_detail_id=$request->select_check;
+	$multi_order_detail_id='';
 	if(count($multiple_order_detail_id)>0)
 	{
 		$multi_order_detail_id=implode(',',$multiple_order_detail_id);
-		
+
 		$Order = Orders::select('orders.grand_total')
 							->join('order_details', 'orders.id', '=', 'order_details.order_id')
 							->whereIn('order_details.id',$multiple_order_detail_id)
@@ -1259,15 +1259,15 @@ $pagedata = array(
 							->where('order_details.id',$id)
 							->first();
 	}
-							
+
             $page_details = array(
                                     "Title"=>"Shipping Extra Details",
 		                            "Box_Title"=>"Shipping Extra Details",
 		                            "Grand_Total"=>$Order->grand_total,
-		                            
+
 		                            "Form_data"=>array(
                                                          "Form_field"=>array(
-                                                            
+
                                                                "phy_weight"=>array(
                                                 							'label'=>'Weight (Kg) *',
                                                 							'type'=>'text',
@@ -1278,7 +1278,7 @@ $pagedata = array(
                                                 							'value'=>'',
                                                 							'disabled'=>''
                                                 									),
-                                                			 
+
                                                 			"ship_length"=>array(
                                                 							'label'=>'Length (CM) *',
                                                 							'type'=>'text',
@@ -1288,9 +1288,9 @@ $pagedata = array(
                                                 							'placeholder'=>'',
                                                 							'value'=>'',
                                                 							'disabled'=>'',
-                                                						
+
                                                 			),
-                                                			
+
                                                 			"ship_width"=>array(
                                                 							'label'=>'Width (CM) *',
                                                 							'type'=>'text',
@@ -1300,9 +1300,9 @@ $pagedata = array(
                                                 							'placeholder'=>'',
                                                 							'value'=>'',
                                                 							'disabled'=>'',
-                                                						
+
                                                 			),
-                                                			
+
                                                 				"package_description"=>array(
                                                 							'label'=>'Package description',
                                                 							'type'=>'textarea',
@@ -1312,9 +1312,9 @@ $pagedata = array(
                                                 							'placeholder'=>'',
                                                 							'value'=>'',
                                                 							'disabled'=>'',
-                                                						
+
                                                 			),
-                                                			
+
                                                 				"ship_height"=>array(
                                                 							'label'=>'Height (CM) *',
                                                 							'type'=>'text',
@@ -1324,9 +1324,9 @@ $pagedata = array(
                                                 							'placeholder'=>'',
                                                 							'value'=>'',
                                                 							'disabled'=>'',
-                                                						
+
                                                 			),
-                                                			
+
                                                 		   "submit_button_field"=>array(
                                                 							'label'=>'',
                                                 							'type'=>'submit',
@@ -1338,17 +1338,17 @@ $pagedata = array(
                                                 						)
                                                          )
                                                        )
-    
+
                                  );
-            
+
         	return view('vendor.orders.shipping_extra_details',['page_details'=>$page_details,'multiple_order_detail_id'=>$multi_order_detail_id]);
     }
-	
+
 	public function vendor_order_shipping(Request $request)
     {
         $data_inputs=$request->all();
         $id= base64_decode($request->order_detail_id);
-		
+
 		$request->validate([
                                 'phy_weight' => 'required|numeric',
                                 'ship_length' => 'required|numeric',
@@ -1366,18 +1366,18 @@ $pagedata = array(
                                     'ship_height.required'=>'Height is required',
                                     'package_description.max'=>'Description should nor be greater then 255 characters'
                                 ]);
-        
-		 
-         $multiple_order_detail_id=$request->select_check; 
+
+
+         $multiple_order_detail_id=$request->select_check;
         // $multiple_order_detail_id='303,304';
-		//$multiple_order_detail_id='305'; 
+		//$multiple_order_detail_id='305';
 		$multi_order_detail_id='';
 		if(count($multiple_order_detail_id)>0)
 		{
-			$multi_order_detail_id=explode(',',$multiple_order_detail_id); 
-			
+			$multi_order_detail_id=explode(',',$multiple_order_detail_id);
+
 			/*$getpID=DB::table('order_details')->whereIn('id',$multi_order_detail_id)->get();
-			
+
 			foreach($getpID as $check_prd)
 			{
 				$prodcut_detail=DB::table('products')->where('id',$check_prd->product_id)->first();
@@ -1387,7 +1387,7 @@ $pagedata = array(
 			foreach($multi_order_detail_id as $check_id)
 			{
 				$masterData=self::vendor_order_shipping_master_data_load($check_id);
-				
+
 				$prd_name.=$masterData['product_name'];
 				$prd_qty+=$masterData['product_order_qty'];
 				$prd_price+=$masterData['order_price'];
@@ -1395,14 +1395,14 @@ $pagedata = array(
 			$masterData['product_name']=$prd_name;
 			$masterData['product_order_qty']=$prd_qty;
 			$masterData['order_price']=$prd_price;
-		
+
 		}else{
 			//$getpID=DB::table('order_details')->where('id',$id)->first();
 			//$prodcut_detail=DB::table('products')->where('id',$getpID->product_id)->first();
-			
+
 			$masterData=self::vendor_order_shipping_master_data_load($id);
 		}
-		                     
+
         $ShipmentChargesData = array(
                                 'delivery_pincode' => $masterData['delivery_pincode'],
 								//'delivery_pincode' => 110011,
@@ -1419,21 +1419,21 @@ $pagedata = array(
                                 'length'=>$request->input('ship_width'),
                                 'width'=>$request->input('ship_height'),
                              );
-							 
-                             		 
+
+
         $back_response=CommonHelper::ShipmentCharges($ShipmentChargesData);
         $output = (array)json_decode($back_response);
-       
-    
-       
+
+
+
         if($output['success']==1)
         {
             $data=@$output['couriers'];
-            
+
             foreach($data as $row)
             {
                 $service_types=$row->service_types;
-                
+
                 foreach($row->service_types as $services)
                 {
                     $courier_list[]=array(
@@ -1450,19 +1450,19 @@ $pagedata = array(
     'expected_delivery'=>$services->expected_delivery_days
                  );
                 }
-    
+
             }
-            
+
             $pagedata = array(
                                 'Title' => 'Available Couriers',
                                 'Box_Title' => 'Available Couriers',
                                 );
-            
+
             return view('vendor.orders.order_shipping_courier_list',['page_details'=>$pagedata,'package_content'=>$request->input('package_description'),'courier_list'=>$courier_list,'shipment_measure'=>$ShipmentChargesData,'multiple_order_detail_id'=>$multiple_order_detail_id,'order_detail_id'=>$id]);
         }
 
     }
-    
+
     public function vendor_order_shipping_couirer_pickup(Request $request)
     {$pikup_list =array();
          $pagedata = array(
@@ -1470,31 +1470,31 @@ $pagedata = array(
                                 'Box_Title' => 'Pikup Request',
                                 );
         $id= $request->order_detail_id;
-		
-		$multiple_order_detail_id=$request->select_check; 
-		$multi_order_detail_id=''; 
+
+		$multiple_order_detail_id=$request->select_check;
+		$multi_order_detail_id='';
 		if(count($multiple_order_detail_id)>0)
 		{
-			$multi_order_detail_id=explode(',',$multiple_order_detail_id); 
+			$multi_order_detail_id=explode(',',$multiple_order_detail_id);
 			$id=$multiple_order_detail_id;
 		}else{
-			
+
 		}
-        
+
         $masterData=self::vendor_order_shipping_master_data_load($id);
         //$getpID=DB::table('order_details')->where('id',$id)->first();
         $vendor_info =DB::table('vendor_company_info')->where('vendor_id',43)->first();
          $vendor =DB::table('vendors')->where('id',43)->first();
-        
+
        // echo $vendor_info->name;die;
-        
+
         //$prodcut_detail=DB::table('products')->where('id',$getpID->product_id)->first();
-        
+
         if($masterData['payment_mode']==0)
 		    $payment_mode='COD';
 		else
 		    $payment_mode='online';
-        
+
         $PickupRequestData = array(
                                 /*'payment_mode'=>$masterData['payment_mode'],
                                 'pickup_company_name'=>$vendor_info->name,
@@ -1530,7 +1530,7 @@ $pagedata = array(
                                 'height'=>$request->input('ship_length'),
                                 'length'=>$request->input('ship_width'),
                                 'width'=>$request->input('ship_height'),
-                                
+
                                 'order_number' => $masterData['order_number'],
                                 'order_total' => $masterData['order_price'],
                                 'delivery_pincode' => $masterData['delivery_pincode'],
@@ -1549,19 +1549,19 @@ $pagedata = array(
                                 'delivery_mobile' => $masterData['delivery_mobile'],
                                 'delivery_email' => $masterData['delivery_email'],
                              );
-        
-        
+
+
         file_put_contents('pickup.txt',json_encode($PickupRequestData));
         $back_response1=CommonHelper::PickupRequest($PickupRequestData);
-       
+
          file_put_contents('pickup123.txt',$back_response1);
         $output1 = (array)json_decode($back_response1);
-        
-        
+
+
         if(@$output1['success']==1)
         {
             $data=$output1['shipmentPackages'];
-			
+
 			DB::table('order_details')
 					->where('id', $id)
 					->update([
@@ -1571,30 +1571,30 @@ $pagedata = array(
 					'width'=>$request->input('ship_height'),
 					'package_description'=>$request->input('package_description'),
 					]);
-           
-           
+
+
             foreach($data as $row)
             {
-            	
+
                 $shipment_id=$output1['shipment_id'];
-                
+
                 $package_detail=$row->package_detail;
                  $pikup_list[]=array(
                             'shipment_id'=>$shipment_id,
                             'no_of_items'=>$package_detail->no_of_items,
                             'package_content'=>$package_detail->package_content,
                             'invoice_value'=>$package_detail->invoice_value,
-                           
+
                              );
-             
+
             }
-            
+
             }
-            
-            
+
+
             return view('vendor.orders.order_shipping_pikup_list',['page_details'=>$pagedata,'pikup_list'=>$pikup_list,'multiple_order_detail_id'=>$multiple_order_detail_id,'order_detail_id'=>$id]);
-       
-        
+
+
     }
     public function after_return_vendor_order_shipping_couirer_orders(Request $request){
     	$ordercode='';
@@ -1603,16 +1603,16 @@ $pagedata = array(
 				'Box_Title' => 'Couirer Orders',
 				);
         $id= $request->order_detail_id;
-		
-		$multiple_order_detail_id=$request->select_check; 
-		$multi_order_detail_id=''; 
+
+		$multiple_order_detail_id=$request->select_check;
+		$multi_order_detail_id='';
 		if(count($multiple_order_detail_id)>0)
 		{
-			//$multi_order_detail_id=explode(',',$multiple_order_detail_id); 
+			//$multi_order_detail_id=explode(',',$multiple_order_detail_id);
 			$masterData=self::vendor_order_shipping_master_data_load($multiple_order_detail_id);
-			$id1=explode(',',$multiple_order_detail_id); 
+			$id1=explode(',',$multiple_order_detail_id);
 			$getpID=DB::table('order_details')->whereIn('id',$id1)->get();
-			$id=$multiple_order_detail_id; 
+			$id=$multiple_order_detail_id;
 			$sub_order_no='';
 			foreach($getpID as $row)
 			{
@@ -1620,14 +1620,14 @@ $pagedata = array(
 			}
 		}else{
 			$masterData=self::vendor_order_shipping_master_data_load($id);
-			$id1=explode(',',$id); 
+			$id1=explode(',',$id);
 			$getpID=DB::table('order_details')->whereIn('id',$id1)->first();
 			$id=$id;
 			$sub_order_no=$getpID->suborder_no;
 		}
-        
-        
-        
+
+
+
         //$prodcut_detail=DB::table('products')->where('id',$getpID->product_id)->first();
         $sub_order_no0=$sub_order_no1=$sub_order_no2='';
 		$ss=explode(' ',trim($sub_order_no));
@@ -1644,19 +1644,19 @@ $pagedata = array(
 		}else{
 			$sub_order_no0=trim($sub_order_no);
 		}
-		
+
         $shiporderRequestData = array(
                                "shipmentIds"=>$request->shipment_id,
                                "udf1"=>$sub_order_no0,
 							   "udf2"=>$sub_order_no1,
 							   "udf3"=>$sub_order_no2,
-                               
+
                                //"client_source": "test",
                              );
-        
-        
+
+
         $back_response1=CommonHelper::ShipmentOrder($shiporderRequestData);
-      
+
           $output1 = (array)json_decode($back_response1);
         if($output1['success']==1)
         {
@@ -1668,55 +1668,55 @@ $pagedata = array(
 								          'order_status'=>1
 								          )
 								      );
-								       
+
         CommonHelper::generateMailforOrderSts($id,3);
 		}
-        
-       
+
+
     return view('vendor.orders.after_return_courier_orders_list',[
     'page_details'=>$pagedata,
     'couirer_orders'=>$output1,
 	'multiple_order_detail_id'=>$multiple_order_detail_id,
     'order_detail_id'=>$id,
     'ordercode'=>$ordercode
-    ]);     
-        
+    ]);
+
 	}
-	
+
 	public function CourierOrderInfo(Request $request){
 		$id= $request->order_detail_id;
-		 
-		$multiple_order_detail_id=$request->select_check; 
-		$multi_order_detail_id=''; 
+
+		$multiple_order_detail_id=$request->select_check;
+		$multi_order_detail_id='';
 		if(count($multiple_order_detail_id)>0)
 		{
-			$id=explode(',',$multiple_order_detail_id); 
-			
+			$id=explode(',',$multiple_order_detail_id);
+
 		}else{
-			$id=explode(',',$id); 
+			$id=explode(',',$id);
 		}
-		 
-		 
+
+
 		$ordercode = array(
 		"ordercode"=>$request->ordercode
 		);
-		
+
         $back_response1=CommonHelper::CourierOrder($ordercode);
         $output1 = (array)json_decode($back_response1);
-      
+
          if($output1['success']==1){
-         	
+
          	$data1 = $output1['shipments'];
-		 
+
 		  foreach($data1 as $row)
           {
             	//$pp=implode(',',$id);
-				
+
             $shipmentPackages=$row->shipmentPackages;
             $pickup=$row->pickup;
-           
+
 			   for($m=0;$m<count($id);$m++)
-			   {			   
+			   {
 					$data = array(
 							"order_detail_id"=>$id[$m],
 							"shipping_status"=>$output1['status'],
@@ -1744,9 +1744,9 @@ $pagedata = array(
 							//"max_delivery_days"=>$row->shipment_id,
 							"order_code"=>$request->ordercode,
 						);
-					
+
 				   DB::table('tbl_courierorderinfo')->insert($data);
-				   
+
 				/*DB::table('order_details')
 					->whereIn('id', $id[$m])
 					->update([
@@ -1757,9 +1757,9 @@ $pagedata = array(
                    // 'width'=>$prodcut_detail->width,
                     'order_status'=>2
 					]);
-					
+
 			CommonHelper::generateMailforOrderSts($id[$m],1); */
-			
+
 			$pp=$id[$m];
 			DB::table('order_details')
 						->where('id', $pp)
@@ -1767,21 +1767,21 @@ $pagedata = array(
 						'order_status'=>2,
                         'order_detail_onshipping_date'=>date('Y-m-d H:i:s')
 						]);
-			
+
 			//CommonHelper::generateMailforOrderSts($pp,1);
-						
+
 			   }
 			}
-        
-       
-        
+
+
+
 	}
-return redirect()->route('vendor_orders', ['type' => base64_encode(2)])->with('flash_success', 'Pikup Request send successfully');  
-        
+return redirect()->route('vendor_orders', ['type' => base64_encode(2)])->with('flash_success', 'Pikup Request send successfully');
+
 	}
 	public function afterCourierOrderInfo(Request $request){
 		$id= $request->order_detail_id;
-		
+
 		$isReplaced=DB::table('replace_order_details')
 								  ->where('sub_order_id',$id)
 								  ->update(
@@ -1789,41 +1789,41 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(2)])->with('f
 								          'order_status'=>1
 								          )
 								      );
-								       
-        
+
+
          CommonHelper::generateMailforOrderSts($id,3);
-		 
-		$multiple_order_detail_id=$request->select_check; 
-		$multi_order_detail_id=''; 
+
+		$multiple_order_detail_id=$request->select_check;
+		$multi_order_detail_id='';
 		if(count($multiple_order_detail_id)>0)
 		{
-			$id=explode(',',$multiple_order_detail_id); 
-			
+			$id=explode(',',$multiple_order_detail_id);
+
 		}else{
-			$id=explode(',',$id); 
+			$id=explode(',',$id);
 		}
-		 
-		 
+
+
 		$ordercode = array(
 		"ordercode"=>$request->ordercode
 		);
-		
+
         $back_response1=CommonHelper::CourierOrder($ordercode);
         $output1 = (array)json_decode($back_response1);
-      
+
          if($output1['success']==1){
-         	
+
          	$data1 = $output1['shipments'];
-		 
+
 		  foreach($data1 as $row)
           {
             	//$pp=implode(',',$id);
-				
+
             $shipmentPackages=$row->shipmentPackages;
             $pickup=$row->pickup;
-           
+
 			   for($m=0;$m<count($id);$m++)
-			   {			   
+			   {
 					$data = array(
 							"order_detail_id"=>$id[$m],
 							"shipping_status"=>$output1['status'],
@@ -1851,9 +1851,9 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(2)])->with('f
 							//"max_delivery_days"=>$row->shipment_id,
 							"order_code"=>$request->ordercode,
 						);
-					
+
 				   DB::table('tbl_courierorderinfo')->insert($data);
-				   
+
 				/*DB::table('order_details')
 					->whereIn('id', $id[$m])
 					->update([
@@ -1864,29 +1864,29 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(2)])->with('f
                    // 'width'=>$prodcut_detail->width,
                     'order_status'=>2
 					]);
-					
+
 			CommonHelper::generateMailforOrderSts($id[$m],1); */
-			
+
 			$pp=$id[$m];
-		
-			
+
+
 			//CommonHelper::generateMailforOrderSts($pp,1);
-						
+
 			   }
 			}
-        
-       
-        
+
+
+
 	}
-return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('flash_success', 'Pikup Request send successfully');  
-        
+return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('flash_success', 'Pikup Request send successfully');
+
 	}
 	public function vendor_order_shipping_manual(Request $request)
     {
 
 		$cors=DB::table('couriers')->get();
 	    $id= base64_decode($request->order_detail_id);
-	 
+
 	$page_details=array(
        "Title"=>"Shipping",
 		"Method"=>"Shipping",
@@ -1915,7 +1915,7 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 							'value'=>'',
 							'disabled'=>''
 									),
-			 
+
 			"courier"=>array(
 							'label'=>'Service Provider *',
 							'type'=>'select',
@@ -1927,7 +1927,7 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 							'disabled'=>'',
 							'selected'=>''
 			),
-			
+
 		   "submit_button_field"=>array(
 							'label'=>'',
 							'type'=>'submit',
@@ -1940,17 +1940,17 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
          )
        )
      );
-	
+
 		 if ($request->isMethod('post')) {
 				 $input=$request->all();
-				 
+
 				  $request->validate([
 				'docket_no' => 'required|max:25',
 				'courier' => 'required|max:20',
 				'remarks' => 'max:50'
 				 ]
 			);
-			
+
 				 /*
 				 DB::table('orders_shipping')->where('order_detail_id', $id)
 				->update([
@@ -1958,14 +1958,14 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 				'courier_name'=>$input['courier'],
 				'remarks'=>$input['remarks']
 				]);
-				 
+
 				 Orders::where('id', $id)
 				->update([
 				'order_status'=>2
 				]);
-				
+
 				 */
-				  
+
 				 DB::table('orders_courier')
 						->insert([
 						'order_detail_id'=>$id,
@@ -1973,37 +1973,37 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 						'courier_name'=>$input['courier'],
 						'remarks'=>$input['remarks']
 						]);
-				
+
 				DB::table('order_details')
 						->where('id', $id)
 						->update([
 						'order_status'=>2,
                         'order_detail_onshipping_date'=>date('Y-m-d H:i:s')
 						]);
-						
-						CommonHelper::generateMailforOrderSts($id,1);
-						
+
+						// CommonHelper::generateMailforOrderSts($id,1);
+
 					MsgHelper::save_session_message('success',Config::get('messages.common_msg.data_save_success'),$request);
 					return redirect()->route('vendor_orders', ['type' => base64_encode(2)]);
 		 }
-	
+
 	  return view('vendor.orders.shipping',['orders'=>array(),'page_details'=>$page_details]);
     }
-	
+
 	public function vendor_order_delivered(Request $request){
-	     $id= base64_decode($request->order_detail_id);
-	     CommonHelper::generateMailforOrderSts($id,2);
-	     	DB::table('order_details')
-						->where('id', $id)
-						->update([
-						'order_status'=>3,
-						 'order_detail_delivered_date'=>date('Y-m-d H:i:s')
-						]);
-							MsgHelper::save_session_message('success','Order delivered',$request);
-					return redirect()->route('vendor_orders', ['type' => base64_encode(3)]);
+	    $id= base64_decode($request->order_detail_id);
+	    CommonHelper::generateMailforOrderSts($id,2);
+        DB::table('order_details')
+                    ->where('id', $id)
+                    ->update([
+                    'order_status'=>3,
+                        'order_detail_delivered_date'=>date('Y-m-d H:i:s')
+                    ]);
+		MsgHelper::save_session_message('success','Order delivered',$request);
+		return redirect()->route('vendor_orders', ['type' => base64_encode(3)]);
 	}
-	
-	
+
+
 		public function vendor_order_returned(Request $request){
 	     $id= base64_decode($request->order_detail_id);
 	    //CommonHelper::generateMailforOrderSts($id,5);
@@ -2011,17 +2011,17 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 						->where('id', $id)
 						->update([
 						'order_status'=>5,
-					
+
 						]);
 							MsgHelper::save_session_message('success','Order returned',$request);
 					return redirect()->route('vendor_orders', ['type' => base64_encode(5)]);
 	}
-	
+
 	public function vendor_order_tcs_generate_invoice(Request $request)
     {
 
 		$id= base64_decode($request->vendor_id);
-		
+
 		/*$res=DB::table('order_details')->where('order_details.id','=',$id)
 				->update([
 					'order_details.order_status'=>1,
@@ -2029,15 +2029,15 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 					'order_details.order_detail_invoice_date'=>date('Y-m-d H:i:s')
 				]);*/
 		 /*CommonHelper::generateMailforOrderSts($id,0);*/
-		
+
 		/*return Redirect::route('vendor_order_tcs_invoice',[$request->vendor_id]);*/
-		
+
 		$page_details=array(
 		   "Title"=>"TCS Settlement Generate Invoice",
 		   "Box_Title"=>"TCS Settlement Generate Invoice",
 		   "export"=>""
 		 );
-	  
+
 	    $Order =Orders::select(
 								'orders.id',
 								'orders.tax_percent',
@@ -2060,7 +2060,7 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 								'order_details.tds_amt',
 								'order_details.tcs_amt'
 							)
-							
+
 							->join('order_details', 'orders.id', '=', 'order_details.order_id')
 							->join('products', 'products.id', '=', 'order_details.product_id')
 							->where('order_details.order_status',3)
@@ -2068,58 +2068,58 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 							->where('products.vendor_id',$id)
 							->groupBy('order_details.order_id')
 							->paginate(100);
-					
+
 						  /*$vdr_id=43;*/
 						   $vdr_id=$id;
-						   
+
                             $vdr=new Vendor();
                             //$vdr_id=$vdr->vendor_id($id,1);
-                            
-                            $vdr_data=$vdr->getVendorDetails($vdr_id); 
-							
-						
-							
+
+                            $vdr_data=$vdr->getVendorDetails($vdr_id);
+
+
+
 			 return view('vendor.orders.tcs_generate_order_invoice',['orders'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data]);
     }
-    
+
     public function vendor_order_tcs_generate_invoice_update(Request $request)
     {
         $id= base64_decode($request->vendor_id);
-		
+
 		$order_detail_id=$request->order_detail_id;
 		$rand='SS/'.rand(1111,9999);
-		
+
 		for($i=0; $i<count($order_detail_id);$i++)
 		{
-		   
+
 		    DB::table('order_details')->where('order_details.id','=',$order_detail_id[$i])
 				->update([
 					'order_details.tcs_invoice_no'=>$rand,
 					'order_details.tcs_invoice_date'=>date('Y-m-d H:i:s')
 				]);
 		}
-	    
-		
+
+
 		return Redirect::route('vendor_order_tcs_invoice',[$request->vendor_id,base64_encode($rand)]);
     }
-	
+
 	public function vendor_order_tcs_print_invoice(Request $request)
     {
 
 		$id= base64_decode($request->vendor_id);
 		$tcs_invoice_no= base64_decode($request->tcs_invoice_no);
-		
-	 	
+
+
 		/*$res=DB::table('order_details')->where('order_details.id','=',$id)
 				->update([
 					'order_details.order_status'=>1,
 					'order_details.order_detail_invoice_num'=>'PHT/BLR/'.$id,
 					'order_details.order_detail_invoice_date'=>date('Y-m-d H:i:s')
 				]);*/
-		
+
 		return Redirect::route('vendor_order_tcs_invoice',[$request->vendor_id,$request->tcs_invoice_no]);
     }
-	
+
 	public function vendor_order_tcs_invoice_list(Request $request)
     {
 		$page_details=array(
@@ -2127,12 +2127,12 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 		   "Box_Title"=>"TCS Settlement Invoice List",
 		   "export"=>""
 		 );
-	  
+
 	  $id= base64_decode($request->vendor_id);
-	  
+
 	  $daterange= $request->daterange;
 	  $search= $request->search_string;
-	  
+
 	  $Order =Orders::select(
 								'orders.id',
 								'orders.tax_percent',
@@ -2153,7 +2153,7 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 								/*'order_details.tcs_percentage',	*/
 								'order_details.tcs_amt'
 							)
-							
+
 							->join('order_details', 'orders.id', '=', 'order_details.order_id')
 							->join('products', 'products.id', '=', 'order_details.product_id')
 							->where('order_details.order_status',3)
@@ -2162,50 +2162,50 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 							->where('products.vendor_id',$id)
 							//->groupBy('order_details.order_id')
 							;
-							
+
 		if($daterange!='')
 		{
 		    $daterange_array=explode('.',$daterange);
             $from= date("Y-m-d", strtotime($daterange_array[0]));
             $to=date("Y-m-d", strtotime($daterange_array[1]));
-                    
+
             $Order->whereDate('order_details.tcs_invoice_date', '>=',$from);
             $Order->whereDate('order_details.tcs_invoice_date', '<=',$to);
-                    
+
             //$Order=$Order->whereBetween('order_details.tcs_invoice_date',[$from,$to]);
     	}
-		
+
 		if($search!='')
 		{
 		   $Order =$Order->where('order_details.tcs_invoice_no',$search);
 		}
-		
+
 		$Order =$Order->groupBy('order_details.tcs_invoice_no')
 					  ->paginate(100);
-							
+
 						  /*$vdr_id=43;*/
 						   $vdr_id=$id;
-						   
+
                             $vdr=new Vendor();
                             //$vdr_id=$vdr->vendor_id($id,1);
-                            
+
                             $vdr_data=$vdr->getVendorDetails($vdr_id);
-							
-						
-							
-			 return view('vendor.orders.tcs_generate_order_invoice_list',['orders'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data,'daterange'=>$daterange,'searchterm'=>$search]);	
+
+
+
+			 return view('vendor.orders.tcs_generate_order_invoice_list',['orders'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data,'daterange'=>$daterange,'searchterm'=>$search]);
     }
-    
+
     public function vendor_order_tcs_invoice(Request $request)
     {
 		$page_details=array(
 		   "Title"=>"TCS Settlement Invoice",
 		   "Box_Title"=>"TCS Settlement Invoice"
 		 );
-	  
+
 	  $id= base64_decode($request->vendor_id);
 	  $tcs_invoice_no= base64_decode($request->tcs_invoice_no);
-	  
+
 	  $Order =Orders::select(
 								'orders.id',
 								'orders.tax_percent',
@@ -2229,7 +2229,7 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 								'order_details.tds_amt',
 								'order_details.tcs_amt'
 							)
-							
+
 							->join('order_details', 'orders.id', '=', 'order_details.order_id')
 							->join('products', 'products.id', '=', 'order_details.product_id')
 							->where('order_details.order_status',3)
@@ -2239,20 +2239,20 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 							->where('order_details.tcs_invoice_no',$tcs_invoice_no)
 							->groupBy('order_details.order_id')
 							->get()->toarray();
-							
+
 						  $vdr_id=43;
 						  $vdr_id=$id;
-						  
-						   
+
+
                             $vdr=new Vendor();
                             //$vdr_id=$vdr->vendor_id($id,1);
-                            
-                            $vdr_data=$vdr->getVendorDetails($vdr_id);
-							
-							return view('vendor.orders.tcs_invoice_tax',['Order'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data]);	
 
-			
-			 
+                            $vdr_data=$vdr->getVendorDetails($vdr_id);
+
+							return view('vendor.orders.tcs_invoice_tax',['Order'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data]);
+
+
+
     }
 
 
@@ -2262,10 +2262,10 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 		   "Title"=>"Invoice",
 		   "Box_Title"=>"Invoice"
 		 );
-	  
+
 	  $id= base64_decode($request->vendor_id);
 	  $tcs_invoice_no= base64_decode($request->tcs_invoice_no);
-	  
+
 	  $Order =Orders::select(
 								'orders.id',
 								'orders.tax_percent',
@@ -2289,7 +2289,7 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 								'order_details.tds_amt',
 								'order_details.tcs_amt'
 							)
-							
+
 							->join('order_details', 'orders.id', '=', 'order_details.order_id')
 							->join('products', 'products.id', '=', 'order_details.product_id')
 							->where('order_details.order_status',3)
@@ -2299,21 +2299,21 @@ return redirect()->route('vendor_orders', ['type' => base64_encode(5)])->with('f
 							->where('order_details.tcs_invoice_no',$tcs_invoice_no)
 							->groupBy('order_details.order_id')
 							->get()->toarray();
-							
+
 						  $vdr_id=43;
 						  $vdr_id=$id;
-						  
-						   
+
+
                             $vdr=new Vendor();
                             //$vdr_id=$vdr->vendor_id($id,1);
-                            
+
                             $vdr_data=$vdr->getVendorDetails($vdr_id);
-							
-							return view('vendor.orders.tcs_invoice_commission',['Order'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data]);	
+
+							return view('vendor.orders.tcs_invoice_commission',['Order'=>$Order,'page_details'=>$page_details,'vdr_data'=>$vdr_data]);
 
 			 }
-							
-    
-	
-   
+
+
+
+
 }

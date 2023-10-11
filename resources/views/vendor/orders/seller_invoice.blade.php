@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Seller Invoice</title>
-	<link href="https://fonts.googleapis.com/css?family=Be+Vietnam:400,500,700&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Be+Vietnam:400,500,700&display=swap" rel="stylesheet">
 </head>
 
 <body style="padding: 0px; margin: 0px;">
 
-   <div style="width:700px; margin-left:auto; margin-right:auto;">	
+   <div style="width:700px; margin-left:auto; margin-right:auto;">
 		<div style="width:100%; margin-left:auto; margin-right:auto; margin-top: 10px; margin-bottom: 10px;">
 			@if(@$is_front != 1)
 			<div class="allbutntbl">
@@ -19,15 +19,15 @@
                     table tr th{ text-align: left; }
                 </style>
 
-			@php 
+			@php
 			 $kefih_state = 'Kerala';
 			 $billingStateData = [];
 
-			 $kefihStateData = DB::table('states')->select('state_code')->where('name', $kefih_state)->first(); 						 
-			 $shippingStateData = DB::table('states')->select('state_code')->where('name', $sellerData['company_state'])->first(); 
+			 $kefihStateData = DB::table('states')->select('state_code')->where('name', $kefih_state)->first();
+			 $shippingStateData = DB::table('states')->select('state_code')->where('name', $sellerData['company_state'])->first();
 
-			@endphp 
-                
+			@endphp
+
 			<table cellpadding="5px" cellspacing="0" style=" border: solid 1px #000; width:100%; font-family: 'Be Vietnam', sans-serif; padding:10px; background: #fff; font-size: 13px; line-height:18px; page-break-inside: avoid;">
                 <tr>
                     <td colspan="2"><h1 style="margin:0;">Kefih </h1></td>
@@ -36,7 +36,7 @@
 					<td style=" padding-bottom: 10px; vertical-align: top;">
 					<br><strong>Kefih E-Commerce Private Limited</strong>
 					<br>Mobile : 9916356373
-					<br>GSTIN :32AAJCK0331L1ZR			
+					<br>GSTIN :32AAJCK0331L1ZR
 					<br>State/UT Code : {{$kefihStateData->state_code}}
 
 				    </td>
@@ -54,34 +54,34 @@
 				@if(!empty($sellerData))
 				<tr>
                     <td colspan="2">
-					
-					
+
+
 					<p>
 					 Sold By : <strong>{{$sellerData['company_name']}}</strong>
 					 <br>
 					 <strong> {{$sellerData['f_name'].' '.$sellerData['l_name']}} </strong>
-					 <br>	 {{$sellerData['company_address']}} 
+					 <br>	 {{$sellerData['company_address']}}
 						@if(!empty($sellerData['company_state']))
 						,{{$sellerData['company_state']}}
-						@endif 
+						@endif
 						@if(!empty($sellerData['company_city']))
 						,{{$sellerData['company_city']}}
-						@endif 
+						@endif
 						@if(!empty($sellerData['company_pincode']))
 						,{{$sellerData['company_pincode']}}
-						@endif 
+						@endif
 
-						<br>Mobile :{{$sellerData['phone']}} 
-						<br>GSTIN :{{$sellerData['gst_no']}} 
+						<br>Mobile :{{$sellerData['phone']}}
+						<br>GSTIN :{{$sellerData['gst_no']}}
 						<br>State/UT Code : {{$shippingStateData->state_code}}
 						<br>Place of Supply :	@if(!empty($sellerData['company_state']))
 													{{$sellerData['company_state']}}
-												@endif 
+												@endif
 					</td>
                 </tr>
-				@endif 
+				@endif
 
-				
+
 
 				<tr>
                     <td colspan="2">
@@ -99,8 +99,8 @@
                     </thead>
                     <tbody>
 
-						@php 
-					
+						@php
+
 						$gstTax = $Order->logistics_tax;
 						$TCS = $Order->seller_invoice_tcs;
 
@@ -109,9 +109,9 @@
 						 $srno = 1;
 						 $paymentGateWayTax = $Order->payment_gateway_tax;
 						 $paymentAmount = $Order->product_price * $Order->product_qty;
-						 $paymentTaxAmount = ($paymentAmount * $paymentGateWayTax)/100;				
+						 $paymentTaxAmount = ($paymentAmount * $paymentGateWayTax)/100;
 
-						 $productTcsTaxAmount = ($paymentAmount * $TCS)/100;					
+						 $productTcsTaxAmount = ($paymentAmount * $TCS)/100;
 
 						 $paymentGSTtaxAmt = ($paymentTaxAmount * $gstTax)/100;
 						 $paymentGSTtaxFreeAmt =  $paymentTaxAmount -  $paymentGSTtaxAmt;
@@ -120,12 +120,12 @@
 
 
 						@if($Order->payment_mode == 1)
-						@php 
+						@php
 						 $totalTaxAmount+=$paymentGSTtaxAmt;
 						 $totalAmount+=$paymentGSTtaxAmt+$paymentTaxAmount;
 
 						 $totalTaxableAmount+=$paymentTaxAmount;
-						@endphp 
+						@endphp
 							<tr>
 								<td>{{$srno++}}</td>
 								<td>CARD EXPENSE</td>
@@ -136,10 +136,10 @@
 								</td>
 								<td>{{number_format($paymentTaxAmount+$paymentGSTtaxAmt,2)}}</td>
 							</tr>
-						@endif 
-					                       
-						@php 
-						
+						@endif
+
+						@php
+
 						 $logisticsAmount = $Order->courier_charges;
 						 $logisticsTaxAmount = ($logisticsAmount * $gstTax)/100;
 						 $logisticsTaxFreeAmount = $logisticsAmount - $logisticsTaxAmount;
@@ -149,7 +149,7 @@
 
 						 $totalTaxableAmount+=$logisticsAmount;
 
-						@endphp 
+						@endphp
 
 						@if(!empty($Order->logistics_tax))
 							<tr>
@@ -162,8 +162,8 @@
 								</td>
 								<td>{{number_format($logisticsAmount+$logisticsTaxAmount,2)}}</td>
 							</tr>
-						@endif 
-						
+						@endif
+
 						<tr bgcolor="#ebecec">
 							<td colspan="4">SUBTOTAL</td>
 							<td>{{number_format($totalTaxAmount,2)}}</td>
@@ -174,31 +174,31 @@
 						<tr>
 							<td colspan="3"></td>
 							<td colspan="3">
-								@php 
+								@php
 									$TAXAMOUNT = ($totalTaxableAmount*$gstTax)/100;
 									$totalInvoiceAmount = $productTcsTaxAmount + $totalTaxableAmount + $TAXAMOUNT;
-								@endphp 
+								@endphp
 
 							<p style="text-align:right;">
 								TCS@ {{$Order->seller_invoice_tcs}} %  : <strong>Rs. {{number_format($productTcsTaxAmount,2)}}</strong>
 								<br>TAXABLE AMOUNT  :    <strong>Rs. {{number_format($totalTaxableAmount,2)}}</strong>
-								@if($kefih_state == $sellerData['company_state'])   
+								@if($kefih_state == $sellerData['company_state'])
 								<br>CGST @ {{$gstTax/2}}%  :   <strong> Rs. {{number_format($TAXAMOUNT/2,2)}}</strong>
 								<br>SGST @ {{$gstTax/2}}%  :   <strong> Rs. {{number_format($TAXAMOUNT/2,2)}}</strong>
-								@else 
+								@else
 								<br>IGST @ {{$gstTax}}%  :   <strong> Rs. {{number_format($TAXAMOUNT,2)}}</strong>
-								@endif 
+								@endif
 
 								<br>TOTAL AMOUNT :    <strong> Rs. {{number_format($totalInvoiceAmount,2)}}</strong>
-								
-								<br>Total Amount (in words) : 	<strong>{!! App\Helpers\CommonHelper::convert_number_to_words(round($totalInvoiceAmount)); !!} 
+
+								<br>Total Amount (in words) : 	<strong>{!! App\Helpers\CommonHelper::convert_number_to_words(round($totalInvoiceAmount)); !!}
 								Rupee Only</strong>
-								
+
 								<br>
 								Authorised Signature for Kefih E-Commerce Private Limited
 								<br>
                                 <img src="">
-								<img src="{{ asset('public/images/signn.jpeg') }}"  style="width:100px;">
+								<img src="{{ asset('images/signn.jpeg') }}"  style="width:100px;">
 							</p>
 							</td>
 						</tr>
@@ -217,4 +217,3 @@
     </div>
 </body>
 </html>
-			
