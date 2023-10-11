@@ -684,48 +684,23 @@ if ($err) {
 
                 $email_to = strip_tags ($data['to']);
                             $mail = new PHPMailer();
-                    // try{
+                    try{
                             $mail->IsSMTP();
-                            // $mail->Host = 'mail.kefih.com';
-                            // $mail->SMTPAuth = true;
-                            // $mail->SMTPSecure = "tls";
-                            // $mail->Port =587;
+                            $mail->Host = 'smtp.gmail.com';
+                            $mail->SMTPAuth = true;
+                            $mail->SMTPSecure = 'tls';
+                            $mail->Port = 587;
 
-                            // $mail->Username = 'contact@kefih.com';
-                            // $mail->Password = 'Faykhaabu';
-                            // $mail->From = 'contact@kefih.com';
+                            $mail->Username = 'siva.software.engg.05@gmail.com';
+                            $mail->Password = 'xthkdmxrhmjkcvqu';
+                            $mail->From = 'contact@kefih.com';
 
-                            // $mail->FromName = 'kefih.com';
+                            $mail->FromName = 'kefih.com';
 
-
-                            // $mail->Host = 'mail.b2cdomain.in';
-                            // $mail->SMTPAuth = true;
-                            // $mail->SMTPSecure = "tls";
-                            // $mail->Port = 587;
-
-                            // $mail->Username = 'kefih@b2cdomain.in';
-                            // $mail->Password = 'mav3Lf-y[W{&';
-                            // $mail->From = 'kefih@b2cdomain.in';
-
-
-
-                              $mail->Host = 'mail.kefih.com';
-                              $mail->SMTPAuth = true;
-                                // $mail->SMTPAutoTLS = true;
-                                $mail->SMTPSecure = 'tls';
-
-                                $mail->Port = 587;
-
-                                $mail->Username = 'contact@kefih.com';
-                                $mail->Password = 'Faykhaabu';
-                                $mail->From = 'contact@kefih.com';
-
-                                $mail->FromName = 'kefih.com';
-
-                                $mail->AddAddress($email_to);
-                                $mail->IsHTML(true);
-                                $mail->Subject = $data['subject'];
-                                $mail->Body = $data['body'];
+                            $mail->AddAddress("hemanthenggr@gmail.com"); // hemanthenggr@gmail.com
+                            $mail->IsHTML(true);
+                            $mail->Subject = $data['subject'];
+                            $mail->Body = $data['body'];
 
 
                            if(!$mail->send()) {
@@ -734,14 +709,13 @@ if ($err) {
                             echo 'Mailer Error: ' . $mail->ErrorInfo;
                             die;
                         } else {
-
                             $msg = 'Mail successfully send';
                             return $msg;
                         }
 
-                        // } catch (phpmailerException $e) {
-                        //     echo $e->errorMessage(); //Pretty error messages from PHPMailer
-                        //   }
+                        } catch (Exception $e) {
+                            // echo $e->errorMessage(); //Pretty error messages from PHPMailer
+                        }
 
     }
 
