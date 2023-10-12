@@ -525,14 +525,14 @@ body {
     background-color: white;
     width: 58%;
     padding-right: 4rem;
-    height: calc(100vh - 3rem);
+    /* height: calc(100vh - 3rem); */
 }
 .rightSection {
     background-color: rgba(237, 237, 237, 0.37);
     width: 42%;
     padding-right: 4rem;
     /* height: 100vh; */
-    height: calc(100vh - 4rem);
+    /* height: calc(100vh - 4rem); */
     overflow-y: scroll;
 }
 

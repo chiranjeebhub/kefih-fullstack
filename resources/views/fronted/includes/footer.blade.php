@@ -485,10 +485,12 @@
                         </div>
                         <div class="col-lg-12 col-sm-12 col-md-12 col-12">
                             <div class="other_login">
-                                <a href="#"><img src="{{ asset('public/fronted/images/facebook.png') }}"
+                                <!-- <a href="#"><img src="{{ asset('public/fronted/images/facebook.png') }}"
                                         alt=""></a>
                                 <a href="#"> <img src="{{ asset('public/fronted/images/google.png') }}"
-                                        alt=""></a>
+                                        alt=""></a> -->
+                                        <a href="{{route('redirect_fb')}}"><img  src="{{ asset('public/fronted/images/facebook.png') }}" alt=""></a>
+                                <a href="{{route('redirect_gp')}}"> <img  src="{{ asset('public/fronted/images/google.png') }}" alt=""></a>
 
                             </div>
                         </div>

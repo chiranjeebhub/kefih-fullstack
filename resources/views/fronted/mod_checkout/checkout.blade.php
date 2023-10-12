@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="div-9">
-                        <div class="a-4">Email (Optional)</div>
+                        <div class="a-4">Email</div>
                         <input class="inputStyle" type="text" id="name" name="shipping_email" value="{{old('shipping_email')}}">
                     </div>
                 </div>
@@ -144,10 +144,10 @@
                     </div>
                 </div>
                 <input type="hidden" name="payment_mode" id="payment_type" value="1">
-                <div class="checkboxWrapper">
+                <div class="checkboxWrapper" style="padding-bottom:20px;">
 
                     <input type="checkbox" size="large" id="checkbox" class="checkbox-input" checked="true">
-                    <div style="padding-left: 10px;">
+                    <div style="padding-left: 10px; ">
                         Billing Address Same As Shipping Address
                     </div>
                 </div>
@@ -273,9 +273,9 @@
         </div>
     </form>
 
+    <!-- <br>
     <br>
-    <br>
-    <br>
+    <br> -->
 
 @endsection
 
