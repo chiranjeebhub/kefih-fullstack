@@ -190,7 +190,7 @@
                     </div>
                     <div class="toggleText">COD (Cash on delivery)</div>
                 </div> -->
-                <div class="paymnetthod" style="padding-top:20px; padding-left:30px;padding-right:30px;">
+                <div id="paymentMethod101" class="paymnetthod" style="padding-top:20px; padding-left:30px;padding-right:30px;">
                                         <div id="_paymethods1">
                                             <div class="paymnetthodBox" id="codpayment">
                                                 <div class="checkbox checkbox-circle">

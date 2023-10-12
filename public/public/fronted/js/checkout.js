@@ -2,8 +2,10 @@ document.getElementById("toggle").addEventListener("change", function () {
     if (this.checked) {
         console.log("Toggle is ON");
         let subtotal = document.getElementById("subTotalSection");
-        let subtotal = $("#subTotalSection");
+        // let subtotal = $("#subTotalSection");
         let subtotal1 = document.getElementById("subTotalSection1");
+        let paymentMethod = document.getElementById("paymentMethod101");
+        paymentMethod.style.display = "block";
 
         subtotal.style.display = "block";
         subtotal1.style.display = "none";
@@ -11,7 +13,8 @@ document.getElementById("toggle").addEventListener("change", function () {
         console.log("Toggle is OFF");
         let subtotal = document.getElementById("subTotalSection");
         let subtotal1 = document.getElementById("subTotalSection1");
-
+        let paymentMethod = document.getElementById("paymentMethod101");
+        paymentMethod.style.display = "none";
         subtotal.style.display = "none";
         subtotal1.style.display = "block";
     }
