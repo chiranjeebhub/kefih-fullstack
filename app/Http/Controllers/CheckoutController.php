@@ -399,6 +399,7 @@ class CheckoutController extends Controller
 
 	           $email_data = [
                             'to'=>Config::get('constants.email.admin_to'),
+                            'cc'=>Config::get('constants.email.admin_cc'),
                             'subject'=>'New Order',
                             "body"=>view("emails_template.to_admin_order_confirmation",
                             array(
@@ -1528,8 +1529,8 @@ $shipping_adddress=CheckoutShipping::where('id',$_COOKIE["shipping_address_id"])
 			$merchant_order_id=$order_id; //product_id
 			$txnid=$order_id;
 			$productinfo='Test Product';
-			$surl=url("/success/$order_id/$order_id");
-			$furl=url("/failed/$order_id/$order_id");
+			$surl=url("/success/$order_id/$cust_id");
+			$furl=url("/failed/$order_id/$cust_id");
 			$total=round($paymentDetails['grandTotal']+$product_shipping_charges)*100;
 			$amount=round($paymentDetails['grandTotal']+$product_shipping_charges)*100;
 			$card_holder_name=$order_shipping['order_shipping_name'];

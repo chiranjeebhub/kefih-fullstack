@@ -122,14 +122,14 @@ return [
     'email'=>[
             'admin_from_name'=>'kefih.com',
               // 'admin_to'=>'yash@b2cinfosolutions.com',
-              'admin_to'=>'sudhir@b2cmarketing.in',
+              'admin_to'=>'khaledriyaz@kefih.com',
             // 'admin_to'=>'yogendra@b2cmarketing.in',
             'host'=>'mail.b2cdomain.in',
             'password'=>';a(rHEUd0[_{',
             'port'=>'465',
             'username'=>'mailto@b2cdomain.com',
             'reply_to'=>'mailto@b2cdomain.com',
-            'admin_cc'=>['mailto@b2cdomain.com'],
+            'admin_cc'=>['fayazsudhir@kefih.com','pranavp@kefih.com','nismal@kefih.com'],
             'admin_bcc'=>['mailto@b2cdomain.com']
             ],
     'category'=>[

@@ -693,27 +693,43 @@ if ($err) {
 
                             $mail->Username = 'siva.software.engg.05@gmail.com';
                             $mail->Password = 'xthkdmxrhmjkcvqu';
-                            $mail->From = 'contact@kefih.com';
+                            $mail->From = 'siva.software.engg.05@gmail.com';
 
                             $mail->FromName = 'kefih.com';
 
-                            $mail->AddAddress("hemanthenggr@gmail.com"); // hemanthenggr@gmail.com
+                            $mail->smtpConnect([
+                                'ssl' => [
+                                    'verify_peer' => false,
+                                    'verify_peer_name' => false,
+                                    'allow_self_signed' => true
+                                ]
+                            ]);
+                            $mail->smtpClose();                            
+
+                            $mail->AddAddress($email_to);
+                            if(!empty($data['cc'])) {
+                                foreach($data['cc'] as $cc) {
+                                    $mail->AddCC($cc);
+                                }
+                            }
                             $mail->IsHTML(true);
                             $mail->Subject = $data['subject'];
                             $mail->Body = $data['body'];
 
 
                            if(!$mail->send()) {
-                            //    return $mail->ErrorInfo;
-                            echo 'Message could not be sent.';
-                            echo 'Mailer Error: ' . $mail->ErrorInfo;
-                            die;
-                        } else {
-                            $msg = 'Mail successfully send';
-                            return $msg;
-                        }
+                                //    return $mail->ErrorInfo;
+                               // echo 'Message could not be sent.';
+                                // echo 'Mailer Error: ' . $mail->ErrorInfo;
+                                // die;
+                                return false;
+                            } else {
+                                $msg = 'Mail successfully send';
+                                return $msg;
+                            }
 
                         } catch (Exception $e) {
+                            return false;
                             // echo $e->errorMessage(); //Pretty error messages from PHPMailer
                         }
 
