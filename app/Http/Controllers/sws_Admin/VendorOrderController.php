@@ -588,7 +588,7 @@ $pagedata = array(
                         'order_details.suborder_no as suborder_no',
                         'order_details.product_qty as qty',
                         'products.default_image',
-                        'customers.name as cust_name',
+                        // 'customers.name as cust_name',
 
                         'orders_shipping.order_shipping_name as customer_name',
                         'orders_shipping.order_shipping_address as customer_add',
@@ -606,7 +606,7 @@ $pagedata = array(
                 ->join('products', 'products.id', '=', 'order_details.product_id')
                 ->join('product_categories','product_categories.product_id','=','products.id')
                 ->join('categories','categories.id','=','product_categories.cat_id')
-                  ->join('customers','orders.customer_id','=','customers.id')
+                //   ->join('customers','orders.customer_id','=','customers.id')
                 // ->where('products.vendor_id',43)
                   ->where('order_details.order_status',$type);
 
