@@ -704,7 +704,7 @@ if ($err) {
                                     'allow_self_signed' => true
                                 ]
                             ]);
-                            $mail->smtpClose();                            
+                            $mail->smtpClose();
 
                             $mail->AddAddress($email_to);
                             if(!empty($data['cc'])) {
@@ -1218,24 +1218,34 @@ public static function getChildsTreeView($parent_id=1,$selected){
     }
 
 	public static function generateMailforOrderSts($order_id,$type=0){
-
-	    switch($type){
-	            // invoice generated
-                case 0:
+        switch($type){
+            // invoice generated
+            case 0:
                 $master_orders=OrdersDetail::where('id',$order_id)->first();
                 $master_order=Orders::where('id',$master_orders->order_id)->first();
+                $customer_name = '';
+                $customer_phone = '';
+                $customer_email = '';
 
-                // print_r($master_order->customer_id);
-                // exit;
+                if($master_order->customer_id) {
+                    $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                    $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                    $customer_phone = $customer_data->email;
+                    $customer_email = $customer_data->phone;
+                }
 
-                $customer_data=Customer::where('id',$master_order->customer_id)->first();
-                $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
-                $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  invoice generated for  order('.$master_orders->suborder_no.') .redliips.com';
+                $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                if(!$master_order->customer_id) {
+                    $customer_name = $shipping_data->order_shipping_name;
+                    $customer_phone = $shipping_data->order_shipping_phone;
+                    $customer_email = $shipping_data->order_shipping_email;
+                }
+                $msg='Dear '.$customer_name.'  invoice generated for  order('.$master_orders->suborder_no.') .redliips.com';
                 $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
                     $email_msg='<tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
-                	<p>Hi '.$customer_data->name.' '.$customer_data->last_name.'</p>
+                	<p>Hi '.$customer_name.'</p>
                     <p>invoice generated for  order('.$master_orders->suborder_no.'). We will send you an Email and SMS for further process</p>
                     <p>
                     Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
@@ -1323,7 +1333,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
             </tr>';
 
 	           $email_data = [
-                            'to'=>$customer_data->email,
+                            'to'=>$customer_email,
                             'subject'=>'Invoice generated',
                             "body"=>view("emails_template.order_sts_change",
                             array(
@@ -1331,37 +1341,48 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'message'=>$email_msg
                             )
                             ) )->render(),
-                            'phone'=>$customer_data->phone,
+                            'phone'=>$customer_phone,
                             'phone_msg'=>$msg
                          ];
-                if($customer_data->email)  {
-                    self::SendmailCustom($email_data);
-                }
-                if($customer_data->phone) {
-                    self::SendMsg($email_data);
-                }
+                if($customer_email) self::SendmailCustom($email_data);
+                if($customer_phone) self::SendMsg($email_data);
                 break;
 
                 // shipping
                  case 1:
                     // dd($order_id));
                          $master_orders=OrdersDetail::where('id',$order_id)->first();
+                        $master_order=Orders::where('id',$master_orders->order_id)->first();
 
-                            $master_order=Orders::where('id',$master_orders->order_id)->first();
+                        $corier_data=DB::table('orders_courier')
+                        ->select('couriers.*')
+                        ->join('couriers','couriers.id','orders_courier.courier_name')
+                        ->where('order_detail_id',$master_orders->order_id)->first();
 
-                             $corier_data=DB::table('orders_courier')
-                            ->select('couriers.*')
-                            ->join('couriers','couriers.id','orders_courier.courier_name')
-                            ->where('order_detail_id',$master_orders->order_id)->first();
+                        // $customer_data=Customer::where('id',$master_order->customer_id)->first();
 
-                        $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                        $customer_name = '';
+                        $customer_phone = '';
+                        $customer_email = '';
+
+                        if($master_order->customer_id) {
+                            $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                            $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                            $customer_phone = $customer_data->email;
+                            $customer_email = $customer_data->phone;
+                        }
 
                         $cr_name='';
                         if($corier_data){
                             $cr_name=$corier_data->name;
                         }
 
-                        $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                        $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                        if(!$master_order->customer_id) {
+                            $customer_name = $shipping_data->order_shipping_name;
+                            $customer_phone = $shipping_data->order_shipping_phone;
+                            $customer_email = $shipping_data->order_shipping_email;
+                        }
 
                         if($master_order->payment_mode==0) {
 
@@ -1380,7 +1401,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             $msg=view("message_template.order_delivered",
                                 array(
                                 'data'=>array(
-                                'name'=>$customer_data->name,
+                                'name'=>$customer_name,
                                 'suborder_no'=>$master_orders->suborder_no,
                                 'cr_name'=>$cr_name
                                 )
@@ -1392,7 +1413,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
                             $email_msg='<tr>
                         <td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
-                            <p>Hi '.$customer_data->name.' '.$customer_data->last_name.'</p>
+                            <p>Hi '.$customer_name.'</p>
                             <p>Your   order('.$master_orders->suborder_no.')is  successfully Shipped.</p>
                             <p>
                             Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
@@ -1487,7 +1508,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
 
 
                     $email_data = [
-                            'to'=>$customer_data->email,
+                            'to'=>$c,
                             'subject'=>'Order shipped',
                             "body"=>view("emails_template.order_sts_change",
                             array(
@@ -1495,14 +1516,14 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'message'=>$email_msg
                             )
                             ) )->render(),
-                            'phone'=>$customer_data->phone,
+                            'phone'=>$customer_phone,
                             'phone_msg'=>$msg
                          ];
 
-                    if($customer_data->email) {
+                    if($customer_email) {
                         self::SendmailCustom($email_data);
                     }
-                    if($customer_data->phone) {
+                    if($customer_phone) {
                         self::SendMsg($email_data);
                     }
                 break;
@@ -1517,14 +1538,28 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     ->join('couriers','couriers.id','orders_courier.courier_name')
                     ->where('order_detail_id',$master_orders->order_id)->first();
 
-                $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                    $customer_name = '';
+                    $customer_phone = '';
+                    $customer_email = '';
+
+                    if($master_order->customer_id) {
+                        $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                        $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                        $customer_phone = $customer_data->email;
+                        $customer_email = $customer_data->phone;
+                    }
 
                 $cr_name='';
                 if($corier_data){
                     $cr_name=$corier_data->name;
                 }
 
-                $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                if(!$master_order->customer_id) {
+                    $customer_name = $shipping_data->order_shipping_name;
+                    $customer_phone = $shipping_data->order_shipping_phone;
+                    $customer_email = $shipping_data->order_shipping_email;
+                }
 
 				if($master_order->payment_mode==0) {
 
@@ -1543,7 +1578,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
 					$msg=view("message_template.order_delivered",
                         array(
                         'data'=>array(
-                        'name'=>$customer_data->name,
+                        'name'=>$customer_name,
                         'suborder_no'=>$master_orders->suborder_no,
                         'cr_name'=>$cr_name
                         )
@@ -1555,7 +1590,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
                     $email_msg='<tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
-                	<p>Hi '.$customer_data->name.' '.$customer_data->last_name.'</p>
+                	<p>Hi '.$customer_name.'</p>
                     <p>Your   order('.$master_orders->suborder_no.')is  successfully delivered  with('.$cr_name.').</p>
                     <p>
                     Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
@@ -1641,7 +1676,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
 
 
 	           $email_data = [
-                            'to'=>$customer_data->email,
+                            'to'=>$customer_email,
                             'subject'=>'Order Delivered',
                             "body"=>view("emails_template.order_sts_change",
                             array(
@@ -1649,14 +1684,14 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'message'=>$email_msg
                             )
                             ) )->render(),
-                            'phone'=>$customer_data->phone,
+                            'phone'=>$customer_phone,
                             'phone_msg'=>$msg
                          ];
 
-                if($customer_data->email) {
+                if($customer_email) {
                     self::SendmailCustom($email_data);
                 }
-                if($customer_data->phone) {
+                if($customer_phone) {
                     self::SendMsg($email_data);
                 }
                 break;
@@ -1673,19 +1708,34 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     ->join('couriers','couriers.id','orders_courier.courier_name')
                     ->where('order_detail_id',$master_orders->order_id)->first();
 
-                $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                    // $customer_data=Customer::where('id',$master_order->customer_id)->first();
+
+                    $customer_name = '';
+                    $customer_phone = '';
+                    $customer_email = '';
+
+                    if($master_order->customer_id) {
+                        $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                        $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                        $customer_phone = $customer_data->email;
+                        $customer_email = $customer_data->phone;
+                    }
 
 
+                $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                if(!$master_order->customer_id) {
+                    $customer_name = $shipping_data->order_shipping_name;
+                    $customer_phone = $shipping_data->order_shipping_phone;
+                    $customer_email = $shipping_data->order_shipping_email;
+                }
 
-
-                $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
                 $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
-                $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  is accpeted  . Pickup query is generated  .redliips.com';
+                $msg='Dear '.$customer_name.'  your return request for order('.$master_orders->suborder_no.')  is accpeted  . Pickup query is generated  .redliips.com';
 
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
                     $email_msg='<tr>
             	<td colspan="2" style="border-bottom:solid 1px #999; padding:0px 10px;">
-                	<p>Hi '.$customer_data->name.' '.$customer_data->last_name.'</p>
+                	<p>Hi '.$customer_name.'</p>
                     <p>Your return request for  order('.$master_orders->suborder_no.') is accpeted  . Pickup query is generated</p>
                     <p>
                     Order ID: <span style="color:#00bbe6;">'.$master_orders->suborder_no.'</span><br />
@@ -1770,7 +1820,7 @@ public static function getChildsTreeView($parent_id=1,$selected){
 
 
 	           $email_data = [
-                            'to'=>$customer_data->email,
+                            'to'=>$customer_email,
                             'subject'=>'Order Pickup Confirmation',
                             "body"=>view("emails_template.order_sts_change",
                             array(
@@ -1778,12 +1828,12 @@ public static function getChildsTreeView($parent_id=1,$selected){
                             'message'=>$email_msg
                             )
                             ) )->render(),
-                            'phone'=>$customer_data->phone,
+                            'phone'=>$customer_phone,
                             'phone_msg'=>$msg
                          ];
 
-                    if($customer_data->email) self::SendmailCustom($email_data);
-                    if($customer_data->phone) self::SendMsg($email_data);
+                    if($customer_email) self::SendmailCustom($email_data);
+                    if($customer_phone) self::SendMsg($email_data);
                 break;
 
                 // order pickuped
@@ -1795,8 +1845,26 @@ public static function getChildsTreeView($parent_id=1,$selected){
                      ->where('order_detail_id',$order_id)->first();
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
 
-                $customer_data=Customer::where('id',$master_order->customer_id)->first();
-                $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                // $customer_data=Customer::where('id',$master_order->customer_id)->first();
+
+                $customer_name = '';
+                $customer_phone = '';
+                $customer_email = '';
+
+                if($master_order->customer_id) {
+                    $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                    $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                    $customer_phone = $customer_data->email;
+                    $customer_email = $customer_data->phone;
+                }
+
+                $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                if(!$master_order->customer_id) {
+                    $customer_name = $shipping_data->order_shipping_name;
+                    $customer_phone = $shipping_data->order_shipping_phone;
+                    $customer_email = $shipping_data->order_shipping_email;
+                }
+
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  is successfully pickuped    .redliips.com';
                 $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
@@ -1913,8 +1981,24 @@ public static function getChildsTreeView($parent_id=1,$selected){
                     ->where('order_detail_id',$order_id)->first();
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
 
-                $customer_data=Customer::where('id',$master_order->customer_id)->first();
-                $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                    $customer_name = '';
+                    $customer_phone = '';
+                    $customer_email = '';
+
+                    if($master_order->customer_id) {
+                        $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                        $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                        $customer_phone = $customer_data->email;
+                        $customer_email = $customer_data->phone;
+                    }
+
+                    $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                    if(!$master_order->customer_id) {
+                        $customer_name = $shipping_data->order_shipping_name;
+                        $customer_phone = $shipping_data->order_shipping_phone;
+                        $customer_email = $shipping_data->order_shipping_email;
+                    }
+
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  accepted and generated new order    .redliips.com';
                 $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
@@ -2030,8 +2114,23 @@ public static function getChildsTreeView($parent_id=1,$selected){
                      ->where('order_detail_id',$order_id)->first();
                     $master_order=Orders::where('id',$master_orders->order_id)->first();
 
-                $customer_data=Customer::where('id',$master_order->customer_id)->first();
-                $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                $customer_name = '';
+                $customer_phone = '';
+                $customer_email = '';
+
+                if($master_order->customer_id) {
+                    $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                    $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                    $customer_phone = $customer_data->email;
+                    $customer_email = $customer_data->phone;
+                }
+
+                $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                if(!$master_order->customer_id) {
+                    $customer_name = $shipping_data->order_shipping_name;
+                    $customer_phone = $shipping_data->order_shipping_phone;
+                    $customer_email = $shipping_data->order_shipping_email;
+                }
                 $msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  your return request for order('.$master_orders->suborder_no.')  accepted and refunded   .redliips.com';
                 $price = ($master_orders->product_qty*$master_orders->product_price)+$master_orders->order_shipping_charges+$master_orders->order_cod_charges-$master_orders->order_coupon_amount-$master_orders->order_wallet_amount;
                     $mode= ($master_order->payment_mode==0)?"'COD'":"'Paid'";
@@ -2144,8 +2243,23 @@ public static function getChildsTreeView($parent_id=1,$selected){
                 $master_order=Orders::where('id',$master_orders->order_id)->first();
                 $product_data = DB::table('products')->where('id',$master_orders->product_id)->first();
 
-                $customer_data=Customer::where('id',$master_order->customer_id)->first();
-                $shipping_data=OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                $customer_name = '';
+                $customer_phone = '';
+                $customer_email = '';
+
+                if($master_order->customer_id) {
+                    $customer_data=Customer::where('id',$master_order->customer_id)->first();
+                    $customer_name = $customer_data->name.' '.$customer_data->last_name;
+                    $customer_phone = $customer_data->email;
+                    $customer_email = $customer_data->phone;
+                }
+
+                $shipping_data = OrdersShipping::where('order_id',$master_orders->order_id)->first();
+                if(!$master_order->customer_id) {
+                    $customer_name = $shipping_data->order_shipping_name;
+                    $customer_phone = $shipping_data->order_shipping_phone;
+                    $customer_email = $shipping_data->order_shipping_email;
+                }
 
 				if($master_order->payment_mode==0) {
 
