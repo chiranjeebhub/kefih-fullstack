@@ -2049,6 +2049,8 @@ public static function removeProductFromwishlist($cust_id){
 		 }
 }
     public static function decreaseAllProductQtyByOrder($ip,$cust_id){
+        // clear cart after order placed
+        CookieController::remove_cokkie_cart();
         // transfer amont to parent
         //DB::table('cart')->where('user_ip',$ip)->delete();
         //DB::table('cart')->where('user_id',$cust_id)->delete();
