@@ -5,12 +5,14 @@ use Illuminate\Database\Eloquent\Model;
 use Config;
 class CheckoutShipping extends Model
 {
-    
+
 	protected $table = 'customer_shipping_address';
     protected $dates = ['created_at', 'updated_at'];
-	
-	
+
+
 	public static function getshippingAddress($customer_id){
+        if(!$customer_id) return [];
+
 		$data = CheckoutShipping::select(
 		      'customer_shipping_address.id',
 		    'customer_shipping_address.customer_id',
@@ -33,7 +35,7 @@ class CheckoutShipping extends Model
 					->get()->toarray();
 		return $data;
 	}
-	
+
 	public static function getshippingAddressOfCustomer($address_id,$customer_id){
 		$data = CheckoutShipping::select(
 		      'customer_shipping_address.id',
@@ -58,6 +60,6 @@ class CheckoutShipping extends Model
 		return $data;
 	}
 
-	
-	
+
+
 }

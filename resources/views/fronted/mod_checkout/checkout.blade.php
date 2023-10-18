@@ -5,6 +5,9 @@
         .paymentBtn, .paymentBtnOffline{
             display: none;
         }
+        .card_main {
+            padding-bottom: 1rem;
+        }
     </style>
     <div class="navigation">
         <div class="navLeft">
@@ -30,6 +33,53 @@
         <div class="checkoutContainer">
             @csrf
             <div class="leftSection">
+                <?php if(count($shipping_listing) > 0) { ?>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-12 pt-4">
+                        <h2 class="heading mb-30">Select a delivery address</h2>
+                        <div class="card_main overflow-auto">
+                            <div class="row flex-nowrap">
+                                <?php for($i=0;$i<count($shipping_listing);$i++){?>
+                                <div class="col-md-4 col-xs-12 d-flex align-items-stretch">
+                                    <div class="row">
+                                        <div class="col-lg-9 col-sm-9 col-md-10 col-8">
+                                            <div class="card_box">
+                                                <div class="card_info address-card-<?php echo $shipping_listing[$i]['id'] ?>">
+                                                    <h2 data-name data-phone="<?php echo $shipping_listing[$i]['shipping_mobile'];?>" data-email="<?php echo $shipping_listing[$i]['shipping_email'];?>"><?php echo ucwords($shipping_listing[$i]['shipping_name']);?></h2>
+                                                    <p>
+                                                        <span data-address><?php echo $shipping_listing[$i]['shipping_address'];?></span>,<br>
+                                                        <span data-address1><?php echo $shipping_listing[$i]['shipping_address1'];?></span>
+                                                        <span data-address2><?php echo $shipping_listing[$i]['shipping_address2'];?></span>
+                                                        <span data-city><?php echo $shipping_listing[$i]['shipping_city'];?></span>
+                                                        <span data-state><?php echo $shipping_listing[$i]['shipping_state'];?></span> : <span data-pincode><?php echo $shipping_listing[$i]['shipping_pincode'];?></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-3 col-md-2 col-4 d-flex">
+                                            <div class="remove_card">
+                                                <?php  if($shipping_listing[$i]['shipping_address_default']){?>
+                                                <span class="defaultbox">Default</span>
+                                                <?php }?>
+
+                                                <a href="{{route('editShippingDetailsAddress',base64_encode($shipping_listing[$i]['id']))}}"
+                                                onclick = "if (! confirm('Do you want to edit ?')) { return false; }" class="editbtn pull-left"><i class="fa fa-pencil"></i> </a>
+                                                <a href="{{route('removeShippingAddress',base64_encode($shipping_listing[$i]['id']))}}"
+                                                onclick = "if (! confirm('Do you want to delete ?')) { return false; }"
+                                                class="editbtn pull-right"><i class="fa fa-trash"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 align-self-end">
+                                            <button type="button" class="btn btn-warning btn-block btn-lg choose-address" data-id=<?php echo $shipping_listing[$i]['id'] ?>>Deliver to this address</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
                 @if ($errors->any())
                     <div class="errors mt-2">
                         @foreach ($errors->all() as $error)
@@ -44,7 +94,7 @@
                 <div class="headerTitleContainer">
                     <div class="headerTitle">Contact Information</div>
                     <!-- <li class="logoutBtn"><a class="btn btn-warning btn-block btn-lg head_user_login" role="button"> Log in / Sign up</a> </li> -->
-                    <div class="headerSubtitle" style="display:flex;">Already Bought Something? 
+                    <div class="headerSubtitle" style="display:flex;">Already Bought Something?
                     <a class="btn btn-warning btn-block btn-lg head_user_login" role="button" style="background:transparent; margin:0px; padding:0px; border:none; width:auto;">&nbsp;Click Here</a>
                     <!-- <span style="font-weight: bold;">Click Here</span> -->
                     </div>
@@ -61,39 +111,40 @@
                     </div>
                     <div class="div-9">
                         <div class="a-4">Email</div>
-                        <input class="inputStyle" type="text" id="name" name="shipping_email" value="{{old('shipping_email')}}">
+                        <input class="inputStyle" type="text"  name="shipping_email" value="{{old('shipping_email')}}">
                     </div>
                 </div>
                 <div class="headerTitleContainer">
                     <div class="headerTitle">Shipping Address</div>
+                    <input type="hidden" name="selected_shipping_id">
                 </div>
                 <div class="div-7">
                     <div class="div-9">
                         <div class="a-4">Country</div>
-                        <input class="inputStyle" type="text" id="name" readonly value="india" placeholder="India">
+                        <input class="inputStyle" type="text" readonly value="india" placeholder="India">
                     </div>
                 </div>
                 <div class="div-7">
 
                     <div class="div-9">
                         <div class="a-4">First Name</div>
-                        <input class="inputStyle" name="shipping_name" value="{{old('shipping_name')}}" type="text" id="name">
+                        <input class="inputStyle" name="shipping_name" value="{{old('shipping_name')}}" type="text">
                     </div>
                     <div class="div-9">
                         <div class="a-4">Last Name</div>
-                        <input class="inputStyle" name="last_name" value="{{old('last_name')}}" type="text" id="name">
+                        <input class="inputStyle" name="last_name" value="{{old('last_name')}}" type="text">
                     </div>
                 </div>
                 <div class="div-7">
                     <div class="div-9">
                         <div class="a-4">Address</div>
-                        <input class="inputStyle" value="{{old('shipping_address')}}" name="shipping_address" type="text" id="name">
+                        <input class="inputStyle" value="{{old('shipping_address')}}" name="shipping_address" type="text">
                     </div>
                 </div>
                 <div class="div-7">
                     <div class="div-9">
                         <div class="a-4">Apartment, suite, etc. (optional)</div>
-                        <input class="inputStyle" name="shipping_address2" value="{{old('shipping_address2')}}" type="text" id="name">
+                        <input class="inputStyle" name="shipping_address2" value="{{old('shipping_address2')}}" type="text">
                     </div>
                 </div>
                 <div class="div-7">
@@ -140,7 +191,7 @@
 
                     <div class="div-9">
                         <div class="a-4">Pin Code</div>
-                        <input class="inputStyle" value="{{old('shipping_pincode')}}" name="shipping_pincode" type="text" id="name">
+                        <input class="inputStyle" value="{{old('shipping_pincode')}}" name="shipping_pincode" type="text">
                     </div>
                 </div>
                 <input type="hidden" name="payment_mode" id="payment_type" value="1">
@@ -156,12 +207,12 @@
                         <div class="inputLable">Phone Number</div>
                         <div style="display: flex; align-items: center;">
                             <div>+91</div>
-                            <input class="inputStyle" type="text" id="name" placeholder="Enter your name">
+                            <input class="inputStyle" type="text"  placeholder="Enter your name">
                         </div>
                     </div>
                     <div class="inputBoxHalf">
                         <div class="inputLable">Phone Number</div>
-                        <input class="inputStyle" type="text" id="name" placeholder="Enter your name">
+                        <input class="inputStyle" type="text"  placeholder="Enter your name">
                     </div>
                 </div> -->
             </div>
@@ -260,14 +311,14 @@
                                         <!--</div>-->
                                     </div>
                 <!-- <div>
-             
+
                 </div> -->
                 <div style="width:100%; padding-right:4rem;">
                     <button type="submit" class="paymentBtnOfflin2e">
                         Confirm Order
                     </button>
                 </div>
-             
+
             </div>
 
         </div>

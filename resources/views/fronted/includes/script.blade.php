@@ -35,6 +35,7 @@
     var state_id=$(this).val(); if(state_id!=''){
         $.ajax({ type:'POST', async:true, url:"{{ route('filterCityOnState') }}", data:{ "state_id":state_id}, success:function(data) {
             var response = JSON.parse(data); if((response.size)>0){
+                console.log("city change");
                     $('#selectcity').append(response.city);
                     // $('#selectcity').addClass('custom-select');
 
@@ -329,7 +330,6 @@
                      "price":price, "menSizeID":menSizeID, "womenSizeID":womenSizeID, "colorID":colorID, "weight":weight, "height":height, "length":length, "width":width, "qty":1 },
                       success:function(data) {
                           var myObj = JSON.parse(data);
-                          /*console.log({myObj});*/
                           var color = (myObj.Error == 0)?'green':'red';
                           $('#pincode_msg').html('<p style="color:'+color+'">'+myObj.Msg+'<p>');
                           localStorage.setItem("pincodechecked",myObj.Error);
@@ -345,7 +345,49 @@
 
 
 
-    $(document).on('click','.changeQtyOfCartProduct', function () { changeQtyOfCartProduct(this); }); $(document).on('click','.goBack', function () { window.history.back(); });
+    $(document).on('click','.changeQtyOfCartProduct', function () { changeQtyOfCartProduct(this); });
+    $(document).on('click','.goBack', function () { window.history.back(); });
+
+    // update address to checkout form
+    $(document).on('click','.choose-address', function (e) {
+        const id = $(e.currentTarget).data('id')
+        const $addr = $(`.address-card-${id}`)
+        const state = $addr.find('span[data-state]').text()
+        const city = $addr.find('span[data-city]').text()
+        $('[name="selected_shipping_id"]').val(id)
+        $('[name="shipping_name"]').val($addr.find('h2').text())
+        $('[name="shipping_mobile"]').val($addr.find('h2').data('phone'))
+        $('[name="shipping_email"]').val($addr.find('h2').data('email'))
+        $('[name="shipping_address"]').val($addr.find('span[data-address]').text())
+        $('[name="shipping_address2"]').val($addr.find('span[data-address2]').text())
+        $('[name="shipping_state"]').val($addr.find('span[data-state]').text())
+        $('[name="shipping_pincode"]').val($addr.find('span[data-pincode]').text())
+        $('[name="shipping_pincode"]').val($addr.find('span[data-pincode]').text())
+
+        $('[name="shipping_state"] option').each((_, ele) => {
+            if($(ele).text() == state) {
+                $(ele).prop('selected', true)
+                const stateId = $(ele).attr('value')
+                if(stateId != '') {
+                    $.ajax({
+                        type:'POST',
+                        url: "{{ route('filterCityOnState') }}",
+                        data: { "state_id": stateId },
+                        success: function(data) {
+                            var response = JSON.parse(data);
+                            if(response.size > 0) {
+                                $('#selectcity').append(response.city);
+                                $('[name="shipping_city"] option').each((_, ele) => {
+                                    if($(ele).text() == city) $(ele).prop('selected', true)
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    });
+
     $(document).on('click','.couponApply', function (event) {
          event.preventDefault();
 

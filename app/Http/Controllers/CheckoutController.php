@@ -532,7 +532,7 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 			);
 
 
-			 $states=DB::table('states')->where('id',$input['shipping_state'])->first();
+			$states=DB::table('states')->where('id',$input['shipping_state'])->first();
 
 			$input_array=
 			    	array('shipping_name' => $input['shipping_name'],
@@ -552,7 +552,7 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 
 			if($input_array['shipping_address_default']==1)
 			{
-    			$cust_id=auth()->guard('customer')->user()->id ;
+    			$cust_id=auth()->guard('customer')->user()->id;
 
     			$input_default_set=array( 'shipping_address_default' => 0);
     			CheckoutShipping::where('customer_id',$cust_id)->where('id','!=',$id)->update($input_default_set);
@@ -671,11 +671,11 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 
 			$input=$request->all();
 
-              $cust_id=auth()->guard('customer')->user()->id ;
-	$states=DB::table('states')->where('id',$input['shipping_state'])->first();
+            $cust_id=auth()->guard('customer')->user()->id;
+	        $states=DB::table('states')->where('id',$input['shipping_state'])->first();
 
 			$CheckoutShipping = new CheckoutShipping;
-				$CheckoutShipping->customer_id = $cust_id;
+			$CheckoutShipping->customer_id = $cust_id;
 			$CheckoutShipping->shipping_name = $input['shipping_name'];
 			$CheckoutShipping->shipping_mobile = $input['shipping_mobile'];
 			$CheckoutShipping->shipping_address = $input['shipping_address'];
@@ -688,34 +688,47 @@ setcookie('pincode_error', 0, time() + (86400 * 30), "/");
 			$CheckoutShipping->shipping_address_default = isset($input['shipping_address_default']) ? 1 : 0;
             $CheckoutShipping->shipping_email = $input['shipping_email'];
 
-		  /* save the following details */
-		  if($CheckoutShipping->save()){
-		      $address_id=$CheckoutShipping->id;
-		      if(isset($input['shipping_address_default'])){
-		         	$input_default_set=array('shipping_address_default' => 0);
-    			$CheckoutShipping::where('customer_id',$cust_id)->where('id','!=',$address_id)->update($input_default_set);
-		      }
-                setcookie('shipping_address_id', $address_id, time() + (86400 * 30), "/");
+		    /* save the following details */
+            if(isset($input['selected_shipping_id'])) {
 
+                if(isset($input['shipping_address_default'])){
+                    $input_default_set = array('shipping_address_default' => 0);
+                    $CheckoutShipping::where('customer_id',$cust_id)->where('id', '!=', $input['selected_shipping_id'])->update($input_default_set);
+                }
+                setcookie('shipping_address_id', $input['selected_shipping_id'], time() + (86400 * 30), "/");
 
-              if($input['payment_mode']){
-                  session()->forget('ExibutionData');
-              }else{
-                  Session::put('ExibutionData', '00032');
-              }
+                if($input['payment_mode']) {
+                    session()->forget('ExibutionData');
+                } else {
+                    Session::put('ExibutionData', '00032');
+                }
 
                 return Redirect::route('thankyou');
-               // return Redirect::route('review_order');
-			 // MsgHelper::save_session_message('success',Config::get('messages.common_msg.shippingAddressAdded'),$request);
-			 //  return Redirect::back();
-		  } else{
-			   MsgHelper::save_session_message('danger',Config::get('messages.common_msg.data_save_error'),$request);
-			    return Redirect::back();
-		  }
+            } else {
+                if($CheckoutShipping->save()){
+                    $address_id = $CheckoutShipping->id;
 
+                    if(isset($input['shipping_address_default'])){
+                        $input_default_set = array('shipping_address_default' => 0);
+                        $CheckoutShipping::where('customer_id',$cust_id)->where('id', '!=', $address_id)->update($input_default_set);
+                    }
+                    setcookie('shipping_address_id', $address_id, time() + (86400 * 30), "/");
+
+                    if($input['payment_mode']) {
+                        session()->forget('ExibutionData');
+                    } else {
+                        Session::put('ExibutionData', '00032');
+                    }
+
+                    return Redirect::route('thankyou');
+                } else{
+                    MsgHelper::save_session_message('danger',Config::get('messages.common_msg.data_save_error'),$request);
+                    return Redirect::back();
+                }
+            }
 		}
 
-    return view('admin.mod_checkout.checkout');
+        return view('admin.mod_checkout.checkout');
    }
 
 
