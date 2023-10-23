@@ -117,7 +117,7 @@ $str=end($proper_url_array);
         <!-- Your cart items will go here -->
         <div class="logoContainer">
             <img src="{{asset('public/fronted/images/logo.svg')}}" alt="logo">
-            <button id="closeCart" class="closeBtn">X</button>
+            <button id="closeCart" class="closeBtn">&#x2715;</button>
         </div>
         <h2 class="cartHeader">Your Cart</h2>
         <div class="cart_table_list">

@@ -46,15 +46,15 @@ return [
     
     
     'facebook' => [
-      'client_id'     => '193046881780614',
-      'client_secret' => '632693539de505540cc6926d69f22fc5',
-      'redirect'      => 'https://www.phaukat.com/callback_fb',
-    ],
-    
-    'google' => [
-      'client_id'     => '33467822570-a4bdpbl82eopucpukrjk6d2poaop460u.apps.googleusercontent.com',
-      'client_secret' => 'vIzD70yDUjpPVTlOYg3YSOPK',
-      'redirect'      => 'https://www.phaukat.com/callback_gp',
-    ],
+        'client_id'     => '252203774145228',
+        'client_secret' => '42470e40873e65ba41e3bfb822079095',
+        'redirect'      => 'https://kefih.com/callback_fb',
+      ],
+      
+      'google' => [
+        'client_id'     => '28492915374-kg7vkkfthq7kgpqeds6gufsg4hvbd5id.apps.googleusercontent.com',
+        'client_secret' => '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',
+        'redirect'      => 'https://kefih.com/callback_gp',
+      ],
 
 ];

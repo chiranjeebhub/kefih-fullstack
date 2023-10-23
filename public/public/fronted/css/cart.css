@@ -354,6 +354,10 @@ html {
     border-radius: 50%;
     height: 25px;
     width: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 4px;
 }
 .closeBtn:hover {
     background-color: #000;

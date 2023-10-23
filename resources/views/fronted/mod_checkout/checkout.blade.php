@@ -36,16 +36,16 @@
                 <?php if(count($shipping_listing) > 0) { ?>
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 col-md-12 col-12 pt-4">
-                        <h2 class="heading mb-30">Select a delivery address</h2>
+                        <h2 class="heading mb-30" style="font-size:1.4rem;font-weight:500;">Select a delivery address</h2>
                         <div class="card_main overflow-auto">
-                            <div class="row flex-nowrap">
+                            <div class="row flex-nowrap" style="padding-left:1rem">
                                 <?php for($i=0;$i<count($shipping_listing);$i++){?>
-                                <div class="col-md-4 col-xs-12 d-flex align-items-stretch">
+                                <div class="col-md-4 col-xs-12 d-flex align-items-stretch" style="border:1px solid lightgray; border-radius:10px; margin-right:0.5rem; padding:0.5rem">
                                     <div class="row">
                                         <div class="col-lg-9 col-sm-9 col-md-10 col-8">
                                             <div class="card_box">
                                                 <div class="card_info address-card-<?php echo $shipping_listing[$i]['id'] ?>">
-                                                    <h2 data-name data-phone="<?php echo $shipping_listing[$i]['shipping_mobile'];?>" data-email="<?php echo $shipping_listing[$i]['shipping_email'];?>"><?php echo ucwords($shipping_listing[$i]['shipping_name']);?></h2>
+                                                    <h2 style="font-size:18px;" data-name data-phone="<?php echo $shipping_listing[$i]['shipping_mobile'];?>" data-email="<?php echo $shipping_listing[$i]['shipping_email'];?>"><?php echo ucwords($shipping_listing[$i]['shipping_name']);?></h2>
                                                     <p>
                                                         <span data-address><?php echo $shipping_listing[$i]['shipping_address'];?></span>,<br>
                                                         <span data-address1><?php echo $shipping_listing[$i]['shipping_address1'];?></span>
@@ -56,7 +56,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-sm-3 col-md-2 col-4 d-flex">
+                                        <div class="col-lg-3 col-sm-3 col-md-2 col-4 ">
                                             <div class="remove_card">
                                                 <?php  if($shipping_listing[$i]['shipping_address_default']){?>
                                                 <span class="defaultbox">Default</span>
