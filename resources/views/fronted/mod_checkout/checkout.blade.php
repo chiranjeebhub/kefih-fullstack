@@ -94,10 +94,9 @@
                 <div class="headerTitleContainer">
                     <div class="headerTitle">Contact Information</div>
                     <!-- <li class="logoutBtn"><a class="btn btn-warning btn-block btn-lg head_user_login" role="button"> Log in / Sign up</a> </li> -->
-                    <div class="headerSubtitle" style="display:flex;">Already Bought Something?
+                    <!-- <div class="headerSubtitle" style="display:flex;">Already Bought Something?
                     <a class="btn btn-warning btn-block btn-lg head_user_login" role="button" style="background:transparent; margin:0px; padding:0px; border:none; width:auto;">&nbsp;Click Here</a>
-                    <!-- <span style="font-weight: bold;">Click Here</span> -->
-                    </div>
+                    </div> -->
                 </div>
                 <div class="div-7">
                     <div class="div-8">
