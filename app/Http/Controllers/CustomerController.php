@@ -11,8 +11,10 @@ use App\Brands;
 use App\Vendor;
 use App\products;
 use App\Customer;
+use App\Orders;
 use Cookie;
 use App\CheckoutShipping;
+use App\CheckoutBillingAddress;
 use App\ProductAttributes;
 use Illuminate\Support\Facades\Hash;
 use Redirect;
@@ -30,28 +32,28 @@ use URL;
 
 class CustomerController extends Controller
 {
-   
+
     public function redirect_fb()
     {
         return Socialite::driver('facebook')->redirect();
     }
-    
-    
-    
+
+
+
      public function cron_track(Request $request)
        {
-                   
-	  
-	
+
+
+
 		       CommonHelper::sendMailToVendorQtyLess();
-		
-		
+
+
     }
 
     public function callback_fb()
     {
          try{
-           
+
              $user = Socialite::driver('facebook')->stateless()->user();
         $existUser = Customer::where('email',$user->getEmail())->count();
         $validate_user= Customer::select(
@@ -63,7 +65,7 @@ class CustomerController extends Controller
 						'password'
 			)->where('email',$user->getEmail())->first();
 		if(!empty($validate_user) && $existUser>0){
-		    
+
 		    if (Auth::guard('customer')->attempt([ 'email' => $validate_user->email,'password' => '12345678']))
     		{
     		    Session::put('shipping_address_id','0');
@@ -72,7 +74,7 @@ class CustomerController extends Controller
     		        dd('4');
     		        Session::put('shipping_address_id','0');
     		   }
-    		   return redirect()->to('/'); 	 
+    		   return redirect()->to('/');
                 //return redirect()->intended('/');
             }
 		}
@@ -86,43 +88,43 @@ class CustomerController extends Controller
         	$Customer->password = Hash::make(trim(12345678));
         if($Customer->save()){
 
-		if (Auth::guard('customer')->attempt([ 'email' => $user->getEmail(),'password' => '12345678']))
-		{
-		    
-		     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.date('dmYHis'); 
-                        $code = ''; 
-                        for ($i = 0; $i < 5; $i++) { 
-                        $index = rand(0, strlen($characters) - 1); 
-                        $code .= $characters[$index]; 
-                        }
-                    $code.=$Customer->id;
-                    Customer::
-                    where('id',$Customer->id)
-                    ->update(
+            $this->update_customer_orders($Customer->id, $Customer->email, $Customer->phone);
+
+            if (Auth::guard('customer')->attempt([ 'email' => $user->getEmail(),'password' => '12345678']))
+            {
+
+                $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.date('dmYHis');
+                $code = '';
+                for ($i = 0; $i < 5; $i++) {
+                    $index = rand(0, strlen($characters) - 1);
+                    $code .= $characters[$index];
+                }
+                $code.=$Customer->id;
+                Customer::where('id',$Customer->id)->update(
                     array('r_code'=>$code)
-                    );
-                    
-		return redirect()->to('/'); 	 
-		//return redirect()->intended('/');
-		}
-        	   
-        	   //Session::put('Phone','1111111111');
-        	   Session::put('User_id',$Customer->id);
-        	   Session::put('Flag','0');
-        	}
-        	
-        	
-        	
+                );
+
+                return redirect()->to('/');
+                //return redirect()->intended('/');
+            }
+
+            //Session::put('Phone','1111111111');
+            Session::put('User_id',$Customer->id);
+            Session::put('Flag','0');
+        }
+
+
+
             return redirect()->to('/');
         }
         } catch (\Exception $e) {
             	return redirect()->route('customer_login')->withErrors(['Something went wrong']);;
         }
-        
-       
-        
+
+
+
     }
-    
+
     public function redirect_gp()
     {
         return Socialite::driver('google')->redirect();
@@ -131,24 +133,24 @@ class CustomerController extends Controller
     {
         try {
             $user = Socialite::driver('google')->user();
-            
+
         } catch (\Exception $e) {
             	return redirect()->route('customer_login')->withErrors(['Something went wrong']);;
-          
+
         }
-       
+
         // only allow people with @company.com to login
        /* if(explode("@", $user->email)[1] !== 'bazzarplus.com'){
             return redirect()->to('/');
         }*/
         // check if they're an existing user
-    
+
         $b64image = base64_encode(file_get_contents($user->avatar));
          $data = $b64image;
             $data = base64_decode($data);
             $name=time().".png";
             file_put_contents(Config::get('constants.uploads.customer_profile_pic')."/".$name, $data);
-    
+
         $existingUser = Customer::where('email', $user->email)->first();
         if($existingUser){
             // log them in
@@ -164,15 +166,16 @@ class CustomerController extends Controller
             //$newUser->avatar_original = $user->avatar_original;
             $newUser->save();
             Auth::guard('customer')->login($newUser, true);
-            
-            
+
+            $this->update_customer_orders($newUser->id, $newUser->email, $newUser->phone);
+
             if (Auth::guard('customer')->attempt([ 'email' =>  $newUser->email,'password' => '12345678']))
     		{
-    		    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.date('dmYHis'); 
-                        $code = ''; 
-                        for ($i = 0; $i < 5; $i++) { 
-                        $index = rand(0, strlen($characters) - 1); 
-                        $code .= $characters[$index]; 
+    		    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.date('dmYHis');
+                        $code = '';
+                        for ($i = 0; $i < 5; $i++) {
+                        $index = rand(0, strlen($characters) - 1);
+                        $code .= $characters[$index];
                         }
                     $code.=$newUser->id;
                     Customer::
@@ -182,32 +185,32 @@ class CustomerController extends Controller
                     );
     		    Session::put('shipping_address_id','0');
     		    $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id',$validate_user->id)->first();
-    		    
+
     		   if($res){
     		   	dd('4');
     		        Session::put('shipping_address_id','0');
     		      //  Session::put('shipping_address_id','0');
     		   }
-    		  return redirect()->to('/');  	 
+    		  return redirect()->to('/');
                // return redirect()->intended('/');
             }
-            
-            
+
+
         }
         return redirect()->to('/');
     }
-   
-   
-   
+
+
+
     public function dashboard(){
         $user = auth()->guard('customer')->user();
-		
+
 		return view('customerDashboard');
 		//$user = auth()->guard('customer')->user()->id;
        // dd($user);
     }
-	
-	
+
+
     public function logout(Request $request)
     {
      //dd(auth()->guard('admin')->user());
@@ -226,14 +229,14 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-     
+
       public function login_with_otp(Request $request){
-		
+
         $minutes=(86400000 * 30);
        $shipping_address_id=0;
-                    
+
 		$user_data=$request->session()->get('customer_login_details');
-	
+
 		 $page_details=array(
        "Title"=>"Otp Verification",
        "Box_Title"=>"",
@@ -263,11 +266,11 @@ class CustomerController extends Controller
          )
        )
      );
-	
+
 		if ($request->isMethod('post')) {
-			
+
 			 $input=$request->all();
-		
+
 			 $request->validate([
 					'otp' => 'required|max:6'
             ]
@@ -280,7 +283,7 @@ class CustomerController extends Controller
 						    if($record->expired_on<Carbon::now()){
 									       return Redirect::back()->withErrors(['Otp expired']);
 										} else{
-										    
+
 											$validate_user= Customer::select(
 											'id',
 											'name',
@@ -293,42 +296,42 @@ class CustomerController extends Controller
 												->where('status',1)
 												->where('isdeleted',0)
 											->first();
-                                                
+
                                 $user = Customer::find($user_data['User_id']);
-                                                
+
                                 Auth::guard('customer')->login($user);
-            
+
 $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id',$user_data['User_id'])->first();
             if($res){
             setcookie('shipping_address_id', $res->id, time() + (86400 * 30), "/");
-                     
+
             }
-                                    
-                          
+
+
         if(Session::get('checout')){
             return Redirect::route('review_order');
         }else{
-        return redirect()->intended('/');	
+        return redirect()->intended('/');
         }
-                                        
-                                        
+
+
 										}
-									
-						} 
+
+						}
 						else{
 							return Redirect::back()->withErrors(['Invalid Otp']);
 						}
-			
-		
-		}		
-		
+
+
+		}
+
 			return view('fronted.auth.customer_login_otp',['page_details'=>$page_details]);
 	}
 
   public function verifiy(Request $request){
-		
+
 		$user_data=$request->session()->get('customer_details');
-	
+
 		//print_r($user_data);die;
 		 $page_details=array(
        "Title"=>"Customer phone verification",
@@ -359,11 +362,11 @@ $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id'
          )
        )
      );
-	
+
 		if ($request->isMethod('post')) {
-			
+
 			 $input=$request->all();
-		
+
 			 $request->validate([
 					'otp' => 'required|max:6'
             ]
@@ -384,10 +387,10 @@ $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id'
 												'data'=>array(
 												'name'=>$customer_data->name
 												)
-											) )->render();	
-											 
+											) )->render();
+
 											 //$msg='Dear '.$customer_data->name.' '.$customer_data->last_name.'  you have succuessfully registered';
-											 
+
 										    $email_msg='   <tr>
                          <td style="padding:5px 10px;">
                             <strong>Name</strong>
@@ -439,7 +442,7 @@ $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id'
                 CommonHelper::SendmailCustom($email_data);
                 // CommonHelper::SendmailCustom($admin_email_data);
                  CommonHelper::SendMsg($email_data);
-		   
+
 													$res=Customer::where('id',$user_data['User_id'])
 													->update([
 													'isOtpVerified'=>1
@@ -455,22 +458,22 @@ $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id'
 				  if(Session::get('checout')){
                     return Redirect::route('review_order');
                 }else{
-                return redirect()->intended('/');	
-                }	
-                               /*if () {                 
-                               
-								 		
-					                 }*/			
+                return redirect()->intended('/');
+                }
+                               /*if () {
+
+
+					                 }*/
 										}
-									
-						} 
+
+						}
 						else{
 							return Redirect::back()->withErrors(['No record found']);
 						}
-			
-		
-		}		
-		
+
+
+		}
+
 			return view('fronted.auth.customer_otp_verification',['page_details'=>$page_details]);
 	}
 
@@ -483,11 +486,11 @@ $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id'
 public function OnR_codeRegister($input,$cust_id){
     $refer_d=Customer::select('id')->where('r_code',$input['r_code'])->first();
     if($refer_d){
-        
+
          $refer_price=DB::table('store_info')
 	      ->select('child_amount','parent_amount')
 	    ->first();
-	    
+
 	    // 	transfer to child
 	    DB::table('tbl_refer_earn')
 	    ->insert(array(
@@ -512,9 +515,9 @@ public function OnR_codeRegister($input,$cust_id){
 					));
 
 			}
-			  
 
-	        
+
+
 	         //insert in referarls
 	        DB::table('user_referrals')
 	        ->insert(array(
@@ -522,37 +525,37 @@ public function OnR_codeRegister($input,$cust_id){
                 'p_id'=>$refer_d->id,
                 'r_code'=>$input['r_code']
 	        ));
-	        
+
 	         // update customer refer amount
                 Customer::
                 where('id',$cust_id)
                 ->increment('r_amount',$refer_price->child_amount);
-                
+
                 //update wallet amount of customer
                  Customer::
                 where('id',$cust_id)
                 ->increment('total_reward_points',$refer_price->child_amount);
 
-				
+
 				     // update parent refer amount
 					 Customer::
 					 where('id',$refer_d->id)
 					 ->increment('r_amount',$refer_price->parent_amount);
-					 
+
 					 //update wallet amount of parent
 					  Customer::
 					 where('id',$refer_d->id)
 					 ->increment('total_reward_points',$refer_price->parent_amount);
-					 
 
-                
+
+
                 //update parent of child
                  Customer::
                     where('id',$cust_id)
                     ->update(
                     array('r_by'=>$refer_d->id)
                     );
-                
+
       // create wallet history child
 	   DB::table('tbl_wallet_history')
 	   ->insert(array(
@@ -578,13 +581,13 @@ public function OnR_codeRegister($input,$cust_id){
 			   'mode'=>3
 		  ));
     }
-                   
+
 }
 
 
     public function customer_register(Request $request)
        {
-           
+
 	   $page_details=array(
        "Title"=>"Customer Registration",
        "Box_Title"=>"",
@@ -611,7 +614,7 @@ public function OnR_codeRegister($input,$cust_id){
 			  'value'=>old('phone'),
 			  'disabled'=>''
 			 //  'script'=>'onkeypress="javascript:return onlyPincodeDigit(event,this.value,9)"'
-			  
+
 		  ),
 		 "email_field"=>array(
 			  'label'=>'',
@@ -666,11 +669,11 @@ public function OnR_codeRegister($input,$cust_id){
          )
        )
      );
-	
+
 		if ($request->isMethod('post')) {
-			
+
 			 $input=$request->all();
-		
+
 			 $request->validate([
                     'name' => 'required|regex:/^[a-zA-Z]+$/u|max:50:min:5',
                     'phone' =>  'required|regex:/[0-9]{10}/|unique:customers,phone,1,isdeleted|max:50',
@@ -691,23 +694,25 @@ public function OnR_codeRegister($input,$cust_id){
 				}
 
 			}
-                    
-		
+
+
 			$Customer = new Customer;
 				$Customer->name = $input['name'];
 				$Customer->phone = $input['phone'];
 				$Customer->email =  $input['email'];
 				$Customer->password = Hash::make(trim($input['password']));
 	            $Customer->status = 1;
-     
+
       /* save the following details */
       if($Customer->save()){
-          
-            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.date('dmYHis'); 
-                        $code = ''; 
-                        for ($i = 0; $i < 5; $i++) { 
-                        $index = rand(0, strlen($characters) - 1); 
-                        $code .= $characters[$index]; 
+
+        $this->update_customer_orders($Customer->id, $Customer->email, $Customer->phone);
+
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.date('dmYHis');
+                        $code = '';
+                        for ($i = 0; $i < 5; $i++) {
+                        $index = rand(0, strlen($characters) - 1);
+                        $code .= $characters[$index];
                         }
                     $code.=$Customer->id;
                     Customer::
@@ -715,16 +720,16 @@ public function OnR_codeRegister($input,$cust_id){
                     ->update(
                     array('r_code'=>$code)
                     );
-                    
+
                     if (array_key_exists("r_code",$input))
                     {
                     if($input['r_code']!=''){
                     $this->OnR_codeRegister($input,$Customer->id);
                     }
                     }
-                  
+
 		  $request->session()->flush();
-		  
+
 		   $request->session()->put('customer_details',array(
 			"Phone"=>$input['phone'],
 			"User_id"=>$Customer->id,
@@ -742,13 +747,13 @@ public function OnR_codeRegister($input,$cust_id){
 				return Redirect::back();
 	}
 
-		
-		}		
-		
+
+		}
+
 			return view('fronted.auth.customer_register',['page_details'=>$page_details]);
-		
+
     }
-	
+
 	public function OTP_login(Request $request)
     {
         $page_details=array(
@@ -759,7 +764,7 @@ public function OnR_codeRegister($input,$cust_id){
        "Form_data"=>array(
 
          "Form_field"=>array(
-           
+
            "email_field"=>array(
               'label'=>'Email ID',
             'type'=>'text',
@@ -783,16 +788,16 @@ public function OnR_codeRegister($input,$cust_id){
        )
      );
 		if ($request->isMethod('post')) {
-		   
-		   
+
+
 			$input=$request->all();
-		
+
 			 $request->validate([
                 'phone' => 'required|max:255'
             ]);
-			
-			
-			
+
+
+
 		$validate_user= Customer::select(
 						'id',
 						'name',
@@ -801,33 +806,33 @@ public function OnR_codeRegister($input,$cust_id){
 						'isOtpVerified',
 						'password'
 			)
-			
+
 			->where('phone',trim($input['phone']))
 			->orwhere('email',trim($input['phone']))
 			->first();
 
-		
+
 if ($validate_user) {
-	
+
 	if($validate_user->isOtpVerified!=1){
-		
+
 		  $request->session()->flush();
 		 $request->session()->put('customer_details',array(
 			"Phone"=>$validate_user->phone,
 			"User_id"=>$validate_user->id,
 			"Flag"=>0,
 		   ));
-		   
+
 		$custmor_array=array(
 					"phone"=>$validate_user->phone,
 					"userId"=>$validate_user->id
 					);
 		       CommonHelper::generate_user_otp($custmor_array);
-			
+
 			return redirect()->route('verifiy')->withErrors(['Your phone is not verified.']);
 	} else{
 		if (filter_var($input['phone'], FILTER_VALIDATE_EMAIL)) {
-		    
+
 		    $request->session()->put('customer_login_details',array(
                         "Phone"=>$validate_user->phone,
                         "password"=>$request->password,
@@ -857,17 +862,17 @@ if ($validate_user) {
                             return redirect()->route('login_with_otp')->withErrors(['Enter Otp To login.']);
 					}
 
-        
-        
-        
+
+
+
 	}
 } else{
 	 return Redirect::back()->withErrors(['Credentials do not match our database .']);
 }
 
-	
-	
-         return Redirect::back()->withErrors(['Credentials do not match our database.']);	
+
+
+         return Redirect::back()->withErrors(['Credentials do not match our database.']);
 		}
 		return view('fronted.auth.customer_with_out_password',['page_details'=>$page_details]);
     }
@@ -876,8 +881,8 @@ if ($validate_user) {
 	 * Method for user login/signup
 	 */
 
-	 public function UserLoginSignup(Request $request){		   
-		try{ 		
+	 public function UserLoginSignup(Request $request){
+		try{
 
 			 $input=$request->all();
 		     $validator = Validator::make($request->all(), [
@@ -890,25 +895,25 @@ if ($validate_user) {
 				'login_phone.max' => 'Mobile no. can not be more than 10 digit',
 				'login_country_code.required' => 'Country code is required',
 				'term_accepted.required' => 'Terms of Use & Privacy Policy should be accepted',
-			 ]);       
+			 ]);
 
              if($validator->fails()){
-                return $this->sendError('Validation Error.', $validator->errors());       
+                return $this->sendError('Validation Error.', $validator->errors());
              }
-			
+
 		     $validate_user= Customer::select(
 						'id',
 						'name',
 						'email',
 						'phone',
-						'country_code'					
-			 )			
+						'country_code'
+			 )
 			->where(['country_code' => $input['login_country_code'], 'phone' => trim($input['login_phone'])])
 			->first();
 
 			if ($validate_user){
 				 /**
-				  * Login here 
+				  * Login here
 				  */
 				  $request->session()->put('customer_details',array(
 					"Phone"=>$validate_user->phone,
@@ -916,12 +921,12 @@ if ($validate_user) {
 					"User_id"=>$validate_user->id,
 					"Flag"=>0,
 				   ));
-				   
+
 				   /**
 				  * Generate OTP
 				  */
 				  CommonHelper::generate_customer_login_otp(array(
-					"Phone"=>$validate_user->phone,					
+					"Phone"=>$validate_user->phone,
 					"User_id"=>$validate_user->id
 					));
 
@@ -940,7 +945,9 @@ if ($validate_user) {
 				 $newCustomer = new Customer;
 				 $newCustomer->phone = trim($input['login_phone']);
 				 $newCustomer->country_code = trim($input['login_country_code']);
-				 $newCustomer->save(); 
+				 $newCustomer->save();
+
+                 $this->update_customer_orders($newCustomer->id, $newCustomer->email, $newCustomer->phone);
 
 				 $request->session()->put('customer_details',array(
 					"Phone"=>$newCustomer->phone,
@@ -948,13 +955,13 @@ if ($validate_user) {
 					"User_id"=>$newCustomer->id,
 					"Flag"=>1,
 				   ));
-				   
+
 
 				 /**
 				  * Generate OTP
 				  */
 				  CommonHelper::generate_customer_login_otp(array(
-							"Phone"=>$newCustomer->phone,					
+							"Phone"=>$newCustomer->phone,
 							"User_id"=>$newCustomer->id
 					));
 
@@ -977,20 +984,20 @@ if ($validate_user) {
 
 
 
-	 public function UserLoginSignupVerifiy(Request $request){		
-		try{ 
+	 public function UserLoginSignupVerifiy(Request $request){
+		try{
 		        $user_data=$request->session()->get('customer_details');
-			    $input=$request->all();			
+			    $input=$request->all();
 				$validator = Validator::make($request->all(), [
 					'otp' => 'required|min:4|max:4'
 				 ],[
 					'otp.required' => 'OTP is required',
 					'otp.min' => 'OTP should be at least 4 digit',
-					'otp.max' => 'OTP can not be more than 4 digit',					
-				 ]);       
-	
+					'otp.max' => 'OTP can not be more than 4 digit',
+				 ]);
+
 				 if($validator->fails()){
-					return $this->sendError('Validation Error.', $validator->errors());       
+					return $this->sendError('Validation Error.', $validator->errors());
 				 }
 
 
@@ -1011,16 +1018,16 @@ if ($validate_user) {
 										} else{
 										    $customer_data=DB::table('customers')->where('id',$user_data['User_id'])->first();
 											if($user_data['Flag'] == 1){
-											
+
 											/*
 											 $msg=view("message_template.welcome_message",
 												array(
 												'data'=>array(
 												'name'=>$customer_data->name
 												)
-											) )->render();	
-											 
-												
+											) )->render();
+
+
 												$email_msg='                        <tr>
 												<td style="padding:5px 10px;">
 												<strong>Phone</strong>
@@ -1063,7 +1070,7 @@ if ($validate_user) {
 												'isOtpVerified'=>1
 												]);
 
-											}						
+											}
 								$user = Customer::find($user_data['User_id']);
 								$res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id',$user_data['User_id'])->first();
 								if($res){
@@ -1080,7 +1087,7 @@ if ($validate_user) {
 								if(Session::get('checout')){
 									$redirectionURL = URL::to('/review_order');
 								}
-								
+
 								return response()->json([
 									'message'=>'Login Successfull',
 									'status'=>true,
@@ -1088,8 +1095,8 @@ if ($validate_user) {
 								], 200);
 
 							}
-									
-						} 
+
+						}
 						else{
 							return response()->json([
 								'message'=>'Invalid OTP',
@@ -1105,18 +1112,18 @@ if ($validate_user) {
 						"data"=>null
 					], 500);
 			}
-				
-		
+
+
 	}
 
 
 	public function UserLoginOTP(Request $request){
 		try{
-			 
+
 		$user_data=$request->session()->get('customer_details');
 		$custmor_array=array(
 			"Phone"=>$user_data['Phone'],
-			"User_id"=>$user_data['User_id'],			
+			"User_id"=>$user_data['User_id'],
 		);
 
 		$record = DB::table('customer_login_otp')
@@ -1158,7 +1165,7 @@ if($start->lt($end)){
 			], 200);
 		}
 
-		
+
 
 		} catch(Exception $e){
 			return response()->json([
@@ -1179,7 +1186,7 @@ if($start->lt($end)){
     	$response = [
             'status' => false,
             'message' => $error,
-        ];        
+        ];
         if(!empty($errorMessages)){
             $response['data'] = $errorMessages;
         }
@@ -1199,8 +1206,8 @@ if($start->lt($end)){
 
 
 	public function customer_login(Request $request)
-    {   
-      
+    {
+
        $page_details=array(
        "Title"=>"Customer Login",
 	   "Method"=>"1",
@@ -1209,7 +1216,7 @@ if($start->lt($end)){
        "Form_data"=>array(
 
          "Form_field"=>array(
-           
+
            "email_field"=>array(
             'label'=>'Email ID',
             'type'=>'text',
@@ -1242,17 +1249,17 @@ if($start->lt($end)){
          )
        )
      );
-	
+
 		if ($request->isMethod('post')) {
-		   
-		   
+
+
 			$input=$request->all();
-		
+
 			 $request->validate([
                 'phone' => 'required|max:255',
 				'password' => 'required|max:255'
             ]);
-			
+
 		$validate_user= Customer::select(
 						'id',
 						'name',
@@ -1268,7 +1275,7 @@ if($start->lt($end)){
 			->first();
 
 		if(!empty($validate_user)){
-		if ($validate_user && Hash::check($input['password'], $validate_user->password)) 
+		if ($validate_user && Hash::check($input['password'], $validate_user->password))
 		{
 			$user_data = array(
 			"fld_user_id"=>$validate_user->fld_user_id,
@@ -1279,10 +1286,10 @@ if($start->lt($end)){
 			"fld_user_email"=>$validate_user->email,
 			"fld_user_email"=>$validate_user->email,
 			);
-			
-			
+
+
            if($validate_user->status==1){
-           	
+
            	    if($validate_user->isOtpVerified==1){
                     $user = Customer::find($validate_user->id);
                     $res= CheckoutShipping::where('shipping_address_default',1)->where('customer_id',$validate_user->id)->first();
@@ -1293,7 +1300,7 @@ if($start->lt($end)){
                             if(Session::get('checout')){
                                 return Redirect::route('review_order');
                             }else{
-                            return redirect()->intended('/');	
+                            return redirect()->intended('/');
                             }
 
 						}
@@ -1302,35 +1309,35 @@ if($start->lt($end)){
 			"Phone"=>$validate_user->phone,
 			"User_id"=>$validate_user->id,
 			"Flag"=>0,
-		   ));	
-							
+		   ));
+
 					$custmor_array=array(
 					"phone"=>$validate_user->phone,
 					"userId"=>$validate_user->id
 					);
 		CommonHelper::generate_user_otp($custmor_array);
-		
+
 		return redirect()->route('verifiy')->withErrors(['Jaldi Kharido E-shop send OTP to your register mobile number verify to continue login.']);
-		
+
 						}
-				
+
 					}else{
-						
-	return redirect()->route('customer_login')->withErrors(['Your account is deactive contact to administrator.']);					
-	
-					}	
+
+	return redirect()->route('customer_login')->withErrors(['Your account is deactive contact to administrator.']);
+
+					}
 		}
 	    else{
-			return redirect()->route('customer_login')->withErrors(['Invalid Password.']);	
-		}               
+			return redirect()->route('customer_login')->withErrors(['Invalid Password.']);
+		}
 		}
         else{
-			
-		return redirect()->route('customer_login')->withErrors(['Email ID does not exists.']);	
-	
-			
+
+		return redirect()->route('customer_login')->withErrors(['Email ID does not exists.']);
+
+
 			}
-        
+
 		}
 		else{
 			return view('fronted.auth.customer_login',['page_details'=>$page_details]);
@@ -1338,7 +1345,7 @@ if($start->lt($end)){
     }
 	public function customer_login_yogi(Request $request)
     {
-        
+
 	$page_details=array(
        "Title"=>"Customer Login",
 	   "Method"=>"1",
@@ -1347,7 +1354,7 @@ if($start->lt($end)){
        "Form_data"=>array(
 
          "Form_field"=>array(
-           
+
            "email_field"=>array(
             'label'=>'Email ID',
             'type'=>'text',
@@ -1381,17 +1388,17 @@ if($start->lt($end)){
        )
      );
 		if ($request->isMethod('post')) {
-		   
-		   
+
+
 			$input=$request->all();
-		
+
 			 $request->validate([
                 'phone' => 'required|max:255',
 				'password' => 'required|max:255'
             ]);
-			
-			
-			
+
+
+
 		$validate_user= Customer::select(
 						'id',
 						'name',
@@ -1400,33 +1407,33 @@ if($start->lt($end)){
 						'isOtpVerified',
 						'password'
 			)
-			
+
 			->where('phone',trim($input['phone']))
 			->orwhere('email',trim($input['phone']))
 			->first();
 
-		
+
 if ($validate_user && Hash::check($input['password'], $validate_user->password)) {
-	
+
 	if($validate_user->isOtpVerified!=1){
-		
+
 		  $request->session()->flush();
 		 $request->session()->put('customer_details',array(
 			"Phone"=>$validate_user->phone,
 			"User_id"=>$validate_user->id,
 			"Flag"=>0,
 		   ));
-		   
+
 		$custmor_array=array(
 					"phone"=>$validate_user->phone,
 					"userId"=>$validate_user->id
 					);
 		       CommonHelper::generate_user_otp($custmor_array);
-			
+
 			return redirect()->route('verifiy')->withErrors(['Your phone is not verified.']);
 	} else{
 		if (filter_var($input['phone'], FILTER_VALIDATE_EMAIL)) {
-		    
+
 		    $request->session()->put('customer_login_details',array(
                         "Phone"=>$validate_user->phone,
                         "password"=>$request->password,
@@ -1456,23 +1463,23 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
                             return redirect()->route('login_with_otp')->withErrors(['Enter Otp To login.']);
 					}
 
-        
-        
-        
+
+
+
 	}
 } else{
 	 return Redirect::back()->withErrors(['Credentials do not match our database .']);
 }
 
-	
-	
-         return Redirect::back()->withErrors(['Credentials do not match our database.']);	
+
+
+         return Redirect::back()->withErrors(['Credentials do not match our database.']);
 		}
 		return view('fronted.auth.customer_login',['page_details'=>$page_details]);
     }
 	public function send_otp(Request $request){
 		$input=$request->all();
-		 
+
 		$user_data=$request->session()->get('customer_details');
 		$custmor_array=array(
 			"phone"=>$user_data['Phone'],
@@ -1481,30 +1488,30 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
 		);
 
 		CommonHelper::generate_user_otp($custmor_array);
-		 
+
 		echo json_encode( array(
 			"MSG"=>"OTP resent to your email as well on your given number"
-		));	
+		));
 	}
-	
+
 	public function customer_resend_login_otp_message(Request $request){
 		$input=$request->all();
-		 
+
 		$user_data=$request->session()->get('customer_login_details');
 		CommonHelper::generate_customer_login_otp($user_data);
-		 
+
 		echo json_encode( array(
 			"MSG"=>"'OTP resent to your email as well on your given number'"
-		));	
+		));
 	}
-	  
+
 	public function forgot_password(Request $request)
 	{
-		
+
 		if ($request->isMethod('post')) {
-			
+
 			 $input=$request->all();
-		
+
 			 $request->validate([
 				'phone' => 'required|email|max:255',
 		   ],[
@@ -1514,7 +1521,7 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
 		  );
 /*
 		if (filter_var($input['phone'], FILTER_VALIDATE_EMAIL)) {
-		
+
 			 $request->validate([
 				  'phone' => 'required|email|max:255',
 			 ],[
@@ -1529,56 +1536,56 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
 			);
 			}
 			*/
-			
+
 		// $user= Customer::where('phone',$input['phone'])->orwhere('email',$input['phone'])->first();
 		$user= Customer::where('email',$input['phone'])->first();
 				if($user){
-					
+
 					 $request->session()->flush();
-					 
+
 		 $request->session()->put('customer_details',array(
 			"Phone"=>$user->phone,
 			"User_id"=>$user->id,
 			"Flag"=>0,
 		   ));
-		  
-		  
+
+
 		  $custmor_array=array(
 						"phone"=>$input['phone'],
 						"userId"=>$user->id,
 						"flag"=>1
 					);
 		       CommonHelper::generate_user_otp($custmor_array);
-			   
+
 			   MsgHelper::save_session_message('success','Please check mail for OTP',$request);
 
 					 return redirect()->route('update_password');
-					
+
 				} else{
 					return redirect()->back()->withErrors(['Email doest not exists']);
-				}				
-		}	
+				}
+		}
         return view('fronted.mod_customer.forgetpassword');
-		
+
     }
-	
+
 	public function update_password(Request $request)
     {
-		
+
 			 $user_data=$request->session()->get('customer_details');
-		
+
 		if ($request->isMethod('post')) {
-			
+
 			 $input=$request->all();
-	
+
 			 $request->validate([
 					'password' => 'required|max:50|min:6',
 					'OTP' => 'required|max:50'
             ]
 			);
-			
+
 			 $user_data=$request->session()->get('customer_details');
-							
+
 			$record = DB::table('customer_phone_otp')
 							->where('user_id',$user_data['User_id'])
 						->where('otp',$input['OTP'])
@@ -1588,15 +1595,15 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
 						    if($record->expired_on<Carbon::now()){
 									       return Redirect::back()->withErrors(['Otp expired']);
 										} else{
-										    										    
+
                 				    		$customer_data=DB::table('customers')->where('id',$user_data['User_id'])->first();
-                
+
                 $email_msg='<tr>
                   <td style="padding:5px 10px;">
                           <p><strong></strong>Dear '.$customer_data->name.' '.$customer_data->last_name.' Your password has been changed.</p>
                  </td>
                 </tr>';
-                
+
                 $email_data = [
                 'to'=>$customer_data->email,
                 'subject'=>'Password Changed',
@@ -1610,7 +1617,7 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
                      'phone_msg'=>''
                  	];
 						CommonHelper::SendmailCustom($email_data);
-						
+
 							$res=Customer::where('id',$user_data['User_id'])
 							->update([
 							'password'=>Hash::make(	trim($input['password']))
@@ -1618,25 +1625,25 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
 								MsgHelper::save_session_message('success',Config::get('messages.common_msg.update_password'),$request);
 							return redirect()->route('customer_login');
 				}
-									
-						} 
+
+						}
 						else{
 							return Redirect::back()->withErrors(['No record found']);
 						}
-			
-		
-		}	
+
+
+		}
         return view('fronted.mod_customer.updatepassword');
-		
+
     }
 
 
 	public function update_fcm(Request $request){
 		try{
-	
+
 		$user = auth()->guard('customer')->user();
 		Customer::where('id',$user->id)->update(['fcm_token' => $request->fcmtoken]);
-		
+
 		return response()->json([
 			'success'=>true
 		]);
@@ -1649,5 +1656,56 @@ if ($validate_user && Hash::check($input['password'], $validate_user->password))
     }
 	}
 
-	  
+	public function update_customer_orders($customer_id, $email="", $phone="") {
+
+        // update customer id in order table by phone or email. email is primary
+        $Orders = Orders::select(
+            'orders.id',
+            'orders.order_no',
+            'orders.customer_id',
+            'orders.shipping_id',
+            'orders.billing_addresss_id',
+            'orders_shipping.order_shipping_name',
+            'orders_shipping.order_shipping_phone',
+            'orders_shipping.order_shipping_email'
+        )
+        ->join('orders_shipping', 'orders.shipping_id', '=', 'orders_shipping.id')
+        ->whereNull('orders.customer_id');
+
+        if($email) {
+            $Orders = $Orders->where('orders_shipping.order_shipping_email', '=', $email);
+        } elseif ($phone) {
+            $Orders = $Orders->where('orders_shipping.order_shipping_phone', '=', $phone);
+        }
+
+        $Orders = $Orders->update([
+            'orders.customer_id' => $customer_id
+        ]);
+
+        // update customer_shipping_address table
+        $OrdersShipping = CheckoutShipping::whereNull('customer_id');
+
+        if($email) {
+            $OrdersShipping = $OrdersShipping->where('shipping_email', '=', $email);
+        } elseif ($phone) {
+            $OrdersShipping = $OrdersShipping->where('shipping_mobile', '=', $phone);
+        }
+
+        $OrdersShipping = $OrdersShipping->update([
+            'customer_id' => $customer_id
+        ]);
+
+        // update customer_billing_address table
+        $OrdersBilling = CheckoutBillingAddress::whereNull('customer_id');
+
+        if($email) {
+            $OrdersBilling = $OrdersBilling->where('shipping_email', '=', $email);
+        } elseif ($phone) {
+            $OrdersBilling = $OrdersBilling->where('shipping_mobile', '=', $phone);
+        }
+
+        $OrdersBilling = $OrdersBilling->update([
+            'customer_id' => $customer_id
+        ]);
+    }
 }

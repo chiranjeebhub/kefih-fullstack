@@ -18,8 +18,8 @@ Route::get('/clear-cache', function() {
 
 Route::group(['middleware' => ['auth:vendor' or 'auth']], function () {
     $real_path = realpath(__DIR__).DIRECTORY_SEPARATOR.'group_admin_routes'.DIRECTORY_SEPARATOR;
-include($real_path.'zone.php');  
-include($real_path.'deliveryboy.php');    
+include($real_path.'zone.php');
+include($real_path.'deliveryboy.php');
 include($real_path .'categories.php');
 include($real_path .'brand.php');
 include($real_path .'city.php');
@@ -54,20 +54,20 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/vendor_logout', 'sws_Admin\VendorController@vendor_logout')->name('vendor_logout');
         Route::get('/admin_logout', 'sws_Admin\AdminController@admin_logout')->name('admin_logout');
     Route::get('/dashboard', function (){
-        
+
         if(Auth::check()){
    return view('admin.dashboard.home');
         } else{
 			 return view('auth.login');
 		}
           }
-        
+
         )->name('dashboard');
-    
+
     Route::get('/', function () {
-	
+
 	if(Auth::check()){
-    $role = Auth::user()->user_role; 
+    $role = Auth::user()->user_role;
        // Check user role
     switch ($role) {
         case 0:    // Super Admin
@@ -75,7 +75,7 @@ Route::group(['prefix' => 'admin'], function () {
             break;
         case 1:    // Admin
                return redirect()->route('categories');
-            break; 
+            break;
          case 2:   // Vendor
                 return redirect()->route('vendor_home');
             break;
@@ -92,12 +92,12 @@ Route::group(['prefix' => 'admin'], function () {
 	Route::any('/resend_otp', 'UserController@resend_otp')->name('resend_otp');
 	Route::post('/login', 'LoginController@login')->name('admin_login');
 	Route::get('/login', 'LoginController@showLoginForm')->name('showLoginForm');
-	
-    Route::any('/admin_forgot_password', 'UserController@admin_forgot_password')->name('admin_forgot_password');  
+
+    Route::any('/admin_forgot_password', 'UserController@admin_forgot_password')->name('admin_forgot_password');
     Route::any('/admin_update_password', 'UserController@admin_update_password')->name('admin_update_password');
     Route::any('/admin_resend_otp', 'UserController@admin_resend_otp')->name('admin_resend_otp');
-                
-            Route::any('/vendor_forgot_password', 'UserController@vendor_forgot_password')->name('vendor_forgot_password');  
+
+            Route::any('/vendor_forgot_password', 'UserController@vendor_forgot_password')->name('vendor_forgot_password');
             Route::any('/update_password', 'UserController@vendor_update_password')->name('vendor_update_password');
             Route::any('/vendor_resend_otp', 'UserController@vendor_resend_otp')->name('vendor_resend_otp');
 });
@@ -126,7 +126,7 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 	// Route::any('/register', 'CustomerController@customer_register')->name('customer_register');
 	// Route::any('/login', 'CustomerController@customer_login')->name('customer_login');
 
-   Route::any('/register', 
+   Route::any('/register',
    function(){
 	return redirect()->back();
 	// echo 'route not allowed';
@@ -157,17 +157,17 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 	Route::get('customer/login', 'CustomerLoginController@getCustomerLogin');
     Route::post('customer/login', ['as'=>'customer.auth','uses'=>'CustomerLoginController@customerAuth']);
     Route::get('customer/logout', ['as'=>'customer.logout','uses'=>'CustomerController@logout']);
-    
+
     //Customer auth
         Route::get('/mydashboard','CustomerAuthController@myDashboard')->name('mydashboard');
         Route::any('/accountinfo','CustomerAuthController@accountInfo')->name('accountinfo');
         Route::any('/changepass','CustomerAuthController@changepassword')->name('changepass');
 		Route::any('/change-phone','CustomerAuthController@changePhoneVerify')->name('change-phone');
 
-		
+
         Route::get('/myorder/{type}','CustomerAuthController@orderlist')->name('myorder');
         Route::get('/order_filter/{type}/{level}','CustomerAuthController@order_filter')->name('order_filter');
-        
+
         Route::get('/order_detail/{order_id}/{order_details_id}','CustomerAuthController@orderdetail')->name('myorder-detail');
 		Route::get('/download-service-invoice/{id}','CustomerAuthController@downloadServiceInvoice')->name('download-service-invoice');
 
@@ -191,21 +191,21 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 		Route::any('/wallet-recharge-success/{id}','CustomerAuthController@walletRechargeSuccess')->name('wallet-recharge-success');
 		Route::any('/wallet-recharge-faild/{id}','CustomerAuthController@walletRechargeFaild')->name('wallet-recharge-faild');
 		Route::any('/wallet_recharge_callback','CustomerAuthController@wallet_recharge_callback')->name('wallet_recharge_callback');
-		
+
 
           Route::get('/referrals','CustomerAuthController@referarls')->name('referrals');
          Route::get('/shippingDetails','CustomerAuthController@shippingDetails')->name('shippingDetails');
         Route::post('/addReview','CustomerAuthController@addReview')->name('addReview');
           Route::post('/sellerRating','CustomerAuthController@sellerRating')->name('sellerRating');
         Route::any('/myReviews','CustomerAuthController@myReviews')->name('myReviews');
-        
+
          Route::any('/reason_and_policy','CustomerAuthController@reason_and_policy')->name('reason_and_policy');
     //Customer auth
-       
-       
-        
+
+
+
     //Customer Ends
-	
+
 	/*Route::get('/cookie/set','CookieController@setCookie');
 	Route::get('/cookie/get','CookieController@getCookie');*/
     Route::any('/test', 'TestController@test')->name('test');
@@ -229,15 +229,15 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
      Route::get('/home2','CheckoutController@index2')->name('index2');
     Route::post('/subscribe','HomeController@subscribe')->name('subscribe');
     Route::any('/get_size_chart','HomeController@get_size_chart')->name('get_size_chart');
-	
+
 	Route::get('/razor-pay-order-details/{razorpay_order_id}','HomeController@getRazorPayOrderDetails')->name('razor-pay-order-details');
 
-	
+
 
 	/* Fronted Slider Management */
 	Route::get('slider','SliderController@getSlider')->name('slider');
 	/* Fronted Slider Management */
-	
+
 	/* Fronted Static Management */
 	   Route::get('/page/{page_url}','PagesController@page_url')->name('page_url');
 	        Route::get('/offers','PagesController@offers')->name('offers');
@@ -256,18 +256,18 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 			Route::get('/faq','PagesController@faq')->name('faq');
     Route::get('/refer_and_earn','PagesController@refer_and_earn')->name('refer_and_earn');
 			Route::get('/become-a-seller','PagesController@become_a_seller')->name('become-a-seller');
-	
+
 	Route::get('/app-get-in-touch','PagesController@app_get_in_touch')->name('app-get-in-touch');
 	Route::get('/app-contact-address','PagesController@app_contact_adddress')->name('app-contact-address');
 	Route::get('/app-faq','PagesController@app_faq')->name('app-faq');
-	
+
 	/* Fronted Static Management */
-	
+
 	/* Fronted Product Management */
-	
-	
-	
-	
+
+
+
+
 	/*Templatemail*/
 	Route::get('/welcome','PagesController@welcome')->name('welcome');
 	Route::get('/didnt-collect','PagesController@didnt_collect')->name('didnt-collect');
@@ -278,19 +278,19 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 	Route::get('/out-for-delivery','PagesController@out_delivery')->name('out-for-delivery');
 	Route::get('/delivered','PagesController@delivered')->name('delivered');
 	Route::get('/cancel','PagesController@cancel')->name('cancel');
-	
+
             Route::get('/customized','ProductController@customized')->name('customized');
-            
+
             Route::get('/customizedform/{product_id}','ProductController@customizedform')->name('customizedform');
-            
+
             Route::post('/customerQyeryforCustomized/{id}','ProductController@customerQyeryforCustomized')->name('customerQyeryforCustomized');
 
 	/*Templatemail*/
-	
+
 	Route::get('/products/{cat}','ProductController@products')->name('prd');
 	Route::get('search','ProductController@SearchProduct')->name('SearchProduct');
-   
-		
+
+
 	Route::get('/product/{id}','ProductController@productDetails')->name('product_details');
 	Route::get('/p/{rcat_name}/{cat_name}/{scat_name}/{name}/{id}','ProductController@productDetails')->name('scat_p_detail');
 	Route::get('/p/{rcat_name}/{cat_name}/{name}/{id}','ProductController@productDetails')->name('cat_p_detail');
@@ -306,11 +306,11 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 	//Route::get('/offerzone','ProductOfferController@offerzone')->name('offerzone');
 	Route::get('/offerzone','ProductOfferController@offerzone_category_product')->name('offerzone');
 	Route::get('/catoffer/{name}/{id}','ProductOfferController@cat_offer_wise')->name('cat_offer_wise');
-	
+
 
 	Route::get('/offer-zone-products/{offer_id}','ProductOfferController@offerZoneProducts')->name('offer-zone-products');
 
-	
+
 
 	Route::any('/listingfilter','ProductController@listing_filter');
 	Route::any('/vendorprdlistingfilter','ProductController@vendorprdlistingfilter');
@@ -331,7 +331,7 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 	Route::any('/branddetails','ProductController@branddetails')->name('branddetails');
 	Route::any('/mendmbrandsshownore','ProductController@mendmbrandsshownore')->name('mendmbrandsshownore');
 	Route::any('/womensbrandsshownore','ProductController@womensbrandsshownore')->name('womensbrandsshownore');
-	
+
     Route::get('/moreSeller/{product_code}','HomeController@moreSeller')->name('moreSeller');
     Route::any('/check_pinCode','HomeController@check_pinCode')->name('check_pinCode');
     Route::any('/searchPincode','HomeController@searchPincode')->name('searchPincode');
@@ -340,17 +340,17 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 
 	Route::any('/blog','BlogController@blog_listing')->name('blog');
 	Route::get('/blog_detail/{blog_id}','BlogController@blogdetail')->name('blog-detail');
-   
-	
+
+
 	Route::any('/product_review/{id}', 'ProductController@product_review')->name('product_review');
 	/* Fronted Product Management */
-	
+
 	/* Fronted Cart Management */
 	 Route::any('/apply_coupon','cart\CartController@apply_coupon')->name('apply_coupon');
 	   Route::any('/mapProductWebApp','CookieController@mapProductWebApp')->name('mapProductWebApp');
 	Route::any('/cart', 'cart\CartController@index')->name('cart');
 	Route::any('/add_to_cart', 'ProductController@add_to_cart')->name('add_to_cart');
-	
+
 		Route::any('/cookieSetReset', 'ProductController@cookieSetReset')->name('cookieSetReset');
 	Route::any('/update_cart', 'cart\CartController@update_cart')->name('update_cart');
 	Route::post('/removeCoupon', 'cart\CartController@removeCoupon')->name('removeCoupon');
@@ -362,7 +362,7 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 	 Route::any('/sizeStock', 'ProductController@sizeStock')->name('sizeStock');
 	Route::any('/add_to_savelater', 'cart\CartController@add_to_savelater')->name('add_to_savelater');
     /* Fronted Cart Management */
-	
+
 	/* Fronted Wishlist Management */
 	Route::any('/add_to_wishlist', 'cart\CartController@add_to_wishlist')->name('add_to_wishlist');
 	Route::any('/update_wishlist', 'cart\CartController@update_wishlist_count')->name('update_wishlist');
@@ -374,37 +374,37 @@ Route::any('/productVariationSize', 'CustomerAuthController@productVariationSize
 	 Route::any('/selectBillingAddress/{shipping_id}', 'CheckoutController@selectBillingAddress')->name('selectBillingAddress');
 	 Route::any('/removeBillingAddress/{shipping_id}', 'CheckoutController@removeBillingAddress')->name('removeBillingAddress');
 	 Route::any('/editBillingAddress/{shipping_id}', 'CheckoutController@editBillingAddress')->name('editBillingAddress');
- 
-	
+
+
 	/* Fronted Checkout Management */
     Route::any('/checkout', 'CheckoutController@index')->name('checkout');
 	Route::any('/verifysecurityCode', 'CheckoutController@verifysecurityCode')->name('verifysecurityCode');
 
     Route::any('/addShippingAddress', 'CheckoutController@add')->name('addShippingAddress');
 	Route::any('/editShippingAddress/{shipping_id}', 'CheckoutController@editShippingAddress')->name('editShippingAddress');
-	
+
 	Route::any('/editShippingDetailsAddress/{shipping_id}', 'CustomerAuthController@editShippingDetailsAddress')->name('editShippingDetailsAddress');
-	
+
     Route::any('/removeShippingAddress/{shipping_id}', 'CheckoutController@delete_shipping_address')->name('removeShippingAddress');
     Route::any('/selectShippingAddress/{shipping_id}', 'CheckoutController@selectShippingAddress')->name('selectShippingAddress');
 	Route::any('/review_order', 'CheckoutController@review_order')->name('review_order');
 	Route::any('/thankyou', 'CheckoutController@submit_order')->name('thankyou');
 	Route::any('/callback', 'CheckoutController@callback')->name('callback');
 	Route::any('/success/{merchant_order_id}/{merchant_trans_id}', 'CheckoutController@success')->name('success');
-	Route::any('/failed/{merchant_order_id}/{merchant_trans_id}', 'CheckoutController@failed')->name('failed'); 
-	Route::any('/chat', 'ChatController@index')->name('chat'); 
+	Route::any('/failed/{merchant_order_id}/{merchant_trans_id}', 'CheckoutController@failed')->name('failed');
+	Route::any('/chat', 'ChatController@index')->name('chat');
 	#Route::get('/load-latest-messages', 'MessagesController@getLoadLatestMessages');
 	Route::any('/send', 'ChatController@postSendMessage');
 		Route::any('/testtttt', 'ProductController@testtttt');
-		
-		
+
+
 	Route::any('/cronstock', 'CustomerController@cron_track')->name('cron_track');
-	
+
 	#Route::get('/fetch-old-messages', 'MessagesController@getOldMessages');
-	
+
 	/* Fronted Checkout Management */
-	
-	
+
+
 // 	/  firebase routes
 Route::any('/testnotificatiion', 'FirebaseController@testnotificatiion');
 // 	/  firebase routes
@@ -418,11 +418,11 @@ Route::any('/testnotificatiion', 'FirebaseController@testnotificatiion');
             Route::any('/RemovecompareProduct', 'ProductController@RemovecompareProduct')->name('RemovecompareProduct');
 	/*Compare Product*/
 
-	
+
 	Route::group(['middleware' => ['customer']], function () {
 		Route::get('customer/dashboard', ['as'=>'customer.dashboard','uses'=>'CustomerController@dashboard']);
     });
-    
+
 Route::view('/sellerrating','fronted.sellerrating')->name('sellerrating');
 	Route::post('/filterareaOnCity','HomeController@filterareaOnCity')->name('filterareaOnCity');
 });
