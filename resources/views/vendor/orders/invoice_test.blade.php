@@ -3,25 +3,25 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Kefih</title>
-	<link href="https://fonts.googleapis.com/css?family=Be+Vietnam:400,500,700&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Be+Vietnam:400,500,700&display=swap" rel="stylesheet">
 </head>
 
 <body style="padding: 0px; margin: 0px; background: #f9f9f9;">
 <div style="width:700px; margin-left:auto; margin-right:auto;">
-	
+
     <div style="width:100%; margin-left:auto; margin-right:auto;padding: 0;">
-		@php 
-		$sellerStateData = DB::table('states')->select('state_code')->where('name', $vdr_data['company_state'])->first(); 
+		@php
+		$sellerStateData = DB::table('states')->select('state_code')->where('name', $vdr_data['company_state'])->first();
 	    $billingStateData = [];
 
 		if(!empty($billingAddress)){
-			$billingStateData = DB::table('states')->select('state_code')->where('name', $billingAddress->order_shipping_state)->first(); 
-		}		
-		$shippingStateData = DB::table('states')->select('state_code')->where('name', $Order[0]['order_shipping_state'])->first(); 
+			$billingStateData = DB::table('states')->select('state_code')->where('name', $billingAddress->order_shipping_state)->first();
+		}
+		$shippingStateData = DB::table('states')->select('state_code')->where('name', $Order[0]['order_shipping_state'])->first();
 
-		@endphp 
+		@endphp
 		<table cellpadding="0" cellspacing="0" style="width:100%; font-family: 'Be Vietnam', sans-serif; padding:0px; background: #fff; font-size: 12px;line-height: 16px; page-break-inside: avoid;">
-    
+
         <tr bgcolor="#ebecec">
 			<td style="vertical-align: top; padding: 10px;">
 				<table cellpadding="0" cellspacing="0" style="width: 100%;">
@@ -33,7 +33,7 @@
 							<h1 style="font-size: 26px; font-weight: 700; margin: 0 0 10px; line-height: 24px; ">Tax invoice</h1>
 							@if(@$is_frontend != 1)
 								<a href="{{route('vendor_orders',base64_encode(0)) }}" class="btn btn-warning"><i class="fa fa-undo"></i> Back</a>
-							@endif 
+							@endif
 						</td>
 					</tr>
 					<tr bgcolor="#ebecec">
@@ -44,7 +44,7 @@
 					</tr>
 				</table>
 			</td>
-			
+
         </tr>
 		<tr>
 			<td style="padding: 10px; text-align: left; background: #fff">
@@ -61,12 +61,12 @@
 					<tr>
 					  	<td style="border-right: solid 1px #737373; padding-left: 5px;">Address :
 					  	{{$vdr_data['company_address']}}
-					  	{{$vdr_data['company_state']}} {{$vdr_data['company_city']}} 
+					  	{{$vdr_data['company_state']}} {{$vdr_data['company_city']}}
 					  	</td>
 					  	<td style=" padding-left: 5px;">Order Date : {{ date('d-m-Y H:i:s',strtotime($Order[0]['order_date']))}}
 						<br><br>
 						Place Of Supply: {{ucwords($vdr_data['company_city'])}}
-						<br>Payment Mode: 
+						<br>Payment Mode:
 						@if($Order[0]['payment_mode']==0)
 						 COD
 						@elseif($Order[0]['payment_mode']==1)
@@ -75,7 +75,7 @@
 						 Exhibition
 						@elseif($Order[0]['payment_mode']==3)
 						 Wallet
-						@endif 
+						@endif
 						</td>
 					</tr>
 					<tr>
@@ -91,18 +91,19 @@
 					<tr>
 					  	<td style="border-right: solid 1px #737373; padding-left: 5px;">
 						PAN : {{$vdr_data['pan_no']}}
-						<br>State/UT Code : {{$sellerStateData->state_code}}
-                            
+						<br>State/UT Code : @if(!empty($sellerStateData))
+													{{$sellerStateData->state_code}}
+												@endif
 					 </td>
 					  	<td style=" padding-left: 5px;">&nbsp;</td>
 					</tr>
 				</table>
-				<?php 
-				
-				
+				<?php
+
+
 					$user_data=App\Customer::where('id',$Order[0]['customer_id'])->get()->first();
-					
-					
+
+
 				?>
 				<table cellpadding="7px" cellspacing="0" style="width: 100%; border: solid 1px #737373; border-top:none; font-size: 12px;">
 					<tr bgcolor="#ebecec">
@@ -113,61 +114,62 @@
 						<td style="border-right: solid 1px #737373; padding-left: 5px;">Buyer Name : {{ ucfirst($Order[0]['order_shipping_name'])}}</td>
 					  	<td style=" padding-left: 5px;">
 						  @if(!empty($billingAddress))
-						  	Buyer Name:	{{$billingAddress->order_shipping_name}}							
-							@else 
+						  	Buyer Name:	{{$billingAddress->order_shipping_name}}
+							@else
 									Buyer Name : {{ ucfirst($Order[0]['order_shipping_name'])}}
-							@endif 
+							@endif
 
-						
+
 					    </td>
 					</tr>
 					<tr>
-					  	<td style="border-right: solid 1px #737373; padding-left: 5px;">Address : {{$Order[0]['order_shipping_address']}} {{$Order[0]['order_shipping_address1']}} {{$Order[0]['order_shipping_address2']}} {{$Order[0]['order_shipping_city']}}    
+					  	<td style="border-right: solid 1px #737373; padding-left: 5px;">Address : {{$Order[0]['order_shipping_address']}} {{$Order[0]['order_shipping_address1']}} {{$Order[0]['order_shipping_address2']}} {{$Order[0]['order_shipping_city']}}
 						 {{$Order[0]['order_shipping_state']}}</td>
 					  	<td style=" padding-left: 5px;">
 						  @if(!empty($billingAddress))
 						  	Billing address :	{{$billingAddress->order_shipping_address}}
-							
-							@else 
-							Address : {{$Order[0]['order_shipping_address']}} {{$Order[0]['order_shipping_address1']}} {{$Order[0]['order_shipping_address2']}} {{$Order[0]['order_shipping_city']}}    
-						 {{$Order[0]['order_shipping_state']}}
-							@endif 
 
-						
-						
+							@else
+							Address : {{$Order[0]['order_shipping_address']}} {{$Order[0]['order_shipping_address1']}} {{$Order[0]['order_shipping_address2']}} {{$Order[0]['order_shipping_city']}}
+						 {{$Order[0]['order_shipping_state']}}
+							@endif
+
+
+
 						</td>
 					</tr>
 					<tr>
 					  	<td style="border-right: solid 1px #737373; padding-left: 5px;">
 						Pin : {{ ucfirst($Order[0]['order_shipping_zip'])}}
-						
+
 					</td>
 					  	<td style=" padding-left: 5px;">
 						  @if(!empty($billingAddress))
 						    Pin : 	{{$billingAddress->order_shipping_zip}}
-							
-							@else 
+
+							@else
 							Pin : {{ ucfirst($Order[0]['order_shipping_zip'])}}
 							@endif
 
-					     	
+
 					    </td>
 					</tr>
 					<tr>
 					  	<td style="border-right: solid 1px #737373; padding-left: 5px;">
 						Ph. : {{ $Order[0]['order_shipping_phone']}}
-						<br>State/UT Code : {{$shippingStateData->state_code}}					
-
+						<br>State/UT Code : @if(!empty($shippingStateData))
+													{{$shippingStateData->state_code}}
+												@endif
 					</td>
 					  	<td style=" padding-left: 5px;">
 						   @if(!empty($billingAddress))
-						 	 Ph. : {{$billingAddress->order_shipping_phone}}						
-							@else 
+						 	 Ph. : {{$billingAddress->order_shipping_phone}}
+							@else
 							Ph. : {{ $Order[0]['order_shipping_phone']}}
 							@endif
 
 
-						
+
 						</td>
 					</tr>
 					<!--<tr bgcolor="#ebecec">
@@ -176,7 +178,7 @@
 					</tr>-->
 				</table>
 					<br/>
-				
+
 				<table cellpadding="7px" cellspacing="0" style="width: 100%; border: solid 1px #000333; font-size: 14px;">
 					<tr bgcolor="#ebecec">
 					  	<th style="border-right: solid 1px #000333; font-size: 14px; width: 30%; padding-left: 5px;">Item</th>
@@ -188,18 +190,18 @@
 						<th style="border-right: solid 1px #000333; font-size: 14px;">Unit Price(Rs.)</th>
 						<!--<th style="border-right: solid 1px #000333; font-size: 14px; padding-left: 5px;">Discount</th>-->
 						<th style="border-right: solid 1px #000333; font-size: 14px;">Tax Rate(%)</th>
-						
+
 						<?php
 							$prd_detail=App\Products::select('products.hsn_code','products.vendor_id','products.delivery_days','products.shipping_charges')
 										->where('products.id','=',$Order[0]['product_id'])
 										->first();
-										
+
 							if ($prd_detail->vendor_id!=0)
 							{
 								$vendor_info=$prd_detail->getProductsVendorInfo();
-								
+
 								if($vendor_info->state!=$Order[0]['order_shipping_state'])
-								//if($vendor_info->state!=$user_data->state)	
+								//if($vendor_info->state!=$user_data->state)
 								{
 									$tax_column1='1'; //IGST
 								}else{
@@ -217,30 +219,30 @@
 						<th style="font-size: 14px;">Total (Rs.)</th>
 					</tr>
 					<?php $total=$cod_total=$ship_total=$wallet_total=$coupon_total=@$slot_price=0;?>
-					
+
 					@foreach($Order as $row)
 					<?php
 						$prd_detail=App\Products::select('products.hsn_code','products.short_description','products.vendor_id','products.delivery_days','products.shipping_charges','tax')
 										->where('products.id','=',$row['product_id'])
 										->first();
-										
+
 						$order_shipping=DB::table('orders_courier')
 								->where('orders_courier.order_detail_id',$row['order_detail_id'])->first();
 
 						$cat_tax_percent=DB::table('product_categories')->select('categories.tax_rate')
 									->join('categories','product_categories.cat_id','categories.id')
 									->where('product_categories.product_id',$row['product_id'])->first();
-						
+
 						//$product_tax=$cat_tax_percent->tax_rate;
 						$product_tax=$prd_detail->tax;
 						//$product_tax=$row['product_tax'];
-				
+
 						//$pp=$row['product_price']-$row['order_coupon_amount'];
-						$pp=$row['product_price']; 
+						$pp=$row['product_price'];
 						// $tax_amt=($pp*$product_tax)/(100+$product_tax);
-						
+
 						// $tax_amt=($pp*$product_tax)/100;
-					
+
 						// $tax_free_amt=$pp-$tax_amt;
 
 						$tax_free_amt=$pp/(1+$product_tax/100);
@@ -250,15 +252,15 @@
 						if ($prd_detail->vendor_id!=0)
 						{
 							$vendor_info=$prd_detail->getProductsVendorInfo();
-							
+
 							if($vendor_info->state!=$Order[0]['order_shipping_state'])
-							//if($vendor_info->state!=$user_data->state)	
+							//if($vendor_info->state!=$user_data->state)
 							{
 								$tax_column='1'; //IGST
 							}else{
 								$tax_column='2'; //CGST/SGST
 							}
-							
+
 							DB::table('order_details')->where('order_details.id','=',$row['order_detail_id'])
 								->update([
 									'order_details.order_detail_invoice_type'=>$tax_column,
@@ -281,7 +283,7 @@
 						<?php if($vdr_data['gst_no']!=''){?>
 						<td style="border-right: solid 1px #000333;">{{number_format($tax_free_amt,2)}}</td>
 						<td style="border-right: solid 1px #000333;"><?php echo $product_tax;?></td>
-						
+
 						<?php if($tax_column==1){?>
 						<td style="border-right: solid 1px #000333;">{{number_format($tax_amt,2)}}</td>
 						<?php } else if($tax_column==2){?>
@@ -368,7 +370,7 @@
 						<?php }?>
 						<td style="">{{($row['order_shipping_charges']!=0)?$row['order_shipping_charges']:'Free'}}</td>
 					</tr>
-					
+
 						<!--<tr>
 					  	<td style="border-right: solid 1px #000333; padding-left: 5px;">COD Charges</td>
 					  	<td style=" padding-left: 5px; border-right: solid 1px #000333;">&nbsp;</td>
@@ -506,25 +508,25 @@
 						<td style="font-size: 14px; padding-left: 5px; border-top: solid 1px #000333; border-right: solid 1px #000333;">&nbsp;</td>
 						<?php }?>
 						<?php }?>
-						<td style="font-size: 14px; padding-left: 5px; border-top: solid 1px #000333; border-right: solid 1px #000333;">&nbsp;</td> 
+						<td style="font-size: 14px; padding-left: 5px; border-top: solid 1px #000333; border-right: solid 1px #000333;">&nbsp;</td>
 						<td style="font-size: 14px; border-top: solid 1px #000333;">
 						@if($Order[0]['payment_mode']==3)
 						{{number_format(round(($total+$ship_total+$cod_total-$coupon_total+$slot_price)),2)}}
 						@else
 						{{number_format(round(($total+$ship_total+$cod_total-$wallet_total-$coupon_total+$slot_price)),2)}}
-						@endif 
-					
+						@endif
+
 					    </td>
 					</tr>
 				</table>
-			</td>	
+			</td>
 		</tr>
 		<tr>
 			<td bgcolor="#ebecec" style="font-size: 16px; font-weight: bold; padding: 15px 30px;">
 				Total amount In words.
-					{!! App\Helpers\CommonHelper::convert_number_to_words(round($total+$ship_total+$cod_total-$wallet_total-$coupon_total+$slot_price)); !!} 
+					{!! App\Helpers\CommonHelper::convert_number_to_words(round($total+$ship_total+$cod_total-$wallet_total-$coupon_total+$slot_price)); !!}
 				Rupee Only
-			</td>	
+			</td>
 		</tr>
 		<tr>
 			<td style="padding: 10px;">
@@ -536,24 +538,24 @@
 							<p style="font-size: 12px; margin-top: 5px; margin-bottom: 5px">We Declare that this invoice shows the actual price of the goods<br/>described above and that all particulars are true and correct. The<br/>goods sold are intended for end user consumption and not for resale.</p>
 						</td>
 						<td style="font-size: 12px; text-align: center; width: 20%; vertical-align: top;">
-                            <p style="height: 20px; display: block;">For {{$vdr_data['company_name']}}</p> 
+                            <p style="height: 20px; display: block;">For {{$vdr_data['company_name']}}</p>
                             <p style="position: relative; margin: 10px auto 0;display: block; width: 100px; height:50px;">{!! App\Helpers\CustomFormHelper::signature_pic('uploads/vendor/signature_pic',$vdr_data['signature_pic']); !!}
 &nbsp;</p> <p style="height: 20px; display: block;margin: 0;">Authorized Signatory</p></td>
 					</tr>
 				</table>
 			</td>
-			
+
 		</tr>
 		<tr>
 			<td style="padding: 0px 10px;">
 				<h2 style="font-size: 14px; margin-bottom: 0;margin-top: 0; ">Customer Acknowledgement</h2>
 				<p style="font-size: 13px; margin-top: 5px;">I , confirm that the said products are being purchased for my internal/personal consumption and not for re-sale.</p>
-			</td>	
+			</td>
 		</tr>
 		<tr>
 			<td style="padding: 0px 10px;">
 				<p style="font-size: 14px; border: solid 1px #737373; padding: 5px 15px; margin: 0; text-align: center;">Beware of fake calls/SMS/Emails offering any cash/price under any fraud scheme/lottery/lucky draw. Do not share any information or pay any amount.</p>
-			</td>	
+			</td>
 		</tr>
 		<tr>
 			<td style="float: right; padding: 10px 10px 10px; text-align: right;"><img style="width:80px;" src="{{ asset('public/fronted/images/logo.png') }}" /><h2 style="margin-top: 5px; font-weight: 600; font-size: 18px; margin-bottom: 5px;">Thank You!</h2>
@@ -564,13 +566,13 @@
 				<p style="font-size: 11px; margin-top: 0; font-style: italic; line-height: 16px;"><strong style="font-style: normal;">Return Policy</strong> : At kefih.com we try to deliver perfectly each and every time. But in the off-chance that you need to return the item, please do so with the original Brand box/price tag, original packing and invoice without which it will be really difficult for us to act on your request. Please help us in helping you. Terms and conditions apply.<br/>
 The goods sold as are intended for end user consumption and not for re-sale.<br/>
 Contact kefih.com : help@kefih.com <br>Customer Care: +91-8888888888</p>
-			</td>	
+			</td>
 		</tr>
-		
-                
+
+
 	</table>
     </div>
-    
+
 </div>
 </body>
 </html>
