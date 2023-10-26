@@ -73,7 +73,9 @@
 
 						<br>Mobile :{{$sellerData['phone']}}
 						<br>GSTIN :{{$sellerData['gst_no']}}
-						<br>State/UT Code : {{$shippingStateData->state_code}}
+						<br>State/UT Code : @if(!empty($shippingStateData))
+													{{$shippingStateData->state_code}}
+												@endif
 						<br>Place of Supply :	@if(!empty($sellerData['company_state']))
 													{{$sellerData['company_state']}}
 												@endif

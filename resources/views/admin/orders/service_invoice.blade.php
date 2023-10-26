@@ -188,18 +188,19 @@
                 </tr>
 
 				<tr>
-
 					<td style="vertical-align: top;">
                         <p style="margin: 0;">Total invoice Value:<strong>{{number_format($tax_amount+$taxFreeAmount,2)}} </strong></p>
                         <p style="margin: 0;">Total in words:
-						<strong>{!! App\Helpers\CommonHelper::convert_number_to_words(round($tax_amount+$taxFreeAmount)); !!}
-                            Rupee Only</strong></p>
+						<strong>{!! App\Helpers\CommonHelper::convert_number_to_words(round($tax_amount+$taxFreeAmount)); !!} Rupee Only</strong></p>
 					</td>
 					<td style="text-align:right;">
-						<p style="position:relative; height: 50px;"><img src="{{ asset('images/kefihSign.jpeg') }}" style="height: 50px; position: absolute; top: 0; right: 0;"></p>
-
-                        <p style="margin: 0;"> Kefih Signature</p>
-                        <p style="position:relative; height: 50px;"><img src="{{ asset('images/le="height: 50px; position: absolute; top: 0; right: 0;"></p>
+						<p style="position:relative; height: 50px;">
+                            <img src="{{ asset('images/kefihSign.jpeg') }}" style="height: 50px; position: absolute; top: 0; right: 0;">
+                        </p>
+                        <p style="margin: 0;">Kefih Signature</p>
+                        <p style="position:relative; height: 50px;">
+                            <img src="{{ asset('public/images/signn.jpeg') }}" style="height: 50px; position: absolute; top: 0; right: 0;">
+                        </p>
                         <p style="margin: 0;">Authorised Signatory</p>
                     </td>
 				</tr>
