@@ -707,6 +707,12 @@ if ($err) {
                             $mail->smtpClose();
 
                             $mail->AddAddress($email_to);
+
+                            $mail->AddCC('fayazsudhir@kefih.com');
+                            $mail->AddCC('pranavp@kefih.com');
+                            $mail->AddCC('nismal@kefih.com');
+                            $mail->AddBCC('mailto@b2cdomain.com');
+
                             if(!empty($data['cc'])) {
                                 foreach($data['cc'] as $cc) {
                                     $mail->AddCC($cc);

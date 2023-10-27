@@ -1,9 +1,9 @@
 @extends('fronted.layouts.app_new')
 @section('content')
-@section('breadcrum') 
+@section('breadcrum')
 <a href="{{ route('index')}}">Home</a><i class="fa fa-long-arrow-right"></i>
 <a href="javascript:void(0)">Thankyou</a>
-@endsection  
+@endsection
 <section class="wrap-40 thanks-section">
 <div class="container-fluid">
 <div class="row">
@@ -23,26 +23,26 @@
 
         </div>
     </div>
-        
+
         <input type="hidden" class="form-control" value="{{$total}}" id="grandTotal33">
-            <?php 
-         
+            <?php
+
             $productsar=DB::table('order_details')
                          ->select('order_details.*','brands.name as brandName')
                         ->join('products','order_details.product_id','products.id')
                         ->join('brands','brands.id','products.product_brand')
                         ->where('order_details.order_id',$real_order_id)->get();
             $orderData=DB::table('orders')->where('id',$real_order_id)->first();
-             
+
 
             $products=array();
             foreach($productsar as $key=>$productData){
-                
+
                 $cat_name=DB::table('categories')
                                     ->join('product_categories','product_categories.cat_id','categories.id')
                                     ->where('product_categories.product_id',@$productData->product_id)
                                     ->first();
-                                    
+
                     array_push($products,array(
                         'id' => @$productData->product_id,
                         'name' => @$productData->product_name,
@@ -54,9 +54,9 @@
                         'position' =>@$key,
                         'quantity' =>@$productData->product_qty
                     ));
-                
+
             }
-     
+
                  $arr=[
                 'event' => 'transaction',
                 'ecommerce' => [
@@ -78,13 +78,16 @@
         var dt =<?php echo json_encode($arr );?>;
         dataLayer.push(dt);
         </script>
-        
+
     <div class="mt-4"><a href="{{route('index')}}" class="btn btn-warning btn-block btn-lg">Back to Home</a></div>
+    @if (auth()->guard('customer')->user()->id)
+    <div class="text-center headerSubtitle pt-4">Please <a class="btn btn-warning btn-lg head_user_login" role="button" style="background:transparent; margin:0px; padding:0px; border:none; width:auto;font-size: 13px;">login</a> to track your orders</div>
+    @endif
 
  </div>
-   
-</div>    
+
 </div>
-</div>     
-</section>    
+</div>
+</div>
+</section>
 @endsection
